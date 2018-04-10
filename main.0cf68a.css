@@ -3,3 +3,9 @@ body {
   background:url(/img/background.jpg);
   background-attachment: fixed;
 }
+.left-col{
+	opacity:0.5;
+}
+.mid-col{
+	opacity:0.5;
+}
