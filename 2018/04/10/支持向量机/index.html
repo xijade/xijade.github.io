@@ -8,18 +8,22 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>支持向量机 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="#SVM简介线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$">
+  <meta name="description" content="SVM简介线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离然而svm我只关注最近的点到平面的距离d的大小，d越大则效果越好。我假设了最近的点（两侧）wx+x0 = 1或">
 <meta name="keywords" content="ml">
 <meta property="og:type" content="article">
 <meta property="og:title" content="支持向量机">
 <meta property="og:url" content="http://yoursite.com/2018/04/10/支持向量机/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="#SVM简介线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$">
+<meta property="og:description" content="SVM简介线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离然而svm我只关注最近的点到平面的距离d的大小，d越大则效果越好。我假设了最近的点（两侧）wx+x0 = 1或">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-11T14:29:12.568Z">
+<meta property="og:image" content="https://img-blog.csdn.net/20140829134548371">
+<meta property="og:image" content="https://img-blog.csdn.net/20141008160128583?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcHVxdXRvZ2V0aGVy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="https://img-blog.csdn.net/20140829134548371">
+<meta property="og:updated_time" content="2018-04-11T15:18:04.753Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="支持向量机">
-<meta name="twitter:description" content="#SVM简介线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$">
+<meta name="twitter:description" content="SVM简介线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离然而svm我只关注最近的点到平面的距离d的大小，d越大则效果越好。我假设了最近的点（两侧）wx+x0 = 1或">
+<meta name="twitter:image" content="https://img-blog.csdn.net/20140829134548371">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -175,7 +179,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>#SVM简介<br>线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$</p>
+        <h1 id="SVM简介"><a href="#SVM简介" class="headerlink" title="SVM简介"></a>SVM简介</h1><p>线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$<br>下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离<br><img src="https://img-blog.csdn.net/20140829134548371" alt="示例"><br><img src="https://img-blog.csdn.net/20141008160128583?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcHVxdXRvZ2V0aGVy/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="目标函数"><br>然而svm我只关注最近的点到平面的距离d的大小，d越大则效果越好。我假设了最近的点（两侧）wx+x0 = 1或 -1。理想的情况是两虚线之间没有其他点了，虚线就是过距离超平面最近的点作的平行的线，因此label·（$\omega^Tx+x0$）理想中是大于等于1的。这作为约束条件，可以进一步用拉格朗日公式<br><img src="https://img-blog.csdn.net/20140829134548371" alt="拉格朗日"></p>
 
       
 
