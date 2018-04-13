@@ -17,9 +17,10 @@
 <meta property="og:description" content="SVM简介线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离。所谓支持向量，指虚线上的两点">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/svm1.jpg">
-<meta property="og:image" content="http://yoursite.com/img/svm2.jpg">
+<meta property="og:image" content="http://yoursite.com/img/svm2.png">
 <meta property="og:image" content="http://yoursite.com/img/svm3.jpg">
-<meta property="og:updated_time" content="2018-04-13T12:21:36.682Z">
+<meta property="og:image" content="http://yoursite.com/img/svm4.png">
+<meta property="og:updated_time" content="2018-04-13T14:23:37.261Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="支持向量机">
 <meta name="twitter:description" content="SVM简介线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离。所谓支持向量，指虚线上的两点">
@@ -179,8 +180,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="SVM简介"><a href="#SVM简介" class="headerlink" title="SVM简介"></a>SVM简介</h1><p>线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$<br>下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离。所谓支持向量，指虚线上的两点<br><img src="/img/svm1.jpg" alt="示例"><br><a id="more"></a><br><img src="/img/svm2.jpg" alt="目标函数"><br>然而svm我只关注最近的点到平面的距离d的大小，d越大则效果越好。我假设了最近的点（两侧）wx+x0 = 1或 -1。理想的情况是两虚线之间没有其他点了，虚线就是过距离超平面最近的点作的平行的线，因此label·（$\omega^Tx+x0$）理想中是大于等于1的。这g（x）=y·（$\omega^Tx+x0$） -1= 0作为约束条件，可以进一步用拉格朗日公式。<br>求1/||w||最大值等于求||w||最小值，等于$\frac{1}{2}||\omega||^2$最小值。<br><img src="/img/svm3.jpg" alt="过程"><br>具体推算可看<a href="https://blog.csdn.net/alwaystry/article/details/60957096" target="_blank" rel="noopener">该博客</a></p>
-<h1 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h1><p>目的是把低维线性不可分的模型找到一个函数投影到高维的空间中。比如一个平面上（x1+x2）^2=1是用来切分的样本的，显然它不是线性的。<br>设z1 = x1^2,z2 = x1·x2, z3 = x2^2。变成了用 z1 + 2z2 + z3 = 0 的超平面来分割。<br>φ（x）= z （此处x是一个样本的两个特征集合，将其转换为z，z是x映射到高维空间后的特征的集合）。用z（即φ（x））来代替x，代入之前线性的运算中去。<br>在最初的例子里，我们对一个二维空间做映射，选择的新空间是原始空间的所有一阶和二阶的组合，得到了五个维度（上例是特殊情况只有3维，x1项和x2项的系数是0）；如果原始空间是三维，那么我们会得到 19 维的新空间，这个数目是呈爆炸性增长的。<br>在计算中，先按照φ（x）的公式（设只有x1，x2），求出映射后的高维坐标（每项都是x1，x2的关系式），在运算的公式中，有涉及φ（xi）和φ（xj）內积，这最后相乘又是关于x1，x2表达式。不如一开始就找到函数K（X1，X2），代入X1，X2直接得到φ（X1）·φ（X2）。不用去求φ（X）了，（这里X1X2是两个样本，不是两个特征）。</p>
+        <h1 id="SVM简介"><a href="#SVM简介" class="headerlink" title="SVM简介"></a>SVM简介</h1><p>线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$<br>下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离。所谓支持向量，指虚线上的两点<br><img src="/img/svm1.jpg" alt="示例"><br><a id="more"></a><br><img src="/img/svm2.png" alt="目标函数"><br>然而svm我只关注最近的点到平面的距离d的大小，d越大则效果越好。我假设了最近的点（两侧）wx+x0 = 1或 -1。理想的情况是两虚线之间没有其他点了，虚线就是过距离超平面最近的点作的平行的线，因此label·（$\omega^Tx+x0$）理想中是大于等于1的。这g（x）=y·（$\omega^Tx+x0$） -1= 0作为约束条件，可以进一步用拉格朗日公式。<br>求1/||w||最大值等于求||w||最小值，等于$\frac{1}{2}||\omega||^2$最小值。<br><img src="/img/svm3.jpg" alt="过程"><br>具体推算可看<a href="https://blog.csdn.net/alwaystry/article/details/60957096" target="_blank" rel="noopener">该博客（写的很棒）</a></p>
+<h1 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h1><p>目的是把低维线性不可分的模型找到一个函数投影到高维的空间中。比如一个平面上（x1+x2）^2=1是用来切分的样本的，显然它不是线性的。<br>设z1 = x1^2,z2 = x1·x2, z3 = x2^2。变成了用 z1 + 2z2 + z3 = 0 的超平面来分割。<br>φ（x）= z （此处x是一个样本的两个特征集合，将其转换为z，z是x映射到高维空间后的特征的集合）。用z（即φ（x））来代替x，代入之前线性的运算中去。<br>在最初的例子里，我们对一个二维空间做映射，选择的新空间是原始空间的所有一阶和二阶的组合，得到了五个维度（上例是特殊情况只有3维，x1项和x2项的系数是0）；如果原始空间是三维，那么我们会得到 19 维的新空间，这个数目是呈爆炸性增长的。<br>在计算中，先按照φ（x）的公式（设只有x1，x2），求出映射后的高维坐标（每项都是x1，x2的关系式），在运算的公式中，有涉及φ（xi）和φ（xj）內积，这最后相乘又是关于x1，x2表达式。不如一开始就找到函数K（X1，X2），代入X1，X2直接得到φ（X1）·φ（X2）的结果。不用去求φ（X）了，（这里X1X2是两个样本，不是两个特征）。</p>
+<p>#松弛变量（理解为惩罚项）<br>上述的情况都是在理想情况下的，有时候可能有个别点的位置不理想甚至在分界线的另一侧倍划为另一类，为了拟合这些点，改变超平面造成效果变差很多。对于这种偏离正常位置很远的数据点，我们称之为 outlier 。<br><img src="/img/svm4.png" alt="松弛变量"><br>简单说就是稍微改变拉格朗日参数以及约束条件。关于数学部分在上述的博客中也有详细教学，还有SMO算法的数学原理（目前看不懂）。</p>
+<p>“”“<br>class sklearn.svm.SVC(C=1.0, kernel=’rbf’, degree=3, gamma=’auto’, coef0=0.0, shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1, decision_function_shape=None, random_state=None)<br>参数：</p>
+<p>C：<br>C-SVC的惩罚参数C，也就是优化函数中松弛变量的系数，默认值是1.0。 C越大，相当于惩罚松弛力度越强，（由于惩罚项是加在后面的而且求的是函数最小值），对训练集分类要求更严格，这样对训练集测试时准确率很高，但泛化能力弱。C值小，对误分类的惩罚减小，允许容错，将他们当成噪声点，泛化能力较强。<br>kernel：<br>核函数，默认是rbf，可以是‘linear’, ‘poly’, ‘rbf’, ‘sigmoid’, ‘precomputed’ </p>
+<p>0 – 线性：u’v<br>1 – 多项式：(gamma<em>u’</em>v + coef0)^degree<br>2 – RBF函数：exp(-gamma|u-v|^2)<br>3 –sigmoid：tanh(gamma<em>u’</em>v + coef0)</p>
+<p>degree ：多项式poly函数的维度，默认是3，选择其他核函数时会被忽略。</p>
+<p>gamma：<br>‘rbf’,‘poly’ 和‘sigmoid’的核函数参数。默认是’auto’，则会选择1/n_features<br>coef0 ：<br>核函数的常数项。对于‘poly’和 ‘sigmoid’有用。<br>“”“<br><a href="https://blog.csdn.net/xiaodongxiexie/article/details/70667101" target="_blank" rel="noopener">更详细的参数和属性介绍</a></p>
 
       
 
