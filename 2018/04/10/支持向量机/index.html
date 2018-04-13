@@ -21,7 +21,7 @@
 <meta property="og:image" content="http://yoursite.com/img/svm3.jpg">
 <meta property="og:image" content="http://yoursite.com/img/svm5.jpg">
 <meta property="og:image" content="http://yoursite.com/img/svm4.png">
-<meta property="og:updated_time" content="2018-04-13T15:15:03.908Z">
+<meta property="og:updated_time" content="2018-04-13T15:45:07.026Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="支持向量机">
 <meta name="twitter:description" content="SVM简介线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离。所谓支持向量，指虚线上的两点">
@@ -186,7 +186,7 @@
 <h1 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h1><p>目的是把低维线性不可分的模型找到一个函数投影到高维的空间中。比如一个平面上（x1+x2）^2=1是用来切分的样本的，显然它不是线性的。<br>设z1 = x1^2,z2 = x1·x2, z3 = x2^2。变成了用 z1 + 2z2 + z3 = 0 的超平面来分割。<br>φ（x）= z （此处x是一个样本的两个特征集合，将其转换为z，z是x映射到高维空间后的特征的集合）。用z（即φ（x））来代替x，代入之前线性的运算中去。<br>在最初的例子里，我们对一个二维空间做映射，选择的新空间是原始空间的所有一阶和二阶的组合，得到了五个维度（上例是特殊情况只有3维，x1项和x2项的系数是0）；如果原始空间是三维，那么我们会得到 19 维的新空间，这个数目是呈爆炸性增长的。<br>在计算中，先按照φ（x）的公式（设只有x1，x2），求出映射后的高维坐标（每项都是x1，x2的关系式），在运算的公式中，有涉及φ（xi）和φ（xj）內积，这最后相乘又是关于x1，x2表达式。不如一开始就找到函数K（X1，X2），代入X1，X2直接得到φ（X1）·φ（X2）的结果。不用去求φ（X）了，（这里X1X2是两个样本，不是两个特征）。<br><img src="/img/svm3.jpg" alt="过程"></p>
 <h2 id="常用核函数"><a href="#常用核函数" class="headerlink" title="常用核函数"></a>常用核函数</h2><h3 id="线性核函数"><a href="#线性核函数" class="headerlink" title="线性核函数"></a>线性核函数</h3><p>κ(x,xi)=x·xi<br>线性核，主要用于线性可分的情况，我们可以看到特征空间到输入空间的维度是一样的，其参数少速度快，对于线性可分数据，其分类效果很理想，因此我们通常首先尝试用线性核函数来做分类，看看效果如何，如果不行再换别的</p>
 <h3 id="多项式核函数"><a href="#多项式核函数" class="headerlink" title="多项式核函数"></a>多项式核函数</h3><p>κ(x,xi)=$((x·xi)+1)^d$<br>多项式核函数可以实现将低维的输入空间映射到高纬的特征空间，但是多项式核函数的参数多，当多项式的阶数比较高的时候，核矩阵的元素值将趋于无穷大或者无穷小，计算复杂度会大到无法计算。</p>
-<h3 id="高斯（RBF）核函数"><a href="#高斯（RBF）核函数" class="headerlink" title="高斯（RBF）核函数"></a>高斯（RBF）核函数</h3><p>κ(x,xi)=$exp(−\frac{||x−xi||^2}{δ^2})$<br>高斯径向基函数是一种局部性强的核函数，其可以将一个样本映射到一个更高维的空间内，该核函数是应用最广的一个，无论大样本还是小样本都有比较好的性能，而且其相对于多项式核函数参数要少，因此大多数情况下在不知道用什么核函数的时候，优先使用高斯核函数。<br>由泰勒定理：$e^x = \sum_{i=0}^(infty){\frac{x^n}{n!}}$<br><img src="/img/svm5.jpg" alt="代入泰勒">  得到高斯核函数是无穷维的多形式核组合</p>
+<h3 id="高斯（RBF）核函数"><a href="#高斯（RBF）核函数" class="headerlink" title="高斯（RBF）核函数"></a>高斯（RBF）核函数</h3><p>κ(x,xi)=$exp(−\frac{||x−xi||^2}{δ^2})$<br>高斯径向基函数是一种局部性强的核函数，其可以将一个样本映射到一个更高维的空间内，该核函数是应用最广的一个，无论大样本还是小样本都有比较好的性能，而且其相对于多项式核函数参数要少，因此大多数情况下在不知道用什么核函数的时候，优先使用高斯核函数。<br>由泰勒定理：$e^x = \sum_{i=0}^{infty}{\frac{x^n}{n!}}$<br><img src="/img/svm5.jpg" alt="代入泰勒">  得到高斯核函数是无穷维的多形式核组合</p>
 <h3 id="sigmoid核函数"><a href="#sigmoid核函数" class="headerlink" title="sigmoid核函数"></a>sigmoid核函数</h3><p>κ(x,xi)=tanh(η&lt;x,xi&gt;+θ)<br>采用sigmoid核函数，支持向量机实现的就是一种多层神经网络。</p>
 <p>#松弛变量（理解为惩罚项）<br>上述的情况都是在理想情况下的，有时候可能有个别点的位置不理想甚至在分界线的另一侧倍划为另一类，为了拟合这些点，改变超平面造成效果变差很多。对于这种偏离正常位置很远的数据点，我们称之为 outlier 。<br><img src="/img/svm4.png" alt="松弛变量"><br>简单说就是稍微改变拉格朗日参数以及约束条件。关于数学部分在上述的博客中也有详细教学，还有SMO算法的数学原理（目前看不懂）。</p>
 <p>“”“<br>class sklearn.svm.SVC(C=1.0, kernel=’rbf’, degree=3, gamma=’auto’, coef0=0.0, shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1, decision_function_shape=None, random_state=None)<br>参数：</p>
