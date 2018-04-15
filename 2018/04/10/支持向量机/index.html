@@ -21,7 +21,7 @@
 <meta property="og:image" content="http://yoursite.com/img/svm3.jpg">
 <meta property="og:image" content="http://yoursite.com/img/svm5.jpg">
 <meta property="og:image" content="http://yoursite.com/img/svm4.png">
-<meta property="og:updated_time" content="2018-04-14T05:13:31.374Z">
+<meta property="og:updated_time" content="2018-04-14T06:19:59.119Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="支持向量机">
 <meta name="twitter:description" content="SVM简介线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离。所谓支持向量，指虚线上的两点">
@@ -189,11 +189,11 @@
 <h3 id="高斯（RBF）核函数"><a href="#高斯（RBF）核函数" class="headerlink" title="高斯（RBF）核函数"></a>高斯（RBF）核函数</h3><p>κ(x,xi)=$exp(−\frac{||x−xi||^2}{δ^2})$<br>高斯径向基函数是一种局部性强的核函数，其可以将一个样本映射到一个更高维的空间内，该核函数是应用最广的一个，无论大样本还是小样本都有比较好的性能，而且其相对于多项式核函数参数要少，因此大多数情况下在不知道用什么核函数的时候，优先使用高斯核函数。<br>由泰勒定理：$e^x = \sum_{i=0}^\infty{\frac{x^n}{n!}}$<br><img src="/img/svm5.jpg" alt="代入泰勒">  得到高斯核函数是无穷维的多形式核组合</p>
 <h3 id="sigmoid核函数"><a href="#sigmoid核函数" class="headerlink" title="sigmoid核函数"></a>sigmoid核函数</h3><p>κ(x,xi)=tanh(η&lt;x,xi&gt;+θ)<br>采用sigmoid核函数，支持向量机实现的就是一种多层神经网络。</p>
 <p>#松弛变量（理解为惩罚项）<br>上述的情况都是在理想情况下的，有时候可能有个别点的位置不理想甚至在分界线的另一侧倍划为另一类，为了拟合这些点，改变超平面造成效果变差很多。对于这种偏离正常位置很远的数据点，我们称之为 outlier 。<br><img src="/img/svm4.png" alt="松弛变量"><br>简单说就是稍微改变拉格朗日参数以及约束条件。关于数学部分在上述的博客中也有详细教学，还有SMO算法的数学原理（目前看不懂）。</p>
-<p>“”“<br>class sklearn.svm.SVC(C=1.0, kernel=’rbf’, degree=3, gamma=’auto’, coef0=0.0, shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1, decision_function_shape=None, random_state=None)<br>参数：</p>
+<p>‘’’<br>class sklearn.svm.SVC(C=1.0, kernel=’rbf’, degree=3, gamma=’auto’, coef0=0.0, shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1, decision_function_shape=None, random_state=None)<br>参数：</p>
 <p>C：<br>C-SVC的惩罚参数C，也就是优化函数中松弛变量的系数，默认值是1.0。 C越大，相当于惩罚松弛力度越强，（由于惩罚项是加在后面的而且求的是函数最小值），对训练集分类要求更严格，这样对训练集测试时准确率很高，但泛化能力弱。C值小，对误分类的惩罚减小，允许容错，将他们当成噪声点，泛化能力较强。<br>kernel：<br>核函数，默认是rbf，可以是‘linear’, ‘poly’, ‘rbf’, ‘sigmoid’, ‘precomputed’ </p>
 <p>0 – 线性：u’v<br>1 – 多项式：(gamma<em>u’</em>v + coef0)^degree<br>2 – RBF函数：exp(-gamma|u-v|^2)<br>3 –sigmoid：tanh(gamma<em>u’</em>v + coef0)</p>
 <p>degree ：多项式poly函数的维度，默认是3，选择其他核函数时会被忽略。</p>
-<p>gamma：<br>‘rbf’,‘poly’ 和‘sigmoid’的核函数参数。默认是’auto’，则会选择1/n_features<br>coef0 ：<br>核函数的常数项。对于‘poly’和 ‘sigmoid’有用。<br>“”“<br><a href="https://blog.csdn.net/xiaodongxiexie/article/details/70667101" target="_blank" rel="noopener">更详细的参数和属性介绍</a></p>
+<p>gamma：<br>‘rbf’,‘poly’ 和‘sigmoid’的核函数参数。默认是’auto’，则会选择1/n_features<br>coef0 ：<br>核函数的常数项。对于‘poly’和 ‘sigmoid’有用。<br>‘’’<br><a href="https://blog.csdn.net/xiaodongxiexie/article/details/70667101" target="_blank" rel="noopener">更详细的参数和属性介绍</a></p>
 
       
 
