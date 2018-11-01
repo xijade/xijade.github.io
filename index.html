@@ -172,35 +172,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>#闭包<br>闭包就是能够读取其他函数内部变量的函数。<br>按照常理，执行完一个函数后，其内部产生的栈内存会被释放。但出现下面的情况：</p>
-<p>(<code>`</code>)<br>def outer( a ):<br> b = 10</p>
-<pre><code> # inner是内函数
-def inner():
-     #在内函数中 用到了外函数的临时变量
-    print(a+b)
-   # 外函数的返回值是内函数的引用
-return inner
-</code></pre><p>(<code>`</code>)</p>
+        <h1 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h1><p>闭包就是能够读取其他函数内部变量的函数。<br>按照常理，执行完一个函数后，其内部产生的栈内存会被释放。但出现下面的情况：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def outer( a ):</span><br><span class="line"> b = 10</span><br><span class="line">     # inner是内函数</span><br><span class="line">    def inner():</span><br><span class="line">         #在内函数中 用到了外函数的临时变量</span><br><span class="line">        print(a+b)</span><br><span class="line">       # 外函数的返回值是内函数的引用</span><br><span class="line">    return inner</span><br></pre></td></tr></table></figure>
 <p>在一个外函数中定义了一个内函数，内函数里运用了外函数的临时变量，并且外函数的返回值是内函数的引用。这样就构成了一个闭包。<br>每次调用一次外函数就生成了一个内函数，多次调用outer()则生成多个inner(),每个inner()尽管内容一样，但都是不同的函数。<br>内函数不能直接修改临时变量，参考全局域和局部域的关系。可以把变量放进列表里以引用形式去修改。</p>
-<p>#延迟绑定<br>(<code>)
-def outer(x):
-    res = []
-    for i in range(3):
-        def inner():
-            print(x+i)
-            return x+i
-        res.append(yyy)
-    return res
-for inner in outer(3):
-        inner()
-(</code>)</p>
-<p>第一感觉可能觉得输出的是 3 4 5，其实则是5 5 5。执行outer(3)时，定义了inner(),让 x引用对应值加上 i引用对应值。（此处只是定义没有执行）outer（3）执行完毕后，栈内存理应释放，但是此时有一个i=3，被inner使用着，inner指向着新定义的要返回的函数，所以inner引用不会被回收，i被它使用着也不会被回收。i就被过继给inner了。<br>执行inner()，找到i指着的值3，进行运算。所以闭包内内函数引用了外函数的循环变量i，i都是一样的。<br>(<code>)
-for i in range(3):  
-    def inner(x,y=i): 
-        print x + y  
-        return x+y
-   res.append[inner]
-(</code>)<br>内函数多加个参数y接受i可解。执行outer()，在定义inner()时，inner()内用的y是每个inner()自己独有的，以被i复制过的y，3个inner()的y分别是0,1,2，而不是之前的同一个i了。</p>
+<h1 id="延迟绑定"><a href="#延迟绑定" class="headerlink" title="延迟绑定"></a>延迟绑定</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def outer(x):</span><br><span class="line">    res = []</span><br><span class="line">    for i in range(3):</span><br><span class="line">        def inner():</span><br><span class="line">            print(x+i)</span><br><span class="line">            return x+i</span><br><span class="line">        res.append(inner)</span><br><span class="line">    return res</span><br><span class="line">for inner in outer(3):</span><br><span class="line">        inner()</span><br></pre></td></tr></table></figure>
+<p>第一感觉可能觉得输出的是 3 4 5，其实则是5 5 5。执行outer(3)时，定义了inner(),让 x引用对应值加上 i引用对应值。（此处只是定义没有执行）outer（3）执行完毕后，栈内存理应释放，但是此时有一个i=3，被inner使用着，inner指向着新定义的要返回的函数，所以inner引用不会被回收，i被它使用着也不会被回收。i就被过继给inner了。<br>执行inner()，找到i指着的值3，进行运算。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for i in range(3):  </span><br><span class="line">    def inner(x,y=i): </span><br><span class="line">	    print x + y  </span><br><span class="line">		return x+y</span><br><span class="line">   res.append[inner]</span><br></pre></td></tr></table></figure></p>
+<p>内函数多加个参数y接受i可解。执行outer()，在定义inner()时，inner()内用的y是每个inner()自己独有的，以被i复制过的y，3个inner()的y分别是0,1,2，而不是之前的同一个i了。</p>
 
       
 
