@@ -6,15 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018 | xijue&#39;s blog</title>
+  <title>python闭包与延迟绑定 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="xijue&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/archives/2018/index.html">
+  <meta name="description" content="#闭包闭包就是能够读取其他函数内部变量的函数。按照常理，执行完一个函数后，其内部产生的栈内存会被释放。但出现下面的情况： (`)def outer( a ): b = 10  # inner是内函数 def inner():      #在内函数中 用到了外函数的临时变量     print(a+b)    # 外函数的返回值是内函数的引用 return inner (`) 在一个外函数中定义了一">
+<meta name="keywords" content="python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python闭包与延迟绑定">
+<meta property="og:url" content="http://yoursite.com/2018/10/31/python闭包与延迟绑定/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
+<meta property="og:description" content="#闭包闭包就是能够读取其他函数内部变量的函数。按照常理，执行完一个函数后，其内部产生的栈内存会被释放。但出现下面的情况： (`)def outer( a ): b = 10  # inner是内函数 def inner():      #在内函数中 用到了外函数的临时变量     print(a+b)    # 外函数的返回值是内函数的引用 return inner (`) 在一个外函数中定义了一">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-01T13:54:02.245Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="xijue&#39;s blog">
+<meta name="twitter:title" content="python闭包与延迟绑定">
+<meta name="twitter:description" content="#闭包闭包就是能够读取其他函数内部变量的函数。按照常理，执行完一个函数后，其内部产生的栈内存会被释放。但出现下面的情况： (`)def outer( a ): b = 10  # inner是内函数 def inner():      #在内函数中 用到了外函数的临时变量     print(a+b)    # 外函数的返回值是内函数的引用 return inner (`) 在一个外函数中定义了一">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -150,36 +155,63 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-python闭包与延迟绑定" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/10/31/python闭包与延迟绑定/" class="archive-article-date">
-  	<time datetime="2018-10-31T14:24:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-31</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/10/31/python闭包与延迟绑定/">python闭包与延迟绑定</a>
+    <h1 class="article-title" itemprop="name">
+      python闭包与延迟绑定
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2018/10/31/python闭包与延迟绑定/" class="archive-article-date">
+  	<time datetime="2018-10-31T14:24:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-31</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#闭包<br>闭包就是能够读取其他函数内部变量的函数。<br>按照常理，执行完一个函数后，其内部产生的栈内存会被释放。但出现下面的情况：</p>
+<p>(<code>`</code>)<br>def outer( a ):<br> b = 10</p>
+<pre><code> # inner是内函数
+def inner():
+     #在内函数中 用到了外函数的临时变量
+    print(a+b)
+   # 外函数的返回值是内函数的引用
+return inner
+</code></pre><p>(<code>`</code>)</p>
+<p>在一个外函数中定义了一个内函数，内函数里运用了外函数的临时变量，并且外函数的返回值是内函数的引用。这样就构成了一个闭包。<br>每次调用一次外函数就生成了一个内函数，多次调用outer()则生成多个inner(),每个inner()尽管内容一样，但都是不同的函数。<br>内函数不能直接修改临时变量，参考全局域和局部域的关系。可以把变量放进列表里以引用形式去修改。</p>
+<p>#延迟绑定<br>(<code>)
+def outer(x):
+    res = []
+    for i in range(3):
+        def inner():
+            print(x+i)
+            return x+i
+        res.append(yyy)
+    return res
+for inner in outer(3):
+        inner()
+(</code>)</p>
+<p>第一感觉可能觉得输出的是 3 4 5，其实则是5 5 5。执行outer(3)时，定义了inner(),让 x引用对应值加上 i引用对应值。（此处只是定义没有执行）outer（3）执行完毕后，栈内存理应释放，但是此时有一个i=3，被inner使用着，inner指向着新定义的要返回的函数，所以inner引用不会被回收，i被它使用着也不会被回收。i就被过继给inner了。<br>执行inner()，找到i指着的值3，进行运算。所以闭包内内函数引用了外函数的循环变量i，i都是一样的。<br>(<code>)
+for i in range(3):  
+    def inner(x,y=i): 
+        print x + y  
+        return x+y
+   res.append[inner]
+(</code>)<br>内函数多加个参数y接受i可解。执行outer()，在定义inner()时，inner()内用的y是每个inner()自己独有的，以被i复制过的y，3个inner()的y分别是0,1,2，而不是之前的同一个i了。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -191,95 +223,119 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/10/31/python闭包与延迟绑定/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/14/决策树/" class="archive-article-date">
-  	<time datetime="2018-04-14T02:37:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-14</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2018/04/14/决策树/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">决策树</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/14/决策树/">决策树</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ml</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    目录，不存在的…
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/04/10/支持向量机/" class="archive-article-date">
-  	<time datetime="2018-04-10T14:50:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-10</time>
-</a>
-        </div>
-    	 
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/04/10/支持向量机/">支持向量机</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ml</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
+
+  
 
 
           </div>
@@ -302,8 +358,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
