@@ -176,7 +176,9 @@
         
 		
       
-
+      <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </span>
       </header>
     
     <div class="article-entry" itemprop="articleBody">
@@ -189,9 +191,7 @@
 <h3 id="Gradient-boosting-GB-梯度提升算法"><a href="#Gradient-boosting-GB-梯度提升算法" class="headerlink" title="Gradient boosting(GB) 梯度提升算法"></a>Gradient boosting(GB) 梯度提升算法</h3><p>在有第一个初始模型后，计算得到残差，下一个模型去拟合这些残差而不是数据。基于数据{x和残差值}计算拟合残差的基函数h(x)。最小化$F_{m-1}(x) + \gamma_m·h_m(x)$和yi的损失函数，算出$\gamma_m$的值。<br>一步步地更新：$F_m(x) = F_{m-1}(x) + \gamma_m·h_m(x)$<br><strong>XGBoost就是比GBDT在最小化损失函数时多一项正则项</strong></p>
 
       
-      <span id="busuanzi_container_page_pv">
-   本文总阅读量<span id="busuanzi_value_page_pv"></span>次
-</span>
+      
       
     </div>
     <div class="article-info article-info-index">
