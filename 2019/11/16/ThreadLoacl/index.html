@@ -8,19 +8,19 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>ThreadLoacl | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="#使用场景  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&amp;lt;Thread,Object&amp;gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。  ThreadLocal。后面跟着泛型，ThreadLocal理解为一个变量，而不是一个容器 #使用方法  set(obj)：向当前线程中存储数据 get()：获取当前线程中的数据 remove()">
+  <meta name="description" content="最近接触权限访问方面问题，阅读看shiro的源码。对Subject类如何区分每个线程进一步了解，研究了下底层ThreadLocal是怎么工作的。 使用场景  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&amp;lt;Thread,Object&amp;gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。  ThreadLocal。后面跟着泛型，Threa">
 <meta name="keywords" content="java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ThreadLoacl">
 <meta property="og:url" content="http://yoursite.com/2019/11/16/ThreadLoacl/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="#使用场景  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&amp;lt;Thread,Object&amp;gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。  ThreadLocal。后面跟着泛型，ThreadLocal理解为一个变量，而不是一个容器 #使用方法  set(obj)：向当前线程中存储数据 get()：获取当前线程中的数据 remove()">
+<meta property="og:description" content="最近接触权限访问方面问题，阅读看shiro的源码。对Subject类如何区分每个线程进一步了解，研究了下底层ThreadLocal是怎么工作的。 使用场景  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&amp;lt;Thread,Object&amp;gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。  ThreadLocal。后面跟着泛型，Threa">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/Threadclass.jpg">
-<meta property="og:updated_time" content="2019-11-18T02:08:08.004Z">
+<meta property="og:updated_time" content="2019-11-18T02:13:34.964Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ThreadLoacl">
-<meta name="twitter:description" content="#使用场景  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&amp;lt;Thread,Object&amp;gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。  ThreadLocal。后面跟着泛型，ThreadLocal理解为一个变量，而不是一个容器 #使用方法  set(obj)：向当前线程中存储数据 get()：获取当前线程中的数据 remove()">
+<meta name="twitter:description" content="最近接触权限访问方面问题，阅读看shiro的源码。对Subject类如何区分每个线程进一步了解，研究了下底层ThreadLocal是怎么工作的。 使用场景  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&amp;lt;Thread,Object&amp;gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。  ThreadLocal。后面跟着泛型，Threa">
 <meta name="twitter:image" content="http://yoursite.com/img/Threadclass.jpg">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
@@ -186,9 +186,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>#使用场景<br>  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&lt;Thread,Object&gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。<br>  ThreadLocal<t>。后面跟着泛型，ThreadLocal理解为一个变量，而不是一个容器</t></p>
-<p>#使用方法</p>
-<ul>
+        <p>  最近接触权限访问方面问题，阅读看shiro的源码。对Subject类如何区分每个线程进一步了解，研究了下底层ThreadLocal是怎么工作的。</p>
+<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&lt;Thread,Object&gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。<br>  ThreadLocal<t>。后面跟着泛型，ThreadLocal理解为一个变量，而不是一个容器</t></p>
+<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><ul>
 <li>set(obj)：向当前线程中存储数据</li>
 <li>get()：获取当前线程中的数据</li>
 <li>remove()：删除当前线程中的数据</li>
@@ -196,16 +196,15 @@
 <a id="more"></a>
 <h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public void set(T value) &#123;</span><br><span class="line">    Thread t = Thread.currentThread();</span><br><span class="line">    ThreadLocalMap map = getMap(t);</span><br><span class="line">    if (map != null)</span><br><span class="line">        map.set(this, value);</span><br><span class="line">    else</span><br><span class="line">        createMap(t, value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public T get() &#123;</span><br><span class="line">    Thread t = Thread.currentThread();</span><br><span class="line">    ThreadLocalMap map = getMap(t);</span><br><span class="line">    if (map != null) &#123;</span><br><span class="line">        ThreadLocalMap.Entry e = map.getEntry(this);</span><br><span class="line">        if (e != null) &#123;</span><br><span class="line">            @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">            T result = (T)e.value;</span><br><span class="line">            return result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return setInitialValue();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ThreadLocalMap getMap(Thread t) &#123;</span><br><span class="line">    return t.threadLocals;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>  可以看到get()是没有参数的，再根据上述的泛型。所以ThreadLoacl的设值不是map那样设键值的，而是像给一个object赋值。如果你需要两个简单变量，可以声明两个ThreadLoacl；当然也可以定义一个包含这两个变量的容器类，然后把它赋值给object</p>
-<p>#内部原理</p>
-<p>##ThreadLocal.ThreadLocalMap 内部类<br>   ThreadLocalMap是具体存放数据的容器。ThreadLocalMap是一个由Entry数组组成的容器。Entry是具体的存储的项，WeakReference<threadlocal>将 ThreadLocal对象变成一个弱引用的对象，这样做的好处就是在线程销毁的时候，对应的实体就会被回收，不会出现内存泄漏<br>   ThreadLocalMap是ThreadLocal的内部类，不要误以为数据存放在ThreadLocal内。实际上ThreadLocalMap在Thread类中存放。<br>   ‘’’<br>   static class Entry extends WeakReference<threadlocal> {<br>            /*<em> The value associated with this ThreadLocal. </em>/<br>            Object value;</threadlocal></threadlocal></p>
+<h1 id="内部原理"><a href="#内部原理" class="headerlink" title="内部原理"></a>内部原理</h1><h2 id="ThreadLocal-ThreadLocalMap-内部类"><a href="#ThreadLocal-ThreadLocalMap-内部类" class="headerlink" title="ThreadLocal.ThreadLocalMap 内部类"></a>ThreadLocal.ThreadLocalMap 内部类</h2><p>   ThreadLocalMap是具体存放数据的容器。ThreadLocalMap是一个由Entry数组组成的容器。Entry是具体的存储的项，WeakReference<threadlocal>将 ThreadLocal对象变成一个弱引用的对象，这样做的好处就是在线程销毁的时候，对应的实体就会被回收，不会出现内存泄漏<br>   ThreadLocalMap是ThreadLocal的内部类，不要误以为数据存放在ThreadLocal内。实际上ThreadLocalMap在Thread类中存放。<br>   ‘’’<br>   static class Entry extends WeakReference<threadlocal> {<br>            /*<em> The value associated with this ThreadLocal. </em>/<br>            Object value;</threadlocal></threadlocal></p>
 <pre><code>    Entry(ThreadLocal k, Object v) {
         super(k);
         value = v;
     }
 }
 </code></pre><p>   ‘’’</p>
-<p>##三个类之间的关系<br><img src="/img/Threadclass.jpg" alt="类的关系"></p>
-<p>##内部的实际结构<br>  数据实际是以ThreadLocalMap类型存放在Thread类中，ThreadLocal()像一个代理中介。Thread类中的ThreadLocalMap以ThreadLocal为键，这就是上面说的声明多个ThreadLoacl设置多个变量的原理。<br>  ThreadLoacl通过<em>Thread t = Thread.currentThread();</em>得到具体线程，对各个线程的ThreadLocalMap进行维护，包括create，get，set，以及容量调整等。</p>
+<h2 id="三个类之间的关系"><a href="#三个类之间的关系" class="headerlink" title="三个类之间的关系"></a>三个类之间的关系</h2><p><img src="/img/Threadclass.jpg" alt="类的关系"></p>
+<h2 id="内部的实际结构"><a href="#内部的实际结构" class="headerlink" title="内部的实际结构"></a>内部的实际结构</h2><p>  数据实际是以ThreadLocalMap类型存放在Thread类中，ThreadLocal()像一个代理中介。Thread类中的ThreadLocalMap以ThreadLocal为键，这就是上面说的声明多个ThreadLoacl设置多个变量的原理。<br>  ThreadLoacl通过<em>Thread t = Thread.currentThread();</em>得到具体线程，对各个线程的ThreadLocalMap进行维护，包括create，get，set，以及容量调整等。</p>
 
       
       
@@ -318,7 +317,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#具体实现"><span class="toc-number">1.</span> <span class="toc-text">具体实现</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#使用场景"><span class="toc-number">1.</span> <span class="toc-text">使用场景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#使用方法"><span class="toc-number">2.</span> <span class="toc-text">使用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#具体实现"><span class="toc-number">2.1.</span> <span class="toc-text">具体实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内部原理"><span class="toc-number">3.</span> <span class="toc-text">内部原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ThreadLocal-ThreadLocalMap-内部类"><span class="toc-number">3.1.</span> <span class="toc-text">ThreadLocal.ThreadLocalMap 内部类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三个类之间的关系"><span class="toc-number">3.2.</span> <span class="toc-text">三个类之间的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内部的实际结构"><span class="toc-number">3.3.</span> <span class="toc-text">内部的实际结构</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -460,7 +459,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -468,7 +467,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
             
             <div class="clearfix"></div>

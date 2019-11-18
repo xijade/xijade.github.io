@@ -177,9 +177,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>#使用场景<br>  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&lt;Thread,Object&gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。<br>  ThreadLocal<t>。后面跟着泛型，ThreadLocal理解为一个变量，而不是一个容器</t></p>
-<p>#使用方法</p>
-<ul>
+        <p>  最近接触权限访问方面问题，阅读看shiro的源码。对Subject类如何区分每个线程进一步了解，研究了下底层ThreadLocal是怎么工作的。</p>
+<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&lt;Thread,Object&gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。<br>  ThreadLocal<t>。后面跟着泛型，ThreadLocal理解为一个变量，而不是一个容器</t></p>
+<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><ul>
 <li>set(obj)：向当前线程中存储数据</li>
 <li>get()：获取当前线程中的数据</li>
 <li>remove()：删除当前线程中的数据</li>
@@ -608,7 +608,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -616,7 +616,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
             
             <div class="clearfix"></div>
