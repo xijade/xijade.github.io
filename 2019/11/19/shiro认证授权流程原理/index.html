@@ -6,15 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>xijue&#39;s blog</title>
+  <title>shiro认证流程原理 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="xijue&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="shiro  shiro本质上是一个过滤器filter。  securityManager是shiro的核心。大事小事都交由它。他是一个接口，有若干类层层继承。  不同的securityManager实现了不同的功能，比如AuthenticatingSecurityManager中有Autheenticator的成员变量，Autheenticator内有AuthenticatingRealm，需要">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="shiro认证流程原理">
+<meta property="og:url" content="http://yoursite.com/2019/11/19/shiro认证授权流程原理/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
+<meta property="og:description" content="shiro  shiro本质上是一个过滤器filter。  securityManager是shiro的核心。大事小事都交由它。他是一个接口，有若干类层层继承。  不同的securityManager实现了不同的功能，比如AuthenticatingSecurityManager中有Autheenticator的成员变量，Autheenticator内有AuthenticatingRealm，需要">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/shiro.jpg">
+<meta property="og:updated_time" content="2019-11-20T12:06:35.986Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="xijue&#39;s blog">
+<meta name="twitter:title" content="shiro认证流程原理">
+<meta name="twitter:description" content="shiro  shiro本质上是一个过滤器filter。  securityManager是shiro的核心。大事小事都交由它。他是一个接口，有若干类层层继承。  不同的securityManager实现了不同的功能，比如AuthenticatingSecurityManager中有Autheenticator的成员变量，Autheenticator内有AuthenticatingRealm，需要">
+<meta name="twitter:image" content="http://yoursite.com/img/shiro.jpg">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -150,16 +157,14 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-    <article id="post-shiro认证授权流程原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+            <article id="post-shiro认证授权流程原理" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/19/shiro认证授权流程原理/">shiro认证流程原理</a>
+    <h1 class="article-title" itemprop="name">
+      shiro认证流程原理
     </h1>
   
 
@@ -171,6 +176,10 @@
 		
       
 	  
+        <span class="archive-article-date">
+            本文阅读量 <span id="busuanzi_value_page_pv"></span>
+        </span>
+    
 
       
       </header>
@@ -210,16 +219,75 @@
       
 
       
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/19/shiro认证授权流程原理/">展开全文 >></a>
-        </p>
-      
 
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/11/19/shiro认证授权流程原理/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
       
       <div class="clearfix"></div>
     </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2019/11/16/ThreadLoacl/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">ThreadLoacl</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -234,346 +302,32 @@
         </div>
         
         
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-ThreadLoacl" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/16/ThreadLoacl/">ThreadLoacl</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/16/ThreadLoacl/" class="archive-article-date">
-  	<time datetime="2019-11-16T09:45:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-16</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>  最近接触权限访问方面问题，阅读看shiro的源码。对Subject类如何区分每个线程进一步了解，研究了下底层ThreadLocal是怎么工作的。</p>
-<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&lt;Thread,Object&gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。<br>  ThreadLocal<t>。后面跟着泛型，ThreadLocal理解为一个变量，而不是一个容器</t></p>
-<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><ul>
-<li>set(obj)：向当前线程中存储数据</li>
-<li>get()：获取当前线程中的数据</li>
-<li>remove()：删除当前线程中的数据</li>
-</ul>
-        
-          <a class="article-more-a" href="/2019/11/16/ThreadLoacl/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/16/ThreadLoacl/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#shiro"><span class="toc-number">1.</span> <span class="toc-text">shiro</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#登录"><span class="toc-number">1.1.</span> <span class="toc-text">登录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Subject类"><span class="toc-number">1.1.1.</span> <span class="toc-text">Subject类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP请求处理过程"><span class="toc-number">1.2.</span> <span class="toc-text">HTTP请求处理过程</span></a></li></ol></li></ol>
+                    </div>
+                </span>
             </div>
         </div>
         
-        
     </div>
 </aside>
 
 
 
-
   
-    <article id="post-python闭包与延迟绑定" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/31/python闭包与延迟绑定/">python闭包与延迟绑定</a>
-    </h1>
   
 
-        
-        <a href="/2018/10/31/python闭包与延迟绑定/" class="archive-article-date">
-  	<time datetime="2018-10-31T14:24:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-31</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h1><p>闭包就是能够读取其他函数内部变量的函数。<br>按照常理，执行完一个函数后，其内部产生的栈内存会被释放。但出现下面的情况：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def outer( a ):</span><br><span class="line"> b = 10</span><br><span class="line">     # inner是内函数</span><br><span class="line">    def inner():</span><br><span class="line">         #在内函数中 用到了外函数的临时变量</span><br><span class="line">        print(a+b)</span><br><span class="line">       # 外函数的返回值是内函数的引用</span><br><span class="line">    return inner</span><br></pre></td></tr></table></figure>
-<p> tip：栈内存只是用来记录变量值的，运算部分在代码区，都是机器命令。函数首先是存放在外存文件中的,比如.dll .lib .so .a .exe .out等.在函数执行的时候,才会被OS以只读的方式加载到内存</p>
-<p>  在一个外函数中定义了一个内函数，内函数里运用了外函数的临时变量，并且外函数的返回值是内函数的引用。这样就构成了一个闭包。<br>每次调用一次外函数就生成了一个内函数，多次调用outer()则生成多个inner(),每个inner()尽管内容一样，但都是不同的函数。<br>内函数不能直接修改临时变量——参考全局域和局部域的关系，虽然定义内函数过程中，会指向这个临时变量，但实际内函数执行时，会拷贝这个临时变量放入内函数的栈中。可以把变量放进列表里以引用形式去修改。<br>内函数是真正干活的函数，他们有个公用的隐式全局变量（见下第一个棋盘列子）。</p>
-        
-          <a class="article-more-a" href="/2018/10/31/python闭包与延迟绑定/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">python</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/31/python闭包与延迟绑定/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-决策树" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/14/决策树/">决策树</a>
-    </h1>
   
 
-        
-        <a href="/2018/04/14/决策树/" class="archive-article-date">
-  	<time datetime="2018-04-14T02:37:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-14</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="信息增益"><a href="#信息增益" class="headerlink" title="信息增益"></a>信息增益</h1><p>信息增益是用来表示某一种特征的不确定性的，熵越大，代表权重越大，作为树顶。公式为：$H = - \sum_{i=1}^n{p(x_i)·log_2(p(x_i))}$   。p(x_i)是特征x中，值为$x_i$的值占所有x的百分比。<br>如果特征A是连续的，在计算信息增益时，一般是将连续的特征进行离散化，然后在计算信息增益。<br>先假设特征都是离散值，按熵最大的特征分为若干类。得到的子类中再分别求熵最大的特征，一路迭代下去，直到某次分割后，某块的标签值都相同，或者已经使用过所有特征来进行分类了，则该分支停止。<br>
-        
-          <a class="article-more-a" href="/2018/04/14/决策树/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ml</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/14/决策树/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-支持向量机" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/10/支持向量机/">支持向量机</a>
-    </h1>
   
 
-        
-        <a href="/2018/04/10/支持向量机/" class="archive-article-date">
-  	<time datetime="2018-04-10T14:50:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-10</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="SVM简介"><a href="#SVM简介" class="headerlink" title="SVM简介"></a>SVM简介</h1><p>线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$<br>下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离。所谓支持向量，指虚线上的两点<br><img src="/img/svm1.jpg" alt="示例"><br>
-        
-          <a class="article-more-a" href="/2018/04/10/支持向量机/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ml</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/10/支持向量机/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
 
 
@@ -605,8 +359,8 @@
     <script>
 	var yiliaConfig = {
 		mathjax: true,
-		isHome: true,
-		isPost: false,
+		isHome: false,
+		isPost: true,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
