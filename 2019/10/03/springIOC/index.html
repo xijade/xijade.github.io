@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>springIOC | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例&amp;lt;!– more –&amp;gt; BeanFactory的对象注册和依赖绑定  以xml方式为例，介绍注入的">
+  <meta name="description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例">
 <meta name="keywords" content="java spring">
 <meta property="og:type" content="article">
 <meta property="og:title" content="springIOC">
 <meta property="og:url" content="http://yoursite.com/2019/10/03/springIOC/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例&amp;lt;!– more –&amp;gt; BeanFactory的对象注册和依赖绑定  以xml方式为例，介绍注入的">
+<meta property="og:description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/ioc1.png">
 <meta property="og:image" content="http://yoursite.com/img/bean.png">
-<meta property="og:updated_time" content="2019-12-04T06:37:44.681Z">
+<meta property="og:updated_time" content="2019-12-04T06:39:27.515Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springIOC">
-<meta name="twitter:description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例&amp;lt;!– more –&amp;gt; BeanFactory的对象注册和依赖绑定  以xml方式为例，介绍注入的">
+<meta name="twitter:description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例">
 <meta name="twitter:image" content="http://yoursite.com/img/ioc1.png">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
@@ -188,7 +188,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>  SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。</p>
-<h2 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h2><p>   因为本篇涉及基础的IOC部分，所以以BeanFactory为例<br>&lt;!– more –&gt;</p>
+<h2 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h2><p>   因为本篇涉及基础的IOC部分，所以以BeanFactory为例<br><a id="more"></a></p>
 <h3 id="BeanFactory的对象注册和依赖绑定"><a href="#BeanFactory的对象注册和依赖绑定" class="headerlink" title="BeanFactory的对象注册和依赖绑定"></a>BeanFactory的对象注册和依赖绑定</h3><p>  以xml方式为例，介绍注入的一些基本使用</p>
 <p>注入方式<br>①：构造方法注入，默认按照构造函数参数顺序一一对应。可以给每个&lt;constructor&gt;设置index属性来设置对应构造函数中的参数下标，或者设置type属性按类型对应<br>  &lt;bean id=”djNewsProvider” class=”..FXNewsProvider”&gt;<br>    &lt;constructor-arg ref=”djNewsListener”/&gt;<br>    &lt;constructor-arg ref=”djNewsPersister”/&gt;<br>  &lt;/bean&gt; </p>
 <p>②：setter方法注入<br>  &lt;bean id=”djNewsProvider” class=”..FXNewsProvider”&gt;<br>    &lt;property name=”newsListener” ref=”djNewsListener”/&gt;<br>    &lt;property name=”newPersistener” ref=”djNewsPersister”/&gt;<br>  &lt;/bean&gt; </p>
@@ -492,10 +492,6 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
@@ -504,7 +500,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -513,6 +509,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
             
             <div class="clearfix"></div>

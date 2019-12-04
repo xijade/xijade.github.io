@@ -432,48 +432,10 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>  SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。</p>
-<h2 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h2><p>   因为本篇涉及基础的IOC部分，所以以BeanFactory为例<br>&lt;!– more –&gt;</p>
-<h3 id="BeanFactory的对象注册和依赖绑定"><a href="#BeanFactory的对象注册和依赖绑定" class="headerlink" title="BeanFactory的对象注册和依赖绑定"></a>BeanFactory的对象注册和依赖绑定</h3><p>  以xml方式为例，介绍注入的一些基本使用</p>
-<p>注入方式<br>①：构造方法注入，默认按照构造函数参数顺序一一对应。可以给每个&lt;constructor&gt;设置index属性来设置对应构造函数中的参数下标，或者设置type属性按类型对应<br>  &lt;bean id=”djNewsProvider” class=”..FXNewsProvider”&gt;<br>    &lt;constructor-arg ref=”djNewsListener”/&gt;<br>    &lt;constructor-arg ref=”djNewsPersister”/&gt;<br>  &lt;/bean&gt; </p>
-<p>②：setter方法注入<br>  &lt;bean id=”djNewsProvider” class=”..FXNewsProvider”&gt;<br>    &lt;property name=”newsListener” ref=”djNewsListener”/&gt;<br>    &lt;property name=”newPersistener” ref=”djNewsPersister”/&gt;<br>  &lt;/bean&gt; </p>
-<p>可用的配置项：</p>
-<ul>
-<li>&lt;value&gt;用于值为基本类型的属性</li>
-<li>&lt;ref&gt;对其他bean的引用</li>
-<li>&lt;idref&gt;需要的是其他对象的名称而不是引用</li>
-<li>内部&lt;bean&gt;，外部不可知。如果一个bean，只有当前对象引用它，或者不想让其他对象&lt;ref&gt;它，可以使用</li>
-<li>&lt;list&gt; 为数组或List类型变量<strong>有序</strong>注入</li>
-<li>&lt;set&gt; 和list对应，<strong>无序</strong>注入</li>
-<li>&lt;map&gt; &lt;entry key =”键名”&gt;&lt;value&gt;值&lt;/value&gt;&lt;/entry&gt;</li>
-<li>&lt;porps&gt; &lt;prop key=”author”&gt;<a href="mailto:fujohnwang@gmail.com" target="_blank" rel="noopener">fujohnwang@gmail.com</a>&lt;/prop&gt;  简化版map，值只能指定为字符串</li>
-<li>&lt;null&gt;</li>
-</ul>
-<p>工厂模式(factory-method)：<br>  有些bean是通过工厂模式获得的而不能直接new，要获得这种类的bean需要<br>  <strong><em>&lt;bean id=”bar” class=”…StaticBarInterfaceFactory” factory-method=”getInstance”/&gt; </em></strong></p>
-<p>  autowire<br>  默认为no，常用为byName，有一个依赖的实例对象名和一个&lt;bean&gt;的id相同就会自动注入。ByType的话如果有多个同样的类型的bean，与bytype指明的相同则可能会出错</p>
-<p>lazy-init：<br>  ApplicationContext在容器启动时默认实例化所有singleton的bean。设置lazy-init=”true”可延迟初始化。但如果有一个非延迟初始化的bean依赖它，它也只能立即初始化</p>
-<p>scope：<br>  singleton：单例，与容器拥有相同的寿命<br>  prototype：多例，创建后不负责对象的消除<br>  此外还有request，session，global session 等scope，只适用于web程序</p>
-<p>方法注入:<br>   每次调用getbean返回一个newbean。场景，A类的单例，需要一个函数每次调用返回一个新的newbean<br>&lt;lookup-method name=”getNewsBean” bean=”newsBean”/&gt;<br>BeanFactoryAware：<br>   继承该接口的类会有一个BeanFactory的引用，用BeanFactory.getBean(beanname)手动创建实例<br>ObjectFactoryCreatingFactoryBean：<br>  它实现了BeanFactoryAware接口，用它来多一步中转。为的是隔绝客户端直接对BeanFactory的引用<br>方法替换replaced-method：<br>   用别的类的方法替换</p>
-<h3 id="容器的启动"><a href="#容器的启动" class="headerlink" title="容器的启动"></a>容器的启动</h3><p>  SpringIOC分为容器启动阶段和Bean实例化阶段<br>  <img src="/img/ioc1.png" alt="两个阶段"></p>
-<h4 id="容器启动阶段"><a href="#容器启动阶段" class="headerlink" title="容器启动阶段"></a>容器启动阶段</h4><p>   加载并分析Configuration MetaData（配置信息），生成若干组对应的BeanDefinition，注册到相应的BeanDefinitionRegistry</p>
-<h5 id="BeanFactoryPostProcessor"><a href="#BeanFactoryPostProcessor" class="headerlink" title="BeanFactoryPostProcessor"></a>BeanFactoryPostProcessor</h5><p>  第一阶段最后加的一道工序，在实例化之前,对BeanDefinition中的信息做修改。spring提供的几种BeanFactoryPostProcessor</p>
-<ul>
-<li>PropertyPlaceholderConfigurer ：在xml文件使用占位符，像数据库的配置放在property文件中。避免频繁修改xml文件，操作property文件就行了。</li>
-<li>PropertyOverrideConfigurer ：不用占位符， property文件中的信息替换xml的信息。xml自己不知道这件事，而PropertyPlaceholderConfigurer的情况下，xml是知道的。</li>
-<li>CustomEditorConfigurer : xml文件中直接记录的信息都是string类型，根据类名转换成类是PropertyEditor的任务（比如xml中日期是一个字符串，需要把它变为Date类型），每个类型都需要一个PropertyEditor。CustomEditorConfigurer将PropertyEditor告知容器。（所以PropertyEditor不对BeanDefinition做修改）</li>
-</ul>
-<h4 id="Bean实例化阶段"><a href="#Bean实例化阶段" class="headerlink" title="Bean实例化阶段"></a>Bean实例化阶段</h4><h5 id="Bean的实例化和BeanWrapper"><a href="#Bean的实例化和BeanWrapper" class="headerlink" title="Bean的实例化和BeanWrapper"></a>Bean的实例化和BeanWrapper</h5><p>  ApplicationContext启动之后会初始化所有singleton的bean，BeanFactory则默认延迟初始化<br>  <img src="/img/bean.png" alt="bean的生命周期"></p>
-<p>  容器并不直接返回构建的对象，而是返回BeanWrapper————对构造的对象进行包裹。BeanWrapper继承了PropertyAccessor接口，可以以统一的方式对对象属性进行访问。<br>  BeanWrapper只是一个接口，在构造完成对象后spring会构建一个BeanWrapperImpl实例，它持有着PropertyEditor</p>
-<h5 id="Aware接口"><a href="#Aware接口" class="headerlink" title="Aware接口"></a>Aware接口</h5><p>  接下来，容器会检查当前对象实例是否实现了一系列的以Aware命名结尾的接口定义。根据这些Aware接口定义中规定的依赖注入给当前对象实例<br>  BeanFactory中的三个Aware接口：</p>
-<ul>
-<li>BeanNameAware ： 给实例设置beanName</li>
-<li>BeanClassLoaderAware ： 会将对应加载当前bean的Classloader注入当前对象实例。默认会使用加载org.springframework.util.ClassUtils类的Classloader。</li>
-<li><p>BeanFactoryAware ： <strong><em>ObjectFactoryCreatingFactoryBean</em></strong>中提到过，会在实例中设置一个对BeanFactory的引用</p>
-<p>ApplicationContext中也有若干接口，将ApplicationContext注入实例对象。</p>
-</li>
-</ul>
-<h5 id="BeanPostProcessor"><a href="#BeanPostProcessor" class="headerlink" title="BeanPostProcessor"></a>BeanPostProcessor</h5><p>   BeanPostProcessor会处理容器内所有符合条件的实例化后的对象实例（区分与BeanFactoryPostProcessor）。该接口有两个方法，postProcessBeforeInitialization()和postProcessAfterInitialization()<br>   那些Aware接口实际上就是通过BeanPostProcessor的方式进行处理的。在BeanPostProcessor前置处理这一步，会检测注册到容器的BeanPostProcessor（ApplicationContext在xml文件中注册），并调用其postProcessBeforeInitialization()方法，检查并设置Aware相关依赖。</p>
-<h5 id="init-method和destory-method"><a href="#init-method和destory-method" class="headerlink" title="init-method和destory-method"></a>init-method和destory-method</h5><p>   BeanPostProcessor前置处理之后调用和销毁前进行逻辑销毁(如数据库连接的关闭)执行的方法，基本aop思路  </p>
-
+<h2 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h2><p>   因为本篇涉及基础的IOC部分，所以以BeanFactory为例<br>
+        
+          <a class="article-more-a" href="/2019/10/03/springIOC/#more">more >></a>
+        
       
       
       
@@ -1142,10 +1104,6 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
@@ -1154,7 +1112,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1163,6 +1121,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
             
             <div class="clearfix"></div>
