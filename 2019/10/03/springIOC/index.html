@@ -6,15 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019/4 | xijue&#39;s blog</title>
+  <title>springIOC | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="xijue&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/archives/2019/04/index.html">
+  <meta name="description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例">
+<meta name="keywords" content="java spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springIOC">
+<meta property="og:url" content="http://yoursite.com/2019/10/03/springIOC/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
+<meta property="og:description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/ioc1.png">
+<meta property="og:image" content="http://yoursite.com/img/bean.png">
+<meta property="og:updated_time" content="2019-12-04T06:05:41.165Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="xijue&#39;s blog">
+<meta name="twitter:title" content="springIOC">
+<meta name="twitter:description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例">
+<meta name="twitter:image" content="http://yoursite.com/img/ioc1.png">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -150,98 +158,222 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-springIOC" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/04/26/并发进阶/" class="archive-article-date">
-  	<time datetime="2019-04-26T03:07:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-26</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/04/26/并发进阶/">并发进阶</a>
+    <h1 class="article-title" itemprop="name">
+      springIOC
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/10/03/springIOC/" class="archive-article-date">
+  	<time datetime="2019-10-03T02:17:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-03</time>
+</a>
+        
+		
+      
+	  
+        <span class="archive-article-date">
+            本文阅读量 <span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>  SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。</p>
+<h2 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h2><p>   因为本篇涉及基础的IOC部分，所以以BeanFactory为例<br><a id="more"></a></p>
+<h3 id="BeanFactory的对象注册和依赖绑定"><a href="#BeanFactory的对象注册和依赖绑定" class="headerlink" title="BeanFactory的对象注册和依赖绑定"></a>BeanFactory的对象注册和依赖绑定</h3><p>  以xml方式为例，介绍注入的一些基本使用</p>
+<p>注入方式<br>①：构造方法注入，默认按照构造函数参数顺序一一对应。可以给每个<constructor>设置index属性来设置对应构造函数中的参数下标，或者设置type属性按类型对应<br>  <bean id="djNewsProvider" class="..FXNewsProvider"><br>    <constructor-arg ref="djNewsListener"><br>    <constructor-arg ref="djNewsPersister"><br>  </constructor-arg></constructor-arg></bean> </constructor></p>
+<p>②：setter方法注入<br>  <bean id="djNewsProvider" class="..FXNewsProvider"><br>    <property name="newsListener" ref="djNewsListener"><br>    <property name="newPersistener" ref="djNewsPersister"><br>  </property></property></bean> </p>
+<p>可用的配置项：</p>
+<ul>
+<li><value>用于值为基本类型的属性</value></li>
+<li><ref>对其他bean的引用</ref></li>
+<li><idref>需要的是其他对象的名称而不是引用</idref></li>
+<li>内部<bean>，外部不可知。如果一个bean，只有当前对象引用它，或者不想让其他对象<ref>它，可以使用</ref></bean></li>
+<li><list> 为数组或List类型变量<strong>有序</strong>注入</list></li>
+<li><set> 和list对应，<strong>无序</strong>注入</set></li>
+<li><map> <entry key="键名"><value>值</value></entry></map></li>
+<li><porps> <prop key="author"><a href="mailto:fujohnwang@gmail.com" target="_blank" rel="noopener">fujohnwang@gmail.com</a></prop>  简化版map，值只能指定为字符串</porps></li>
+<li><null>
+
+
+</null></li>
+</ul>
+<p>工厂模式(factory-method)：<br>  有些bean是通过工厂模式获得的而不能直接new，要获得这种类的bean需要<br>  <strong><em><bean id="bar" class="...StaticBarInterfaceFactory" factory-method="getInstance"> </bean></em></strong></p>
+<p>  autowire<br>  默认为no，常用为byName，有一个依赖的实例对象名和一个<bean>的id相同就会自动注入。ByType的话如果有多个同样的类型的bean，与bytype指明的相同则可能会出错</bean></p>
+<p>lazy-init：<br>  ApplicationContext在容器启动时默认实例化所有singleton的bean。设置lazy-init=”true”可延迟初始化。但如果有一个非延迟初始化的bean依赖它，它也只能立即初始化</p>
+<p>scope：<br>  singleton：单例，与容器拥有相同的寿命<br>  prototype：多例，创建后不负责对象的消除<br>  此外还有request，session，global session 等scope，只适用于web程序</p>
+<p>方法注入:<br>   每次调用getbean返回一个newbean。场景，A类的单例，需要一个函数每次调用返回一个新的newbean</p>
+<p><lookup-method name="getNewsBean" bean="newsBean"><br>BeanFactoryAware：<br>   继承该接口的类会有一个BeanFactory的引用，用BeanFactory.getBean(beanname)手动创建实例<br>ObjectFactoryCreatingFactoryBean：<br>  它实现了BeanFactoryAware接口，用它来多一步中转。为的是隔绝客户端直接对BeanFactory的引用<br>方法替换replaced-method：<br>   用别的类的方法替换</lookup-method></p>
+<h3 id="容器的启动"><a href="#容器的启动" class="headerlink" title="容器的启动"></a>容器的启动</h3><p>  SpringIOC分为容器启动阶段和Bean实例化阶段<br>  <img src="/img/ioc1.png" alt="两个阶段"></p>
+<h4 id="容器启动阶段"><a href="#容器启动阶段" class="headerlink" title="容器启动阶段"></a>容器启动阶段</h4><p>   加载并分析Configuration MetaData（配置信息），生成若干组对应的BeanDefinition，注册到相应的BeanDefinitionRegistry</p>
+<h5 id="BeanFactoryPostProcessor"><a href="#BeanFactoryPostProcessor" class="headerlink" title="BeanFactoryPostProcessor"></a>BeanFactoryPostProcessor</h5><p>  第一阶段最后加的一道工序，在实例化之前,对BeanDefinition中的信息做修改。spring提供的几种BeanFactoryPostProcessor</p>
+<ul>
+<li>PropertyPlaceholderConfigurer ：在xml文件使用占位符，像数据库的配置放在property文件中。避免频繁修改xml文件，操作property文件就行了。</li>
+<li>PropertyOverrideConfigurer ：不用占位符， property文件中的信息替换xml的信息。xml自己不知道这件事，而PropertyPlaceholderConfigurer的情况下，xml是知道的。</li>
+<li>CustomEditorConfigurer : xml文件中直接记录的信息都是string类型，根据类名转换成类是PropertyEditor的任务（比如xml中日期是一个字符串，需要把它变为Date类型），每个类型都需要一个PropertyEditor。CustomEditorConfigurer将PropertyEditor告知容器。（所以PropertyEditor不对BeanDefinition做修改）</li>
+</ul>
+<h4 id="Bean实例化阶段"><a href="#Bean实例化阶段" class="headerlink" title="Bean实例化阶段"></a>Bean实例化阶段</h4><h5 id="Bean的实例化和BeanWrapper"><a href="#Bean的实例化和BeanWrapper" class="headerlink" title="Bean的实例化和BeanWrapper"></a>Bean的实例化和BeanWrapper</h5><p>  ApplicationContext启动之后会初始化所有singleton的bean，BeanFactory则默认延迟初始化<br>  <img src="/img/bean.png" alt="bean的生命周期"></p>
+<p>  容器并不直接返回构建的对象，而是返回BeanWrapper————对构造的对象进行包裹。BeanWrapper继承了PropertyAccessor接口，可以以统一的方式对对象属性进行访问。<br>  BeanWrapper只是一个接口，在构造完成对象后spring会构建一个BeanWrapperImpl实例，它持有着PropertyEditor</p>
+<h5 id="Aware接口"><a href="#Aware接口" class="headerlink" title="Aware接口"></a>Aware接口</h5><p>  接下来，容器会检查当前对象实例是否实现了一系列的以Aware命名结尾的接口定义。根据这些Aware接口定义中规定的依赖注入给当前对象实例<br>  BeanFactory中的三个Aware接口：</p>
+<ul>
+<li>BeanNameAware ： 给实例设置beanName</li>
+<li>BeanClassLoaderAware ： 会将对应加载当前bean的Classloader注入当前对象实例。默认会使用加载org.springframework.util.ClassUtils类的Classloader。</li>
+<li><p>BeanFactoryAware ： <strong><em>ObjectFactoryCreatingFactoryBean</em></strong>中提到过，会在实例中设置一个对BeanFactory的引用</p>
+<p>ApplicationContext中也有若干接口，将ApplicationContext注入实例对象。</p>
+</li>
+</ul>
+<h5 id="BeanPostProcessor"><a href="#BeanPostProcessor" class="headerlink" title="BeanPostProcessor"></a>BeanPostProcessor</h5><p>   BeanPostProcessor会处理容器内所有符合条件的实例化后的对象实例（区分与BeanFactoryPostProcessor）。该接口有两个方法，postProcessBeforeInitialization()和postProcessAfterInitialization()<br>   那些Aware接口实际上就是通过BeanPostProcessor的方式进行处理的。在BeanPostProcessor前置处理这一步，会检测注册到容器的BeanPostProcessor（ApplicationContext在xml文件中注册），并调用其postProcessBeforeInitialization()方法，检查并设置Aware相关依赖。</p>
+<h5 id="init-method和destory-method"><a href="#init-method和destory-method" class="headerlink" title="init-method和destory-method"></a>init-method和destory-method</h5><p>   BeanPostProcessor前置处理之后调用和销毁前进行逻辑销毁(如数据库连接的关闭)执行的方法，基本aop思路  </p>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">java 并发</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">java spring</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/10/03/springIOC/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/04/20/同步器框架AQS/" class="archive-article-date">
-  	<time datetime="2019-04-20T12:16:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-20</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2019/11/16/ThreadLoacl/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          ThreadLoacl
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/04/26/并发进阶/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">并发进阶</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/04/20/同步器框架AQS/">同步器框架AQS</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">java 并发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#BeanFactory"><span class="toc-number">1.</span> <span class="toc-text">BeanFactory</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BeanFactory的对象注册和依赖绑定"><span class="toc-number">1.1.</span> <span class="toc-text">BeanFactory的对象注册和依赖绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#容器的启动"><span class="toc-number">1.2.</span> <span class="toc-text">容器的启动</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#容器启动阶段"><span class="toc-number">1.2.1.</span> <span class="toc-text">容器启动阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#BeanFactoryPostProcessor"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">BeanFactoryPostProcessor</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean实例化阶段"><span class="toc-number">1.2.2.</span> <span class="toc-text">Bean实例化阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Bean的实例化和BeanWrapper"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">Bean的实例化和BeanWrapper</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Aware接口"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">Aware接口</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#BeanPostProcessor"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">BeanPostProcessor</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#init-method和destory-method"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">init-method和destory-method</span></a></li></ol></li></ol></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
         </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+        
+    </div>
+</aside>
+
+
+
   
   
-    </div></section>
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -273,8 +405,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,
