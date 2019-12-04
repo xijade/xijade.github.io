@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>springIOC | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例">
+  <meta name="description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例&amp;lt;!– more –&amp;gt; BeanFactory的对象注册和依赖绑定  以xml方式为例，介绍注入的">
 <meta name="keywords" content="java spring">
 <meta property="og:type" content="article">
 <meta property="og:title" content="springIOC">
 <meta property="og:url" content="http://yoursite.com/2019/10/03/springIOC/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例">
+<meta property="og:description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例&amp;lt;!– more –&amp;gt; BeanFactory的对象注册和依赖绑定  以xml方式为例，介绍注入的">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/ioc1.png">
 <meta property="og:image" content="http://yoursite.com/img/bean.png">
-<meta property="og:updated_time" content="2019-12-04T06:05:41.165Z">
+<meta property="og:updated_time" content="2019-12-04T06:37:44.681Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springIOC">
-<meta name="twitter:description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例">
+<meta name="twitter:description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例&amp;lt;!– more –&amp;gt; BeanFactory的对象注册和依赖绑定  以xml方式为例，介绍注入的">
 <meta name="twitter:image" content="http://yoursite.com/img/ioc1.png">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
@@ -188,31 +188,27 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>  SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。</p>
-<h2 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h2><p>   因为本篇涉及基础的IOC部分，所以以BeanFactory为例<br><a id="more"></a></p>
+<h2 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h2><p>   因为本篇涉及基础的IOC部分，所以以BeanFactory为例<br>&lt;!– more –&gt;</p>
 <h3 id="BeanFactory的对象注册和依赖绑定"><a href="#BeanFactory的对象注册和依赖绑定" class="headerlink" title="BeanFactory的对象注册和依赖绑定"></a>BeanFactory的对象注册和依赖绑定</h3><p>  以xml方式为例，介绍注入的一些基本使用</p>
-<p>注入方式<br>①：构造方法注入，默认按照构造函数参数顺序一一对应。可以给每个<constructor>设置index属性来设置对应构造函数中的参数下标，或者设置type属性按类型对应<br>  <bean id="djNewsProvider" class="..FXNewsProvider"><br>    <constructor-arg ref="djNewsListener"><br>    <constructor-arg ref="djNewsPersister"><br>  </constructor-arg></constructor-arg></bean> </constructor></p>
-<p>②：setter方法注入<br>  <bean id="djNewsProvider" class="..FXNewsProvider"><br>    <property name="newsListener" ref="djNewsListener"><br>    <property name="newPersistener" ref="djNewsPersister"><br>  </property></property></bean> </p>
+<p>注入方式<br>①：构造方法注入，默认按照构造函数参数顺序一一对应。可以给每个&lt;constructor&gt;设置index属性来设置对应构造函数中的参数下标，或者设置type属性按类型对应<br>  &lt;bean id=”djNewsProvider” class=”..FXNewsProvider”&gt;<br>    &lt;constructor-arg ref=”djNewsListener”/&gt;<br>    &lt;constructor-arg ref=”djNewsPersister”/&gt;<br>  &lt;/bean&gt; </p>
+<p>②：setter方法注入<br>  &lt;bean id=”djNewsProvider” class=”..FXNewsProvider”&gt;<br>    &lt;property name=”newsListener” ref=”djNewsListener”/&gt;<br>    &lt;property name=”newPersistener” ref=”djNewsPersister”/&gt;<br>  &lt;/bean&gt; </p>
 <p>可用的配置项：</p>
 <ul>
-<li><value>用于值为基本类型的属性</value></li>
-<li><ref>对其他bean的引用</ref></li>
-<li><idref>需要的是其他对象的名称而不是引用</idref></li>
-<li>内部<bean>，外部不可知。如果一个bean，只有当前对象引用它，或者不想让其他对象<ref>它，可以使用</ref></bean></li>
-<li><list> 为数组或List类型变量<strong>有序</strong>注入</list></li>
-<li><set> 和list对应，<strong>无序</strong>注入</set></li>
-<li><map> <entry key="键名"><value>值</value></entry></map></li>
-<li><porps> <prop key="author"><a href="mailto:fujohnwang@gmail.com" target="_blank" rel="noopener">fujohnwang@gmail.com</a></prop>  简化版map，值只能指定为字符串</porps></li>
-<li><null>
-
-
-</null></li>
+<li>&lt;value&gt;用于值为基本类型的属性</li>
+<li>&lt;ref&gt;对其他bean的引用</li>
+<li>&lt;idref&gt;需要的是其他对象的名称而不是引用</li>
+<li>内部&lt;bean&gt;，外部不可知。如果一个bean，只有当前对象引用它，或者不想让其他对象&lt;ref&gt;它，可以使用</li>
+<li>&lt;list&gt; 为数组或List类型变量<strong>有序</strong>注入</li>
+<li>&lt;set&gt; 和list对应，<strong>无序</strong>注入</li>
+<li>&lt;map&gt; &lt;entry key =”键名”&gt;&lt;value&gt;值&lt;/value&gt;&lt;/entry&gt;</li>
+<li>&lt;porps&gt; &lt;prop key=”author”&gt;<a href="mailto:fujohnwang@gmail.com" target="_blank" rel="noopener">fujohnwang@gmail.com</a>&lt;/prop&gt;  简化版map，值只能指定为字符串</li>
+<li>&lt;null&gt;</li>
 </ul>
-<p>工厂模式(factory-method)：<br>  有些bean是通过工厂模式获得的而不能直接new，要获得这种类的bean需要<br>  <strong><em><bean id="bar" class="...StaticBarInterfaceFactory" factory-method="getInstance"> </bean></em></strong></p>
-<p>  autowire<br>  默认为no，常用为byName，有一个依赖的实例对象名和一个<bean>的id相同就会自动注入。ByType的话如果有多个同样的类型的bean，与bytype指明的相同则可能会出错</bean></p>
+<p>工厂模式(factory-method)：<br>  有些bean是通过工厂模式获得的而不能直接new，要获得这种类的bean需要<br>  <strong><em>&lt;bean id=”bar” class=”…StaticBarInterfaceFactory” factory-method=”getInstance”/&gt; </em></strong></p>
+<p>  autowire<br>  默认为no，常用为byName，有一个依赖的实例对象名和一个&lt;bean&gt;的id相同就会自动注入。ByType的话如果有多个同样的类型的bean，与bytype指明的相同则可能会出错</p>
 <p>lazy-init：<br>  ApplicationContext在容器启动时默认实例化所有singleton的bean。设置lazy-init=”true”可延迟初始化。但如果有一个非延迟初始化的bean依赖它，它也只能立即初始化</p>
 <p>scope：<br>  singleton：单例，与容器拥有相同的寿命<br>  prototype：多例，创建后不负责对象的消除<br>  此外还有request，session，global session 等scope，只适用于web程序</p>
-<p>方法注入:<br>   每次调用getbean返回一个newbean。场景，A类的单例，需要一个函数每次调用返回一个新的newbean</p>
-<p><lookup-method name="getNewsBean" bean="newsBean"><br>BeanFactoryAware：<br>   继承该接口的类会有一个BeanFactory的引用，用BeanFactory.getBean(beanname)手动创建实例<br>ObjectFactoryCreatingFactoryBean：<br>  它实现了BeanFactoryAware接口，用它来多一步中转。为的是隔绝客户端直接对BeanFactory的引用<br>方法替换replaced-method：<br>   用别的类的方法替换</lookup-method></p>
+<p>方法注入:<br>   每次调用getbean返回一个newbean。场景，A类的单例，需要一个函数每次调用返回一个新的newbean<br>&lt;lookup-method name=”getNewsBean” bean=”newsBean”/&gt;<br>BeanFactoryAware：<br>   继承该接口的类会有一个BeanFactory的引用，用BeanFactory.getBean(beanname)手动创建实例<br>ObjectFactoryCreatingFactoryBean：<br>  它实现了BeanFactoryAware接口，用它来多一步中转。为的是隔绝客户端直接对BeanFactory的引用<br>方法替换replaced-method：<br>   用别的类的方法替换</p>
 <h3 id="容器的启动"><a href="#容器的启动" class="headerlink" title="容器的启动"></a>容器的启动</h3><p>  SpringIOC分为容器启动阶段和Bean实例化阶段<br>  <img src="/img/ioc1.png" alt="两个阶段"></p>
 <h4 id="容器启动阶段"><a href="#容器启动阶段" class="headerlink" title="容器启动阶段"></a>容器启动阶段</h4><p>   加载并分析Configuration MetaData（配置信息），生成若干组对应的BeanDefinition，注册到相应的BeanDefinitionRegistry</p>
 <h5 id="BeanFactoryPostProcessor"><a href="#BeanFactoryPostProcessor" class="headerlink" title="BeanFactoryPostProcessor"></a>BeanFactoryPostProcessor</h5><p>  第一阶段最后加的一道工序，在实例化之前,对BeanDefinition中的信息做修改。spring提供的几种BeanFactoryPostProcessor</p>
@@ -496,11 +492,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -508,11 +504,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
               </li>
              
               <li class="article-tag-list-item">
