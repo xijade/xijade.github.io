@@ -17,7 +17,7 @@
 <meta property="og:description" content="AQS简介AQS 即 AbstractQueuedSynchronizer 队列同步器，是 java 并发包一个基础部件。在 java.util.concurrent 包中，大部分的并发类都是基于 AQS 来实现的。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/aqs.png">
-<meta property="og:updated_time" content="2019-12-04T06:27:22.697Z">
+<meta property="og:updated_time" content="2019-12-04T06:30:09.340Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="同步器框架AQS">
 <meta name="twitter:description" content="AQS简介AQS 即 AbstractQueuedSynchronizer 队列同步器，是 java 并发包一个基础部件。在 java.util.concurrent 包中，大部分的并发类都是基于 AQS 来实现的。">
@@ -196,7 +196,7 @@
 <li>isHeldExclusively()，当前同步器是否被线程独占。实现 Condition 的时候会用到。</li>
 </ul>
 <h1 id="底层原理"><a href="#底层原理" class="headerlink" title="底层原理"></a>底层原理</h1><h2 id="CLH队列"><a href="#CLH队列" class="headerlink" title="CLH队列"></a>CLH队列</h2><p>  内部有一个FIFO的双向队列来存放线程。</p>
-<p> head                Node1             tall<br> ——————             ———————           ——————<br>|      |  next     |       |  next   |      |<br>|      |——————————&gt;|       |————————&gt;|      |<br>|      |&lt;——————————|       |&lt;————————|      |<br>|      |  prev     |       |  prev   |      |<br> ——————             ———————           ——————</p>
+<p> ——————             ———————           ——————<br>|      |  next     |       |  next   |      |<br>|head  |——————————&gt;|  Node1|————————&gt;|  tall|<br>|      |&lt;——————————|       |&lt;————————|      |<br>|      |  prev     |       |  prev   |      |<br> ——————             ———————           ——————</p>
 <h2 id="state"><a href="#state" class="headerlink" title="state"></a>state</h2><p>  AQS 维护了一个状态变量来表示同步状态，volatile 关键字保证了多线程环境下可见性<br><strong><em>private volatile int state</em></strong><br>比如普通Lock中，state为0代表线程无阻塞可进入。获取锁后state+1<br>CountDownLatch中，state初始化为N，state大于0时线程可以进入。子线程执行完后-1</p>
 <h1 id="实现方法-都已写好且不需修改。要改的就是模板方法"><a href="#实现方法-都已写好且不需修改。要改的就是模板方法" class="headerlink" title="实现方法(都已写好且不需修改。要改的就是模板方法)"></a>实现方法(都已写好且不需修改。要改的就是模板方法)</h1><h2 id="acquire"><a href="#acquire" class="headerlink" title="acquire"></a>acquire</h2><pre><code>acquire是一种以独占方式获取资源，如果获取到资源，线程直接返回，否则进入等待队列，直到获取到资源为止，且整个过程忽略中断的影响
 </code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (!tryAcquire(arg) &amp;&amp;</span><br><span class="line">           acquireQueued(addWaiter(Node.EXCLUSIVE), arg))</span><br><span class="line">           selfInterrupt();</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
@@ -469,11 +469,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
