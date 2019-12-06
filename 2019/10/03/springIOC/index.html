@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/ioc1.png">
 <meta property="og:image" content="http://yoursite.com/img/bean.png">
-<meta property="og:updated_time" content="2019-12-04T06:39:27.515Z">
+<meta property="og:updated_time" content="2019-12-04T08:12:11.722Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springIOC">
 <meta name="twitter:description" content="SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的IOC部分，所以以BeanFactory为例">
@@ -229,6 +229,24 @@
 </ul>
 <h5 id="BeanPostProcessor"><a href="#BeanPostProcessor" class="headerlink" title="BeanPostProcessor"></a>BeanPostProcessor</h5><p>   BeanPostProcessor会处理容器内所有符合条件的实例化后的对象实例（区分与BeanFactoryPostProcessor）。该接口有两个方法，postProcessBeforeInitialization()和postProcessAfterInitialization()<br>   那些Aware接口实际上就是通过BeanPostProcessor的方式进行处理的。在BeanPostProcessor前置处理这一步，会检测注册到容器的BeanPostProcessor（ApplicationContext在xml文件中注册），并调用其postProcessBeforeInitialization()方法，检查并设置Aware相关依赖。</p>
 <h5 id="init-method和destory-method"><a href="#init-method和destory-method" class="headerlink" title="init-method和destory-method"></a>init-method和destory-method</h5><p>   BeanPostProcessor前置处理之后调用和销毁前进行逻辑销毁(如数据库连接的关闭)执行的方法，基本aop思路  </p>
+<h3 id="总结bean的生命周期"><a href="#总结bean的生命周期" class="headerlink" title="总结bean的生命周期"></a>总结bean的生命周期</h3><ul>
+<li><p>Spring根据bean的定义填充所有的属性。</p>
+</li>
+<li><p>如果bean实现了BeanNameAware 接口，Spring 传递bean 的ID 到 setBeanName方法。</p>
+</li>
+<li><p>如果Bean 实现了 BeanFactoryAware 接口， Spring传递beanfactory 给setBeanFactory 方法。</p>
+</li>
+<li><p>Spring容器 从XML 文件中读取bean的定义，并实例化bean。</p>
+</li>
+<li><p>如果有任何与bean相关联的BeanPostProcessors，Spring会在postProcesserBeforeInitialization()方法内调用它们。</p>
+</li>
+<li><p>如果bean实现IntializingBean(等于init-method)了，调用它的afterPropertySet方法，如果bean声明了初始化方法，调用此初始化方法。</p>
+</li>
+<li><p>如果有BeanPostProcessors 和bean 关联，这些bean的postProcessAfterInitialization() 方法将被调用。</p>
+</li>
+<li><p>如果bean实现了 DisposableBean(等于destory-method)，它将调用destroy()方法。</p>
+</li>
+</ul>
 
       
       
@@ -350,7 +368,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#BeanFactory"><span class="toc-number">1.</span> <span class="toc-text">BeanFactory</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BeanFactory的对象注册和依赖绑定"><span class="toc-number">1.1.</span> <span class="toc-text">BeanFactory的对象注册和依赖绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#容器的启动"><span class="toc-number">1.2.</span> <span class="toc-text">容器的启动</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#容器启动阶段"><span class="toc-number">1.2.1.</span> <span class="toc-text">容器启动阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#BeanFactoryPostProcessor"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">BeanFactoryPostProcessor</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean实例化阶段"><span class="toc-number">1.2.2.</span> <span class="toc-text">Bean实例化阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Bean的实例化和BeanWrapper"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">Bean的实例化和BeanWrapper</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Aware接口"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">Aware接口</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#BeanPostProcessor"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">BeanPostProcessor</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#init-method和destory-method"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">init-method和destory-method</span></a></li></ol></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#BeanFactory"><span class="toc-number">1.</span> <span class="toc-text">BeanFactory</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BeanFactory的对象注册和依赖绑定"><span class="toc-number">1.1.</span> <span class="toc-text">BeanFactory的对象注册和依赖绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#容器的启动"><span class="toc-number">1.2.</span> <span class="toc-text">容器的启动</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#容器启动阶段"><span class="toc-number">1.2.1.</span> <span class="toc-text">容器启动阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#BeanFactoryPostProcessor"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">BeanFactoryPostProcessor</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean实例化阶段"><span class="toc-number">1.2.2.</span> <span class="toc-text">Bean实例化阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Bean的实例化和BeanWrapper"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">Bean的实例化和BeanWrapper</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Aware接口"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">Aware接口</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#BeanPostProcessor"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">BeanPostProcessor</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#init-method和destory-method"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">init-method和destory-method</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结bean的生命周期"><span class="toc-number">1.3.</span> <span class="toc-text">总结bean的生命周期</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -492,6 +510,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
@@ -504,7 +526,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -512,7 +534,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
               </li>
             
             <div class="clearfix"></div>

@@ -6,15 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019/10 | xijue&#39;s blog</title>
+  <title>mysql索引与引擎 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="xijue&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/archives/2019/10/index.html">
+  <meta name="description" content="索引类型全文索引哈希索引  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。 B+索引  是最常用的最为频繁使">
+<meta name="keywords" content="mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql索引与引擎">
+<meta property="og:url" content="http://yoursite.com/2019/12/06/mysql索引与引擎/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
+<meta property="og:description" content="索引类型全文索引哈希索引  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。 B+索引  是最常用的最为频繁使">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/btree.png">
+<meta property="og:updated_time" content="2019-12-06T05:59:55.641Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="xijue&#39;s blog">
+<meta name="twitter:title" content="mysql索引与引擎">
+<meta name="twitter:description" content="索引类型全文索引哈希索引  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。 B+索引  是最常用的最为频繁使">
+<meta name="twitter:image" content="http://yoursite.com/img/btree.png">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -150,60 +157,170 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-mysql索引与引擎" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/10/03/springIOC/" class="archive-article-date">
-  	<time datetime="2019-10-03T02:17:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-03</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/10/03/springIOC/">springIOC</a>
+    <h1 class="article-title" itemprop="name">
+      mysql索引与引擎
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/12/06/mysql索引与引擎/" class="archive-article-date">
+  	<time datetime="2019-12-06T02:00:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-06</time>
+</a>
+        
+		
+      
+	  
+        <span class="archive-article-date">
+            本文阅读量 <span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h1><h2 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h2><h2 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h2><p>  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。<br>  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。</p>
+<h2 id="B-索引"><a href="#B-索引" class="headerlink" title="B+索引"></a>B+索引</h2><p>  是最常用的最为频繁使用的索引。因为普通的平衡二叉树对每个键值都去磁盘进行IO，如果范围查找有1000个键值在范围中，就要去对磁盘进行1000次IO。<br>  <strong>局部性原理： 当一个数据被用到时，其附近的数据也通常会马上被使用。 </strong><br>  所以可以顺序向后读取一定长度的数据放入内存，这就是磁盘预读。<br>  B树(平衡多路搜索树)的一个节点存放的不再是一个关键字，而是将关键字所在的一整个磁盘页读入到内存中。<br>  B+树则是进一步的改进版，叶子节点中有一个指针指向一下个叶子节点，提高区间访问的性能。且只有叶子节点存放数据，非叶子节点只存储键值信息。<br>  <img src="/img/btree.png" alt="B+树"></p>
+<p>  树的一个节点的储存大小就是一个磁盘页(16kb)，如果同时存放 key值(4b)和date(4b)，那一个节点能记录的项数(2k)就少。如果节点只记录key值，那么一个节点能记录的项数就增加(4k)，有利于树的高度减小。<br>  mysql的InnoDB存储引擎在设计时是将根节点常驻内存的。</p>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">java spring</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/12/06/mysql索引与引擎/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">HashMap、ConcurrentHashMap的原理与区别</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#索引类型"><span class="toc-number">1.</span> <span class="toc-text">索引类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#全文索引"><span class="toc-number">1.1.</span> <span class="toc-text">全文索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#哈希索引"><span class="toc-number">1.2.</span> <span class="toc-text">哈希索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B-索引"><span class="toc-number">1.3.</span> <span class="toc-text">B+索引</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -235,8 +352,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,

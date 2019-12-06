@@ -152,6 +152,87 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-mysql索引与引擎" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/06/mysql索引与引擎/">mysql索引与引擎</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/06/mysql索引与引擎/" class="archive-article-date">
+  	<time datetime="2019-12-06T02:00:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-06</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h1><h2 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h2><h2 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h2><p>  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。<br>  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。</p>
+<h2 id="B-索引"><a href="#B-索引" class="headerlink" title="B+索引"></a>B+索引</h2><p>  是最常用的最为频繁使用的索引。因为普通的平衡二叉树对每个键值都去磁盘进行IO，如果范围查找有1000个键值在范围中，就要去对磁盘进行1000次IO。<br>  <strong>局部性原理： 当一个数据被用到时，其附近的数据也通常会马上被使用。 </strong><br>  所以可以顺序向后读取一定长度的数据放入内存，这就是磁盘预读。<br>  B树(平衡多路搜索树)的一个节点存放的不再是一个关键字，而是将关键字所在的一整个磁盘页读入到内存中。<br>  B+树则是进一步的改进版，叶子节点中有一个指针指向一下个叶子节点，提高区间访问的性能。且只有叶子节点存放数据，非叶子节点只存储键值信息。<br>  <img src="/img/btree.png" alt="B+树"></p>
+<p>  树的一个节点的储存大小就是一个磁盘页(16kb)，如果同时存放 key值(4b)和date(4b)，那一个节点能记录的项数(2k)就少。如果节点只记录key值，那么一个节点能记录的项数就增加(4k)，有利于树的高度减小。<br>  mysql的InnoDB存储引擎在设计时是将根节点常驻内存的。</p>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/06/mysql索引与引擎/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-HashMap、ConcurrentHashMap的原理与区别" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -598,7 +679,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="AQS简介"><a href="#AQS简介" class="headerlink" title="AQS简介"></a>AQS简介</h1><p>AQS 即 AbstractQueuedSynchronizer 队列同步器，是 java 并发包一个基础部件。在 java.util.concurrent 包中，大部分的并发类都是基于 AQS 来实现的。<br><img src="/img/aqs.png" alt="以AQS为核心的类"><br>
+        <h1 id="AQS简介"><a href="#AQS简介" class="headerlink" title="AQS简介"></a>AQS简介</h1><p>  AQS 即 AbstractQueuedSynchronizer 队列同步器，是 java 并发包一个基础部件。在 java.util.concurrent 包中，大部分的并发类都是基于 AQS 来实现的。<br>  在业务逻辑中将同步变量和同步器绑定，而不是在同步器里绑定同步变量。比如，先初始化一个同步器，业务要操作同步变量前tryacpuire。<br><img src="/img/aqs.png" alt="以AQS为核心的类"><br>
         
           <a class="article-more-a" href="/2019/04/20/同步器框架AQS/#more">more >></a>
         
@@ -900,87 +981,10 @@
 
 
   
-    <article id="post-支持向量机" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/10/支持向量机/">支持向量机</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/10/支持向量机/" class="archive-article-date">
-  	<time datetime="2018-04-10T14:50:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-10</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="SVM简介"><a href="#SVM简介" class="headerlink" title="SVM简介"></a>SVM简介</h1><p>线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$<br>下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离。所谓支持向量，指虚线上的两点<br><img src="/img/svm1.jpg" alt="示例"><br>
-        
-          <a class="article-more-a" href="/2018/04/10/支持向量机/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ml</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/10/支持向量机/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 
 
@@ -1104,6 +1108,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
@@ -1116,7 +1124,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1124,7 +1132,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
               </li>
             
             <div class="clearfix"></div>
