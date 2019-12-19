@@ -8,14 +8,20 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>kafka基本原理和使用 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="article">
+  <meta name="description" content="kafka的使用kafka的结构组成以及特性   kafka可以为每一个应用场景设置一个Topic，创建topic时可以指定replicationfactor(副本数量，此topic用到几台机器，不能大于Broker数量),以及partitions分区数量，一个topic的不同序号分区用来存放不同的内容。partitions分区分为两个类型————leader和follow。在整个集群的所有机器中">
+<meta name="keywords" content="kafka 消息队列 分布式">
+<meta property="og:type" content="article">
 <meta property="og:title" content="kafka基本原理和使用">
 <meta property="og:url" content="http://yoursite.com/2019/12/15/kafka基本原理和使用/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
+<meta property="og:description" content="kafka的使用kafka的结构组成以及特性   kafka可以为每一个应用场景设置一个Topic，创建topic时可以指定replicationfactor(副本数量，此topic用到几台机器，不能大于Broker数量),以及partitions分区数量，一个topic的不同序号分区用来存放不同的内容。partitions分区分为两个类型————leader和follow。在整个集群的所有机器中">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-15T15:41:53.289Z">
+<meta property="og:image" content="http://yoursite.com/img/kafka.png">
+<meta property="og:updated_time" content="2019-12-19T06:40:27.465Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kafka基本原理和使用">
+<meta name="twitter:description" content="kafka的使用kafka的结构组成以及特性   kafka可以为每一个应用场景设置一个Topic，创建topic时可以指定replicationfactor(副本数量，此topic用到几台机器，不能大于Broker数量),以及partitions分区数量，一个topic的不同序号分区用来存放不同的内容。partitions分区分为两个类型————leader和follow。在整个集群的所有机器中">
+<meta name="twitter:image" content="http://yoursite.com/img/kafka.png">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -180,7 +186,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h1 id="kafka的使用"><a href="#kafka的使用" class="headerlink" title="kafka的使用"></a>kafka的使用</h1><h1 id="kafka的结构组成以及特性"><a href="#kafka的结构组成以及特性" class="headerlink" title="kafka的结构组成以及特性"></a>kafka的结构组成以及特性</h1><p>   kafka可以为每一个应用场景设置一个Topic，创建topic时可以指定replicationfactor(副本数量，此topic用到几台机器，不能大于Broker数量),以及partitions分区数量，一个topic的不同序号分区用来存放不同的内容。partitions分区分为两个类型————leader和follow。在整个集群的所有机器中，一个序号的leader分区只有一个，该序号的其他分区都是副本</p>
+<p>   <img src="/img/kafka.png" alt="kafka结构"><br>   假设一共有3个Broker，一个topic有2个partitions。<strong><em>生产者和消费者直接进行读写操作的分区都是leader类型</em></strong>，follow类型只有备份功能。leader类型的分区分布在多个的Broker上。</p>
+<p>   ack参数为all时，leader将消息写入本地文件后，follow主动去push，完成后follow发送ack进行确认。leader在收到所有副本的ack向product发送ack。</p>
+<p>   若干个 Broker 组成一个集群（Cluster），其中集群内某个 Broker 会成为集群控制器（Cluster Controller），它负责管理集群，包括分配分区到 Broker、监控 Broker 故障等。如果一个broker挂了，某个序号的leader分区在该broker中，则会将另一个broker中的follow分区升级为leader</p>
+<p>   kafka由zookpeer调度，所以依赖于zookpeer服务。</p>
+<h2 id="一些概念"><a href="#一些概念" class="headerlink" title="一些概念"></a>一些概念</h2><ul>
+<li>消费者组：同一个消费组中的若干消费者不能同时访问同一个topic的同一个分区（如果只有三个partition，而消费者组有4个消费者，那么一个消费者会空闲）</li>
+<li>持久化：Kafka会将partition以消息日志的方式(落磁盘)存储起来，通过 顺序访问IO和缓存(等到一定的量或时间)才真正把数据写到磁盘上，来提高速度。</li>
+</ul>
+
       
       
       
@@ -188,6 +203,17 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">kafka 消息队列 分布式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -281,7 +307,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    目录，不存在的…
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#kafka的使用"><span class="toc-number">1.</span> <span class="toc-text">kafka的使用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#kafka的结构组成以及特性"><span class="toc-number">2.</span> <span class="toc-text">kafka的结构组成以及特性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一些概念"><span class="toc-number">2.1.</span> <span class="toc-text">一些概念</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -431,6 +457,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
@@ -447,11 +477,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
               </li>
             
             <div class="clearfix"></div>
