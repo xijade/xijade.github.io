@@ -152,6 +152,171 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-python闭包与延迟绑定" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/31/python闭包与延迟绑定/">python闭包与延迟绑定</a>
+    </h1>
+  
+
+        
+        <a href="/2018/10/31/python闭包与延迟绑定/" class="archive-article-date">
+  	<time datetime="2018-10-31T14:24:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-31</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h1><p>闭包就是能够读取其他函数内部变量的函数。<br>按照常理，执行完一个函数后，其内部产生的栈内存会被释放。但出现下面的情况：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">outer</span><span class="params">( a )</span>:</span></span><br><span class="line"> b = <span class="number">10</span></span><br><span class="line">     <span class="comment"># inner是内函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">()</span>:</span></span><br><span class="line">         <span class="comment">#在内函数中 用到了外函数的临时变量</span></span><br><span class="line">        print(a+b)</span><br><span class="line">       <span class="comment"># 外函数的返回值是内函数的引用</span></span><br><span class="line">    <span class="keyword">return</span> inner</span><br></pre></td></tr></table></figure>
+<p> tip：栈内存只是用来记录变量值的，运算部分在代码区，都是机器命令。函数首先是存放在外存文件中的,比如.dll .lib .so .a .exe .out等.在函数执行的时候,才会被OS以只读的方式加载到内存</p>
+<p>  在一个外函数中定义了一个内函数，内函数里运用了外函数的临时变量，并且外函数的返回值是内函数的引用。这样就构成了一个闭包。<br>每次调用一次外函数就生成了一个内函数，多次调用outer()则生成多个inner(),每个inner()尽管内容一样，但都是不同的函数。<br>内函数不能直接修改临时变量——参考全局域和局部域的关系，虽然定义内函数过程中，会指向这个临时变量，但实际内函数执行时，会拷贝这个临时变量放入内函数的栈中。可以把变量放进列表里以引用形式去修改。<br>内函数是真正干活的函数，他们有个公用的隐式全局变量（见下第一个棋盘列子）。</p>
+        
+          <a class="article-more-a" href="/2018/10/31/python闭包与延迟绑定/#more">more >></a>
+        
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">python</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/10/31/python闭包与延迟绑定/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-决策树" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/14/决策树/">决策树</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/14/决策树/" class="archive-article-date">
+  	<time datetime="2018-04-14T02:37:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-14</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="信息增益"><a href="#信息增益" class="headerlink" title="信息增益"></a>信息增益</h1><p>信息增益是用来表示某一种特征的不确定性的，熵越大，代表权重越大，作为树顶。公式为：$H = - \sum_{i=1}^n{p(x_i)·log_2(p(x_i))}$   。p(x_i)是特征x中，值为$x_i$的值占所有x的百分比。<br>如果特征A是连续的，在计算信息增益时，一般是将连续的特征进行离散化，然后在计算信息增益。<br>先假设特征都是离散值，按熵最大的特征分为若干类。得到的子类中再分别求熵最大的特征，一路迭代下去，直到某次分割后，某块的标签值都相同，或者已经使用过所有特征来进行分类了，则该分支停止。<br>
+        
+          <a class="article-more-a" href="/2018/04/14/决策树/#more">more >></a>
+        
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ml</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/14/决策树/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-支持向量机" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -360,15 +525,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -376,7 +541,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -384,7 +553,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
             
             <div class="clearfix"></div>

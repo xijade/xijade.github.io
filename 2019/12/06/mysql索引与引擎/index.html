@@ -8,19 +8,21 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>mysql索引与引擎 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="索引类型全文索引哈希索引  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。 B+索引  是最常用的最为频繁使">
+  <meta name="description" content="引擎  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。  主要分析使用MyIsam 和InnoDB InnoDB  InnoDB是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属">
 <meta name="keywords" content="mysql">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mysql索引与引擎">
 <meta property="og:url" content="http://yoursite.com/2019/12/06/mysql索引与引擎/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="索引类型全文索引哈希索引  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。 B+索引  是最常用的最为频繁使">
+<meta property="og:description" content="引擎  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。  主要分析使用MyIsam 和InnoDB InnoDB  InnoDB是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/btree.png">
-<meta property="og:updated_time" content="2019-12-06T05:59:55.641Z">
+<meta property="og:image" content="http://yoursite.com/img/insert1.png">
+<meta property="og:image" content="http://yoursite.com/img/insert2.png">
+<meta property="og:updated_time" content="2019-12-19T06:05:38.697Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql索引与引擎">
-<meta name="twitter:description" content="索引类型全文索引哈希索引  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。 B+索引  是最常用的最为频繁使">
+<meta name="twitter:description" content="引擎  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。  主要分析使用MyIsam 和InnoDB InnoDB  InnoDB是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属">
 <meta name="twitter:image" content="http://yoursite.com/img/btree.png">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
@@ -186,9 +188,35 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h1><h2 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h2><h2 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h2><p>  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。<br>  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。</p>
-<h2 id="B-索引"><a href="#B-索引" class="headerlink" title="B+索引"></a>B+索引</h2><p>  是最常用的最为频繁使用的索引。因为普通的平衡二叉树对每个键值都去磁盘进行IO，如果范围查找有1000个键值在范围中，就要去对磁盘进行1000次IO。<br>  <strong>局部性原理： 当一个数据被用到时，其附近的数据也通常会马上被使用。 </strong><br>  所以可以顺序向后读取一定长度的数据放入内存，这就是磁盘预读。<br>  B树(平衡多路搜索树)的一个节点存放的不再是一个关键字，而是将关键字所在的一整个磁盘页读入到内存中。<br>  B+树则是进一步的改进版，叶子节点中有一个指针指向一下个叶子节点，提高区间访问的性能。且只有叶子节点存放数据，非叶子节点只存储键值信息。<br>  <img src="/img/btree.png" alt="B+树"></p>
+        <h1 id="引擎"><a href="#引擎" class="headerlink" title="引擎"></a>引擎</h1><p>  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。<br>  主要分析使用MyIsam 和InnoDB</p>
+<h2 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h2><p>  InnoDB是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属性auto_increment，可以从灾难中恢复（通过bin-log日志等）。它没有保存表的行数，当SELECT COUNT(*) FROM TABLE时需要扫描全表。由于锁的粒度更小，写操作不会锁定全表，所以在并发较高时，使用Innodb引擎会提升效率。但是使用行级锁也不是绝对的，如果在执行一个SQL语句时MySQL不能确定要扫描的范围，InnoDB表同样会锁全表。</p>
+<h2 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h2><p>  它没有提供对数据库事务的支持，不能从灾难中恢复，也不支持行级锁和外键。修改时需要锁住整个表所以效率低，但查询速度很快。索引文件较小</p>
+<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>  索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行INSERT、UPDATE和DELETE。因为更新表时，MySQL不仅要保存数据，还要保存索引文件。</p>
+<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><h3 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h3><p>  联合索引有一个 <em>最左前缀匹配原则</em>。所以当我们创建一个联合索引的时候，如(key1,key2,key3)，相当于创建了（key1）、(key1,key2)和(key1,key2,key3)三个索引，这就是最左匹配原则。<br>  在检索数据时从联合索引的最左边开始匹配，因此应该将识别度高的字段放在左边。只查key1也会用到索引，但只查key2就没有索引了。</p>
+<h3 id="聚簇索引-与-非聚簇索引"><a href="#聚簇索引-与-非聚簇索引" class="headerlink" title="聚簇索引 与 非聚簇索引"></a>聚簇索引 与 非聚簇索引</h3><p>   非聚簇索引：MyISAM的中，B+索引的叶子节点存放的是键值所对应的数据的<em>地址</em> ,主键索引与辅助索引的区别只是辅助索引允许key重复。</p>
+<p>   聚簇索引：一个表有且只有一个聚簇索引，默认以主键作为索引。InnoDB要求表必须有主键（MyISAM可以没有），如果没有显式指定，则MySQL系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则MySQL自动为InnoDB表生成一个隐含字段作为主键，这个字段长度为6个字节，类型为长整形。<br>   聚簇索引中，叶子节点存放的数据直接是键值所对应的的数据。辅助索引则存放的数据是主键，找到主键值后再去聚簇索引中寻找完整的数据，此过程为 <em>回表</em></p>
+<h3 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h3><p>   类似like的模糊查询作用，但like + % 在文本比较少时是合适的。全文索引在大量的数据面前，能比 like + % 快 N 倍，速度不是一个数量级，但是全文索引可能存在精度问题</p>
+<ul>
+<li>MySQL 5.6 以前的版本，只有 MyISAM 存储引擎支持全文索引；</li>
+<li>MySQL 5.6 及以后的版本，MyISAM 和 InnoDB 存储引擎均支持全文索引;</li>
+<li>只有字段的数据类型为 char、varchar、text 及其系列才可以建全文索引。</li>
+</ul>
+<p>注意事项：</p>
+<ol>
+<li>全文索引有最小搜索长度和最大搜索长度，词语的长度必须在以上两个变量的区间内才能被搜索</li>
+<li>使用全文索引时，测试表里至少要有 4 条以上的记录，否则，会出现意想不到的结果。</li>
+</ol>
+<h3 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h3><p>  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。<br>  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。</p>
+<h3 id="B-索引"><a href="#B-索引" class="headerlink" title="B+索引"></a>B+索引</h3><p>  是最常用的最为频繁使用的索引。因为普通的平衡二叉树对每个键值都去磁盘进行IO，如果范围查找有1000个键值在范围中，就要去对磁盘进行1000次IO。<br>  <strong>局部性原理： 当一个数据被用到时，其附近的数据也通常会马上被使用。 </strong><br>  所以可以顺序向后读取一定长度的数据放入内存，这就是磁盘预读。<br>  B树(平衡多路搜索树)的一个节点存放的不再是一个关键字，而是将关键字所在的一整个磁盘页读入到内存中。<br>  B+树则是进一步的改进版，叶子节点中有一个指针指向一下个叶子节点，提高区间访问的性能，方便范围查询。且只有叶子节点存放数据，非叶子节点只存储键值信息。<br>  <img src="/img/btree.png" alt="B+树"></p>
 <p>  树的一个节点的储存大小就是一个磁盘页(16kb)，如果同时存放 key值(4b)和date(4b)，那一个节点能记录的项数(2k)就少。如果节点只记录key值，那么一个节点能记录的项数就增加(4k)，有利于树的高度减小。<br>  mysql的InnoDB存储引擎在设计时是将根节点常驻内存的。</p>
+<h4 id="B-树的插入："><a href="#B-树的插入：" class="headerlink" title="B+树的插入："></a>B+树的插入：</h4><p>  叶子节点超过限制后，左右两部分分裂。如下图，插入键值为7的元素<br>  <img src="/img/insert1.png" alt="插入步骤1"><br>  假设一个叶子节点只能存放4个项，那么：<br>  <img src="/img/insert2.png" alt="插入步骤2"></p>
+<h2 id="索引的优化"><a href="#索引的优化" class="headerlink" title="索引的优化"></a>索引的优化</h2><p>   下列讲的都是mysql自己优化的，不需要使用者手动操作</p>
+<h3 id="覆盖索引-covering-index"><a href="#覆盖索引-covering-index" class="headerlink" title="覆盖索引(covering index)"></a>覆盖索引(covering index)</h3><p>  一个查询语句的执行只用从索引中就能够取得，不必从数据表中读取。（① select和where的字段被包含在一个索引里；② 如果select的是主键也可以，因为辅助索引的节点保存的值是主键）这样非主键索引不需要回表，减少一次IO<br>  列如：(key1，key2)为普通索引：<strong><em>select key2 from covering_index_sample where key1 = ‘keytest’</em></strong></p>
+<h3 id="索引下推-Index-Condition-Pushdown-ICP"><a href="#索引下推-Index-Condition-Pushdown-ICP" class="headerlink" title="索引下推(Index Condition Pushdown, ICP)"></a>索引下推(Index Condition Pushdown, ICP)</h3><p>   假设语句是<strong><em>select </em> from tuser where name like ‘张 %’ and age=10 and ismale=1;*</strong><br>   辅助索引是(name,age)<br>   mysql找到第一个姓张的后，不是马上回表检测age和ismale。而是判断索引剩下的字段age是否等于10，若不等于则直接找下一项，省去一次回表的IO</p>
+<h3 id="查询优化器"><a href="#查询优化器" class="headerlink" title="查询优化器"></a>查询优化器</h3><p>   在一条单表查询语句真正执行之前，MySQL的查询优化器会找出执行该语句所有可能使用的方案，对比之后找出成本最低的方案。这个成本最低的方案就是所谓的执行计划。 优化过程大致如下： 1、根据搜索条件，找出所有可能使用的索引 2、计算全表扫描的代价 3、计算使用不同索引执行查询的代价 4、对比各种执行方案的代价，找出成本最低的那一个</p>
+<h2 id="select查询优化"><a href="#select查询优化" class="headerlink" title="select查询优化"></a>select查询优化</h2><ul>
+<li>select <em> 少用。业务上，可能只看sql语句不能知道该语句的功能；增加了字段后，所有select </em>的查询都会多查出一个字段。技术上，本来可以使用覆盖索引，但select*后不会使用了；占用缓冲池空间</li>
+</ul>
 
       
       
@@ -272,6 +300,15 @@
   
 <nav id="article-nav">
   
+    <a href="/2019/12/15/kafka基本原理和使用/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          kafka基本原理和使用
+        
+      </div>
+    </a>
+  
   
     <a href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">HashMap、ConcurrentHashMap的原理与区别</div>
@@ -301,7 +338,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#索引类型"><span class="toc-number">1.</span> <span class="toc-text">索引类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#全文索引"><span class="toc-number">1.1.</span> <span class="toc-text">全文索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#哈希索引"><span class="toc-number">1.2.</span> <span class="toc-text">哈希索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B-索引"><span class="toc-number">1.3.</span> <span class="toc-text">B+索引</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引擎"><span class="toc-number">1.</span> <span class="toc-text">引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#InnoDB"><span class="toc-number">1.1.</span> <span class="toc-text">InnoDB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MyISAM"><span class="toc-number">1.2.</span> <span class="toc-text">MyISAM</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#索引"><span class="toc-number">2.</span> <span class="toc-text">索引</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#索引类型"><span class="toc-number">2.1.</span> <span class="toc-text">索引类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#联合索引"><span class="toc-number">2.1.1.</span> <span class="toc-text">联合索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#聚簇索引-与-非聚簇索引"><span class="toc-number">2.1.2.</span> <span class="toc-text">聚簇索引 与 非聚簇索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全文索引"><span class="toc-number">2.1.3.</span> <span class="toc-text">全文索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#哈希索引"><span class="toc-number">2.1.4.</span> <span class="toc-text">哈希索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-索引"><span class="toc-number">2.1.5.</span> <span class="toc-text">B+索引</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#B-树的插入："><span class="toc-number">2.1.5.1.</span> <span class="toc-text">B+树的插入：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#索引的优化"><span class="toc-number">2.2.</span> <span class="toc-text">索引的优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#覆盖索引-covering-index"><span class="toc-number">2.2.1.</span> <span class="toc-text">覆盖索引(covering index)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#索引下推-Index-Condition-Pushdown-ICP"><span class="toc-number">2.2.2.</span> <span class="toc-text">索引下推(Index Condition Pushdown, ICP)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查询优化器"><span class="toc-number">2.2.3.</span> <span class="toc-text">查询优化器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#select查询优化"><span class="toc-number">2.3.</span> <span class="toc-text">select查询优化</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -443,15 +480,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -459,7 +496,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -467,7 +508,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
             
             <div class="clearfix"></div>

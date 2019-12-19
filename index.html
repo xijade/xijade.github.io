@@ -152,6 +152,73 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-kafka基本原理和使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/15/kafka基本原理和使用/">kafka基本原理和使用</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/15/kafka基本原理和使用/" class="archive-article-date">
+  	<time datetime="2019-12-15T15:41:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-15</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/15/kafka基本原理和使用/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-mysql索引与引擎" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -177,9 +244,35 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h1><h2 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h2><h2 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h2><p>  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。<br>  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。</p>
-<h2 id="B-索引"><a href="#B-索引" class="headerlink" title="B+索引"></a>B+索引</h2><p>  是最常用的最为频繁使用的索引。因为普通的平衡二叉树对每个键值都去磁盘进行IO，如果范围查找有1000个键值在范围中，就要去对磁盘进行1000次IO。<br>  <strong>局部性原理： 当一个数据被用到时，其附近的数据也通常会马上被使用。 </strong><br>  所以可以顺序向后读取一定长度的数据放入内存，这就是磁盘预读。<br>  B树(平衡多路搜索树)的一个节点存放的不再是一个关键字，而是将关键字所在的一整个磁盘页读入到内存中。<br>  B+树则是进一步的改进版，叶子节点中有一个指针指向一下个叶子节点，提高区间访问的性能。且只有叶子节点存放数据，非叶子节点只存储键值信息。<br>  <img src="/img/btree.png" alt="B+树"></p>
+        <h1 id="引擎"><a href="#引擎" class="headerlink" title="引擎"></a>引擎</h1><p>  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。<br>  主要分析使用MyIsam 和InnoDB</p>
+<h2 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h2><p>  InnoDB是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属性auto_increment，可以从灾难中恢复（通过bin-log日志等）。它没有保存表的行数，当SELECT COUNT(*) FROM TABLE时需要扫描全表。由于锁的粒度更小，写操作不会锁定全表，所以在并发较高时，使用Innodb引擎会提升效率。但是使用行级锁也不是绝对的，如果在执行一个SQL语句时MySQL不能确定要扫描的范围，InnoDB表同样会锁全表。</p>
+<h2 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h2><p>  它没有提供对数据库事务的支持，不能从灾难中恢复，也不支持行级锁和外键。修改时需要锁住整个表所以效率低，但查询速度很快。索引文件较小</p>
+<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>  索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行INSERT、UPDATE和DELETE。因为更新表时，MySQL不仅要保存数据，还要保存索引文件。</p>
+<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><h3 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h3><p>  联合索引有一个 <em>最左前缀匹配原则</em>。所以当我们创建一个联合索引的时候，如(key1,key2,key3)，相当于创建了（key1）、(key1,key2)和(key1,key2,key3)三个索引，这就是最左匹配原则。<br>  在检索数据时从联合索引的最左边开始匹配，因此应该将识别度高的字段放在左边。只查key1也会用到索引，但只查key2就没有索引了。</p>
+<h3 id="聚簇索引-与-非聚簇索引"><a href="#聚簇索引-与-非聚簇索引" class="headerlink" title="聚簇索引 与 非聚簇索引"></a>聚簇索引 与 非聚簇索引</h3><p>   非聚簇索引：MyISAM的中，B+索引的叶子节点存放的是键值所对应的数据的<em>地址</em> ,主键索引与辅助索引的区别只是辅助索引允许key重复。</p>
+<p>   聚簇索引：一个表有且只有一个聚簇索引，默认以主键作为索引。InnoDB要求表必须有主键（MyISAM可以没有），如果没有显式指定，则MySQL系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则MySQL自动为InnoDB表生成一个隐含字段作为主键，这个字段长度为6个字节，类型为长整形。<br>   聚簇索引中，叶子节点存放的数据直接是键值所对应的的数据。辅助索引则存放的数据是主键，找到主键值后再去聚簇索引中寻找完整的数据，此过程为 <em>回表</em></p>
+<h3 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h3><p>   类似like的模糊查询作用，但like + % 在文本比较少时是合适的。全文索引在大量的数据面前，能比 like + % 快 N 倍，速度不是一个数量级，但是全文索引可能存在精度问题</p>
+<ul>
+<li>MySQL 5.6 以前的版本，只有 MyISAM 存储引擎支持全文索引；</li>
+<li>MySQL 5.6 及以后的版本，MyISAM 和 InnoDB 存储引擎均支持全文索引;</li>
+<li>只有字段的数据类型为 char、varchar、text 及其系列才可以建全文索引。</li>
+</ul>
+<p>注意事项：</p>
+<ol>
+<li>全文索引有最小搜索长度和最大搜索长度，词语的长度必须在以上两个变量的区间内才能被搜索</li>
+<li>使用全文索引时，测试表里至少要有 4 条以上的记录，否则，会出现意想不到的结果。</li>
+</ol>
+<h3 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h3><p>  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。<br>  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。</p>
+<h3 id="B-索引"><a href="#B-索引" class="headerlink" title="B+索引"></a>B+索引</h3><p>  是最常用的最为频繁使用的索引。因为普通的平衡二叉树对每个键值都去磁盘进行IO，如果范围查找有1000个键值在范围中，就要去对磁盘进行1000次IO。<br>  <strong>局部性原理： 当一个数据被用到时，其附近的数据也通常会马上被使用。 </strong><br>  所以可以顺序向后读取一定长度的数据放入内存，这就是磁盘预读。<br>  B树(平衡多路搜索树)的一个节点存放的不再是一个关键字，而是将关键字所在的一整个磁盘页读入到内存中。<br>  B+树则是进一步的改进版，叶子节点中有一个指针指向一下个叶子节点，提高区间访问的性能，方便范围查询。且只有叶子节点存放数据，非叶子节点只存储键值信息。<br>  <img src="/img/btree.png" alt="B+树"></p>
 <p>  树的一个节点的储存大小就是一个磁盘页(16kb)，如果同时存放 key值(4b)和date(4b)，那一个节点能记录的项数(2k)就少。如果节点只记录key值，那么一个节点能记录的项数就增加(4k)，有利于树的高度减小。<br>  mysql的InnoDB存储引擎在设计时是将根节点常驻内存的。</p>
+<h4 id="B-树的插入："><a href="#B-树的插入：" class="headerlink" title="B+树的插入："></a>B+树的插入：</h4><p>  叶子节点超过限制后，左右两部分分裂。如下图，插入键值为7的元素<br>  <img src="/img/insert1.png" alt="插入步骤1"><br>  假设一个叶子节点只能存放4个项，那么：<br>  <img src="/img/insert2.png" alt="插入步骤2"></p>
+<h2 id="索引的优化"><a href="#索引的优化" class="headerlink" title="索引的优化"></a>索引的优化</h2><p>   下列讲的都是mysql自己优化的，不需要使用者手动操作</p>
+<h3 id="覆盖索引-covering-index"><a href="#覆盖索引-covering-index" class="headerlink" title="覆盖索引(covering index)"></a>覆盖索引(covering index)</h3><p>  一个查询语句的执行只用从索引中就能够取得，不必从数据表中读取。（① select和where的字段被包含在一个索引里；② 如果select的是主键也可以，因为辅助索引的节点保存的值是主键）这样非主键索引不需要回表，减少一次IO<br>  列如：(key1，key2)为普通索引：<strong><em>select key2 from covering_index_sample where key1 = ‘keytest’</em></strong></p>
+<h3 id="索引下推-Index-Condition-Pushdown-ICP"><a href="#索引下推-Index-Condition-Pushdown-ICP" class="headerlink" title="索引下推(Index Condition Pushdown, ICP)"></a>索引下推(Index Condition Pushdown, ICP)</h3><p>   假设语句是<strong><em>select </em> from tuser where name like ‘张 %’ and age=10 and ismale=1;*</strong><br>   辅助索引是(name,age)<br>   mysql找到第一个姓张的后，不是马上回表检测age和ismale。而是判断索引剩下的字段age是否等于10，若不等于则直接找下一项，省去一次回表的IO</p>
+<h3 id="查询优化器"><a href="#查询优化器" class="headerlink" title="查询优化器"></a>查询优化器</h3><p>   在一条单表查询语句真正执行之前，MySQL的查询优化器会找出执行该语句所有可能使用的方案，对比之后找出成本最低的方案。这个成本最低的方案就是所谓的执行计划。 优化过程大致如下： 1、根据搜索条件，找出所有可能使用的索引 2、计算全表扫描的代价 3、计算使用不同索引执行查询的代价 4、对比各种执行方案的代价，找出成本最低的那一个</p>
+<h2 id="select查询优化"><a href="#select查询优化" class="headerlink" title="select查询优化"></a>select查询优化</h2><ul>
+<li>select <em> 少用。业务上，可能只看sql语句不能知道该语句的功能；增加了字段后，所有select </em>的查询都会多查出一个字段。技术上，本来可以使用覆盖索引，但select*后不会使用了；占用缓冲池空间</li>
+</ul>
 
       
       
@@ -569,6 +662,111 @@
 
 
   
+    <article id="post-mybatis使用和常见问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/18/mybatis使用和常见问题/">mybatis使用和常见问题</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/18/mybatis使用和常见问题/" class="archive-article-date">
+  	<time datetime="2019-06-18T04:06:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-18</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>  基本的CRUD不详细说，以注解方式说明一些中高级用法</p>
+<h2 id="对应关系"><a href="#对应关系" class="headerlink" title="对应关系"></a>对应关系</h2><p>  几个注解介绍</p>
+<ul>
+<li>@Results配合@Select使用，@Result将读取出来的每行数据根据字段映射到Bean的属性上</li>
+<li>@Many所在的@Result字段说明：此property要靠一对多查询得到一个列表，##column为参数，##一对多的子查询也必须要求一个参数</li>
+<li>@One所在的@Result字段说明:  此property要靠子查询得到一个类，##column为参数，##子查询也必须要求一个参数<br>以Category和Product为例，一个Category对应多个Product。</li>
+</ul>
+<h3 id="一对多"><a href="#一对多" class="headerlink" title="一对多"></a>一对多</h3><p>  一个Category有多个Product，子查询为根据Category的id取出Product。在Category的Bean中添加一个List<product>类型的变量，将同一个Category的Product取出后存放在这个List中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">//CategoryMapper</span><br><span class="line">    @Select(&quot; select * from category_ &quot;)</span><br><span class="line">    @Results(&#123; </span><br><span class="line">                @Result(property = &quot;id&quot;, column = &quot;id&quot;),</span><br><span class="line">                @Result(property = &quot;products&quot;, javaType = List.class, column = &quot;id&quot;, many = @Many(select = &quot;ProductMapper.listByCategory&quot;) )</span><br><span class="line">            &#125;)</span><br><span class="line">    public List&lt;Category&gt; list();</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">//ProductMapper	</span><br><span class="line">	@Select(&quot; select * from product_ where cid = #&#123;cid&#125;&quot;)</span><br><span class="line">    public List&lt;Product&gt; listByCategory(int cid);</span><br></pre></td></tr></table></figure></product></p>
+<h3 id="多对一"><a href="#多对一" class="headerlink" title="多对一"></a>多对一</h3><p>  多个Product会有同一个Category，子查询等于根据Product的id查询对应的Category。在Product的Bean添加一个Category变量<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">//ProductMapper</span><br><span class="line">    @Select(&quot; select * from product_ &quot;)</span><br><span class="line">    @Results(&#123; </span><br><span class="line">        @Result(property=&quot;category&quot;,column=&quot;cid&quot;,one=@One(select=&quot;com.how2java.mapper.CategoryMapper.get&quot;)) </span><br><span class="line">    &#125;)</span><br><span class="line">    public List&lt;Product&gt; list();</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">//CategoryMapper</span><br><span class="line">   @Select(&quot; select * from category_ where id = #&#123;id&#125;&quot;)</span><br><span class="line">    public Category get(int id);</span><br></pre></td></tr></table></figure></p>
+<h3 id="多对多"><a href="#多对多" class="headerlink" title="多对多"></a>多对多</h3><p>   多对多问题一般是可拆分的，经过多次子查询的。比如订单和订单项是一对多的，订单项和产品是多对一的，因此订单和产品是多对多的。<br>   List<order> list()查询所有订单，</order></p>
+<ol>
+<li>先使用@Many一对多查询，<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Result(property = &quot;orderItems&quot;, javaType = List.class, column = &quot;id&quot;, </span><br><span class="line">       many = @Many(select = &quot;com.how2java.mapper.OrderItemMapper.listByOrder&quot;))</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>为property = “orderItems”属性填充订单项的集合</p>
+<ol start="2">
+<li>在OrderItemMapper.listByOrder中，使用@One为多对一查询每个orderItem对应的product<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@Result(property=&quot;product&quot;,column=&quot;pid&quot;,one=@One(select=&quot;com.how2java.mapper.ProductMapper.get&quot;))</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="动态SQL"><a href="#动态SQL" class="headerlink" title="动态SQL"></a>动态SQL</h2><pre><code>构建SQL类，加上各种条件，最后.toString()转化为sql语句，各种关键字作为函数，以一个复杂的动态SQL为例
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">private String selectPersonSql() &#123;</span><br><span class="line">  return new SQL() &#123;&#123;</span><br><span class="line">    SELECT(&quot;P.ID, P.USERNAME, P.PASSWORD, P.FULL_NAME&quot;);</span><br><span class="line">    SELECT(&quot;P.LAST_NAME, P.CREATED_ON, P.UPDATED_ON&quot;);</span><br><span class="line">    FROM(&quot;PERSON P&quot;);</span><br><span class="line">    FROM(&quot;ACCOUNT A&quot;);</span><br><span class="line">    INNER_JOIN(&quot;DEPARTMENT D on D.ID = P.DEPARTMENT_ID&quot;);</span><br><span class="line">    INNER_JOIN(&quot;COMPANY C on D.COMPANY_ID = C.ID&quot;);</span><br><span class="line">    WHERE(&quot;P.ID = A.ID&quot;);</span><br><span class="line">    WHERE(&quot;P.FIRST_NAME like ?&quot;);</span><br><span class="line">    OR();</span><br><span class="line">    WHERE(&quot;P.LAST_NAME like ?&quot;);</span><br><span class="line">    GROUP_BY(&quot;P.ID&quot;);</span><br><span class="line">    HAVING(&quot;P.LAST_NAME like ?&quot;);</span><br><span class="line">    OR();</span><br><span class="line">    HAVING(&quot;P.FIRST_NAME like ?&quot;);</span><br><span class="line">    ORDER_BY(&quot;P.ID&quot;);</span><br><span class="line">    ORDER_BY(&quot;P.FULL_NAME&quot;);</span><br><span class="line">  &#125;&#125;.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="延迟加载"><a href="#延迟加载" class="headerlink" title="延迟加载"></a>延迟加载</h2><p>  延迟加载，前面获取所有Catgory时,会自动把Category的Products列表查询出来。<br>  使用延迟加载，只有<strong> List<product> ps = c.getProducts() </product></strong>需要去取出产品时才会去查询产品</p>
+<h1 id="遇见的问题"><a href="#遇见的问题" class="headerlink" title="遇见的问题"></a>遇见的问题</h1><h2 id="1-在给Mapper传参的时候，Mapper需要两个Integer，明明传入但sql无法使用"><a href="#1-在给Mapper传参的时候，Mapper需要两个Integer，明明传入但sql无法使用" class="headerlink" title="1 在给Mapper传参的时候，Mapper需要两个Integer，明明传入但sql无法使用"></a>1 在给Mapper传参的时候，Mapper需要两个Integer，明明传入但sql无法使用</h2><ul>
+<li>传递过来是单参数，且没有以@Param注解进行命名，则直接将单参数作为真实的参数调用SqlSession的对应方法</li>
+<li>或者使用javaBean方式</li>
+<li>使用多参数时，实际上使用一个map的形式传入，以参数的index为键将参数传入map。此外用@Param(“key”)可以在map中以”key”为键名存入map，如果不用此注解，就无法在使用#{key},只能#{argn} (新版已经停用，可以#{key}，却无法#{argn}，建议@Param，保证不会出错)</li>
+</ul>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">数据库 mybaits</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/18/mybatis使用和常见问题/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-并发进阶" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -816,171 +1014,6 @@
 
 
   
-    <article id="post-python闭包与延迟绑定" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/31/python闭包与延迟绑定/">python闭包与延迟绑定</a>
-    </h1>
-  
-
-        
-        <a href="/2018/10/31/python闭包与延迟绑定/" class="archive-article-date">
-  	<time datetime="2018-10-31T14:24:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-31</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h1><p>闭包就是能够读取其他函数内部变量的函数。<br>按照常理，执行完一个函数后，其内部产生的栈内存会被释放。但出现下面的情况：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">outer</span><span class="params">( a )</span>:</span></span><br><span class="line"> b = <span class="number">10</span></span><br><span class="line">     <span class="comment"># inner是内函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">()</span>:</span></span><br><span class="line">         <span class="comment">#在内函数中 用到了外函数的临时变量</span></span><br><span class="line">        print(a+b)</span><br><span class="line">       <span class="comment"># 外函数的返回值是内函数的引用</span></span><br><span class="line">    <span class="keyword">return</span> inner</span><br></pre></td></tr></table></figure>
-<p> tip：栈内存只是用来记录变量值的，运算部分在代码区，都是机器命令。函数首先是存放在外存文件中的,比如.dll .lib .so .a .exe .out等.在函数执行的时候,才会被OS以只读的方式加载到内存</p>
-<p>  在一个外函数中定义了一个内函数，内函数里运用了外函数的临时变量，并且外函数的返回值是内函数的引用。这样就构成了一个闭包。<br>每次调用一次外函数就生成了一个内函数，多次调用outer()则生成多个inner(),每个inner()尽管内容一样，但都是不同的函数。<br>内函数不能直接修改临时变量——参考全局域和局部域的关系，虽然定义内函数过程中，会指向这个临时变量，但实际内函数执行时，会拷贝这个临时变量放入内函数的栈中。可以把变量放进列表里以引用形式去修改。<br>内函数是真正干活的函数，他们有个公用的隐式全局变量（见下第一个棋盘列子）。</p>
-        
-          <a class="article-more-a" href="/2018/10/31/python闭包与延迟绑定/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">python</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/31/python闭包与延迟绑定/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-决策树" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/14/决策树/">决策树</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/14/决策树/" class="archive-article-date">
-  	<time datetime="2018-04-14T02:37:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-14</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="信息增益"><a href="#信息增益" class="headerlink" title="信息增益"></a>信息增益</h1><p>信息增益是用来表示某一种特征的不确定性的，熵越大，代表权重越大，作为树顶。公式为：$H = - \sum_{i=1}^n{p(x_i)·log_2(p(x_i))}$   。p(x_i)是特征x中，值为$x_i$的值占所有x的百分比。<br>如果特征A是连续的，在计算信息增益时，一般是将连续的特征进行离散化，然后在计算信息增益。<br>先假设特征都是离散值，按熵最大的特征分为若干类。得到的子类中再分别求熵最大的特征，一路迭代下去，直到某次分割后，某块的标签值都相同，或者已经使用过所有特征来进行分类了，则该分支停止。<br>
-        
-          <a class="article-more-a" href="/2018/04/14/决策树/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ml</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/14/决策树/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1108,15 +1141,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1124,7 +1157,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1132,7 +1169,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
             
             <div class="clearfix"></div>
