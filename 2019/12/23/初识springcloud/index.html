@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>初识springcloud | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="组件  springcloud和整合多个springboot项目用的。本质的业务代码和mvc还是springboot那套，通过springcloud可以让一个springboot项目调用另一个springboot项目的接口，一个springboot只负责一个微服务。 Eureka   注册服务中心，用于注册各种微服务，以便于其他微服务找到和访问。本身也是个springboot   @EnableE">
+  <meta name="description" content="组件  springcloud和整合多个springboot项目用的。本质的业务代码和mvc还是springboot那套，通过springcloud可以让一个springboot项目调用另一个springboot项目的接口，一个springboot只负责一个微服务。  下面介绍的组件本身是一个springboot Eureka   注册服务中心，用于注册各种微服务，以便于其他微服务找到和访问。本身">
 <meta name="keywords" content="分布式 springcloud">
 <meta property="og:type" content="article">
 <meta property="og:title" content="初识springcloud">
 <meta property="og:url" content="http://yoursite.com/2019/12/23/初识springcloud/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="组件  springcloud和整合多个springboot项目用的。本质的业务代码和mvc还是springboot那套，通过springcloud可以让一个springboot项目调用另一个springboot项目的接口，一个springboot只负责一个微服务。 Eureka   注册服务中心，用于注册各种微服务，以便于其他微服务找到和访问。本身也是个springboot   @EnableE">
+<meta property="og:description" content="组件  springcloud和整合多个springboot项目用的。本质的业务代码和mvc还是springboot那套，通过springcloud可以让一个springboot项目调用另一个springboot项目的接口，一个springboot只负责一个微服务。  下面介绍的组件本身是一个springboot Eureka   注册服务中心，用于注册各种微服务，以便于其他微服务找到和访问。本身">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-23T10:34:31.826Z">
+<meta property="og:updated_time" content="2019-12-23T11:58:41.724Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="初识springcloud">
-<meta name="twitter:description" content="组件  springcloud和整合多个springboot项目用的。本质的业务代码和mvc还是springboot那套，通过springcloud可以让一个springboot项目调用另一个springboot项目的接口，一个springboot只负责一个微服务。 Eureka   注册服务中心，用于注册各种微服务，以便于其他微服务找到和访问。本身也是个springboot   @EnableE">
+<meta name="twitter:description" content="组件  springcloud和整合多个springboot项目用的。本质的业务代码和mvc还是springboot那套，通过springcloud可以让一个springboot项目调用另一个springboot项目的接口，一个springboot只负责一个微服务。  下面介绍的组件本身是一个springboot Eureka   注册服务中心，用于注册各种微服务，以便于其他微服务找到和访问。本身">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -184,14 +184,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h1><p>  springcloud和整合多个springboot项目用的。本质的业务代码和mvc还是springboot那套，通过springcloud可以让一个springboot项目调用另一个springboot项目的接口，一个springboot只负责一个微服务。</p>
+        <h1 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h1><p>  springcloud和整合多个springboot项目用的。本质的业务代码和mvc还是springboot那套，通过springcloud可以让一个springboot项目调用另一个springboot项目的接口，一个springboot只负责一个微服务。<br>  下面介绍的组件本身是一个springboot</p>
 <h2 id="Eureka"><a href="#Eureka" class="headerlink" title="Eureka"></a>Eureka</h2><p>   注册服务中心，用于注册各种微服务，以便于其他微服务找到和访问。本身也是个springboot<br>   @EnableEurekaServer代表服务注册中心，@EnableDiscoveryClient， 表示用于发现eureka 注册中心的微服务。</p>
 <h2 id="Ribbon和Fegin"><a href="#Ribbon和Fegin" class="headerlink" title="Ribbon和Fegin"></a>Ribbon和Fegin</h2><p>   Ribbon用于微服务间的调用、API网关的请求转发，Fegin则是对Ribbon的封装。<br>   比如需要调用一个获取数据的api，目前有两个springboot启动着，application-name都是product-data-service，需要进行负载均衡来选择每次访问哪个。<br>   原本springboot中service层调用DAO层的Mapper接口，现在不是DAO层而是Ribbon/Fegin层<br>   使用Ribbon，用##restTemplate.getForObject(“<a href="http://PRODUCT-DATA-SERVICE/products&quot;,List.class)##去调用其他服务的接口获得数据。restTemplate是一个通过依赖注入的工具类" target="_blank" rel="noopener">http://PRODUCT-DATA-SERVICE/products&quot;,List.class)##去调用其他服务的接口获得数据。restTemplate是一个通过依赖注入的工具类</a></p>
 <p>   使用Fegin，先注明要调用的应用名称，再以控制器的写法调用该应用的具体接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FeignClient</span>(value = <span class="string">"PRODUCT-DATA-SERVICE"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ProductClientFeign</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/products"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Product&gt; <span class="title">listProdcuts</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
 <h2 id="Hystrix"><a href="#Hystrix" class="headerlink" title="Hystrix"></a>Hystrix</h2><p>  断路器，当A向B获取数据，B应用要是宕机了，就会发生报错,甚至雪崩。我们可能希望如果失败，A能获得一些默认的数据，或者特殊的报错信息返回给前端。<br>  如果是Fegin，则指明fallback,如果访问的 PRODUCT-DATA-SERVICE 不可用的话，就调用 ProductClientFeignHystrix 来进行反馈信息，注意和成功返回的内容是相同type<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FeignClient</span>(value = <span class="string">"PRODUCT-DATA-SERVICE"</span>,fallback = ProductClientFeignHystrix.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ProductClientFeign</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/products"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Product&gt; <span class="title">listProdcuts</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//ProductClientFeignHystrix.class</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProductClientFeignHystrix</span> <span class="keyword">implements</span> <span class="title">ProductClientFeign</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Product&gt; <span class="title">listProdcuts</span><span class="params">()</span></span>&#123;</span><br><span class="line">        List&lt;Product&gt; result = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        result.add(<span class="keyword">new</span> Product(<span class="number">0</span>,<span class="string">"产品数据微服务不可用"</span>,<span class="number">0</span>));</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>  如果是Ribbon，则在可能短路的方法前加上@HystrixCommand(fallbackMethod = “fallback”)<br>  然后在后面自定义fallback函数</p>
 <h2 id="HystrixDashboard"><a href="#HystrixDashboard" class="headerlink" title="HystrixDashboard"></a>HystrixDashboard</h2><p>  断路监控器：启动类有@EnableHystrixDashboard，就可以通过ip:port/hystrix进入监听器页面选择要监听的应用。其他有@EnableCircuitBreaker的服务都可以在该页面中输入对应ip:port/actuator/hystrix.stream进行监听。</p>
 <h2 id="zuul"><a href="#zuul" class="headerlink" title="zuul"></a>zuul</h2><p>  网关，所有请求先来到统一的网关，再进行分发。（和Eureka区别，如果没用到其他应用，是不需要走注册中心的，直接访问目标接口的ip：port。而zuul不管如何都要走8040端口先）<br>  zuul也是专门的springboot，需要@EnableZuulProxy注解，在配置文件配置应用名和路径的映射<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">zuul:</span><br><span class="line">  routes:</span><br><span class="line">    api-a:</span><br><span class="line">      path: /api-data/**</span><br><span class="line">      serviceId: PRODUCT-DATA-SERVICE</span><br><span class="line">    api-b:</span><br><span class="line">      path: /api-view/**</span><br><span class="line">      serviceId: PRODUCT-VIEW-SERVICE-FEIGN</span><br></pre></td></tr></table></figure></p>
+<h2 id="ConfigServer"><a href="#ConfigServer" class="headerlink" title="ConfigServer"></a>ConfigServer</h2><p>  配置服务器，倘若没有配置服务，那么就需要挨个修改微服务，挨个重新部署微服务，这样就比较麻烦。<br>  让其他的服务需要配置信息时统一来 配置服务上来获取。那配置服务上的数据从何而来？网上一般都是放在git上。<br>  配置服务的启动类实现 @EnableConfigServer 注解，配置文件中设置数据来源：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: config-server</span><br><span class="line">  cloud:</span><br><span class="line">    config:</span><br><span class="line">      label: master</span><br><span class="line">      server:</span><br><span class="line">        git:</span><br><span class="line">          uri: https://github.com/xxxxx/springcloudConfig/</span><br><span class="line">          searchPaths: respo</span><br><span class="line">eureka:</span><br><span class="line">  client:</span><br><span class="line">    serviceUrl:</span><br><span class="line">      defaultZone: http://localhost:8761/eureka/</span><br></pre></td></tr></table></figure></p>
 <h1 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑"></a>踩坑</h1><h2 id="HystrixDashboard界面Unable-to-connect-to-Command-Metric-Stream"><a href="#HystrixDashboard界面Unable-to-connect-to-Command-Metric-Stream" class="headerlink" title="HystrixDashboard界面Unable to connect to Command Metric Stream"></a>HystrixDashboard界面Unable to connect to Command Metric Stream</h2><p>  高版本好像需要手动设置映射，在被监听的熔断器启动类中手动配置映射路径/actuator/hystrix.stream<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//高版本需要自己装载</span></span><br><span class="line">   <span class="meta">@Bean</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> ServletRegistrationBean <span class="title">getServlet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       HystrixMetricsStreamServlet streamServlet = <span class="keyword">new</span> HystrixMetricsStreamServlet();</span><br><span class="line">       ServletRegistrationBean registrationBean = <span class="keyword">new</span> ServletRegistrationBean(streamServlet);</span><br><span class="line">       registrationBean.setLoadOnStartup(<span class="number">1</span>);</span><br><span class="line">       registrationBean.addUrlMappings(<span class="string">"/actuator/hystrix.stream"</span>);</span><br><span class="line">       registrationBean.setName(<span class="string">"HystrixMetricsStreamServlet"</span>);</span><br><span class="line">       <span class="keyword">return</span> registrationBean;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
 <h2 id="turbine界面一直处于loading"><a href="#turbine界面一直处于loading" class="headerlink" title="turbine界面一直处于loading"></a>turbine界面一直处于loading</h2><p>  网上很多blog在上述那步中，配置的路径是<strong>registrationBean.addUrlMappings(“hystrix.stream”)</strong>，没有/actuator，此时turbine控制台的报错内容有一条<br>  <strong>Found”,”message”:”No message available”,”path”:”/actuator/hystrix.stream”}]</strong><br>  猜测turbine内默认的访问路径设置为/actuator/hystrix.stream，所以上一个问题的路径最好也改成这个</p>
 
@@ -306,7 +308,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#组件"><span class="toc-number">1.</span> <span class="toc-text">组件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Eureka"><span class="toc-number">1.1.</span> <span class="toc-text">Eureka</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ribbon和Fegin"><span class="toc-number">1.2.</span> <span class="toc-text">Ribbon和Fegin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hystrix"><span class="toc-number">1.3.</span> <span class="toc-text">Hystrix</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HystrixDashboard"><span class="toc-number">1.4.</span> <span class="toc-text">HystrixDashboard</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#zuul"><span class="toc-number">1.5.</span> <span class="toc-text">zuul</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#踩坑"><span class="toc-number">2.</span> <span class="toc-text">踩坑</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HystrixDashboard界面Unable-to-connect-to-Command-Metric-Stream"><span class="toc-number">2.1.</span> <span class="toc-text">HystrixDashboard界面Unable to connect to Command Metric Stream</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#turbine界面一直处于loading"><span class="toc-number">2.2.</span> <span class="toc-text">turbine界面一直处于loading</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#组件"><span class="toc-number">1.</span> <span class="toc-text">组件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Eureka"><span class="toc-number">1.1.</span> <span class="toc-text">Eureka</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ribbon和Fegin"><span class="toc-number">1.2.</span> <span class="toc-text">Ribbon和Fegin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hystrix"><span class="toc-number">1.3.</span> <span class="toc-text">Hystrix</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HystrixDashboard"><span class="toc-number">1.4.</span> <span class="toc-text">HystrixDashboard</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#zuul"><span class="toc-number">1.5.</span> <span class="toc-text">zuul</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ConfigServer"><span class="toc-number">1.6.</span> <span class="toc-text">ConfigServer</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#踩坑"><span class="toc-number">2.</span> <span class="toc-text">踩坑</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HystrixDashboard界面Unable-to-connect-to-Command-Metric-Stream"><span class="toc-number">2.1.</span> <span class="toc-text">HystrixDashboard界面Unable to connect to Command Metric Stream</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#turbine界面一直处于loading"><span class="toc-number">2.2.</span> <span class="toc-text">turbine界面一直处于loading</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -448,15 +450,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -468,15 +470,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -484,7 +478,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">ml</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
             
             <div class="clearfix"></div>
