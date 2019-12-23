@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://yoursite.com/img/btree.png">
 <meta property="og:image" content="http://yoursite.com/img/insert1.png">
 <meta property="og:image" content="http://yoursite.com/img/insert2.png">
-<meta property="og:updated_time" content="2019-12-19T06:05:38.697Z">
+<meta property="og:updated_time" content="2019-12-19T07:07:26.181Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql索引与引擎">
 <meta name="twitter:description" content="引擎  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。  主要分析使用MyIsam 和InnoDB InnoDB  InnoDB是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属">
@@ -191,7 +191,7 @@
         <h1 id="引擎"><a href="#引擎" class="headerlink" title="引擎"></a>引擎</h1><p>  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。<br>  主要分析使用MyIsam 和InnoDB</p>
 <h2 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h2><p>  InnoDB是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属性auto_increment，可以从灾难中恢复（通过bin-log日志等）。它没有保存表的行数，当SELECT COUNT(*) FROM TABLE时需要扫描全表。由于锁的粒度更小，写操作不会锁定全表，所以在并发较高时，使用Innodb引擎会提升效率。但是使用行级锁也不是绝对的，如果在执行一个SQL语句时MySQL不能确定要扫描的范围，InnoDB表同样会锁全表。</p>
 <h2 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h2><p>  它没有提供对数据库事务的支持，不能从灾难中恢复，也不支持行级锁和外键。修改时需要锁住整个表所以效率低，但查询速度很快。索引文件较小</p>
-<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>  索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行INSERT、UPDATE和DELETE。因为更新表时，MySQL不仅要保存数据，还要保存索引文件。</p>
+<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>  索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行INSERT、UPDATE和DELETE。因为更新表时，MySQL不仅要保存数据，还要保存索引文件。<br><a id="more"></a></p>
 <h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><h3 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h3><p>  联合索引有一个 <em>最左前缀匹配原则</em>。所以当我们创建一个联合索引的时候，如(key1,key2,key3)，相当于创建了（key1）、(key1,key2)和(key1,key2,key3)三个索引，这就是最左匹配原则。<br>  在检索数据时从联合索引的最左边开始匹配，因此应该将识别度高的字段放在左边。只查key1也会用到索引，但只查key2就没有索引了。</p>
 <h3 id="聚簇索引-与-非聚簇索引"><a href="#聚簇索引-与-非聚簇索引" class="headerlink" title="聚簇索引 与 非聚簇索引"></a>聚簇索引 与 非聚簇索引</h3><p>   非聚簇索引：MyISAM的中，B+索引的叶子节点存放的是键值所对应的数据的<em>地址</em> ,主键索引与辅助索引的区别只是辅助索引允许key重复。</p>
 <p>   聚簇索引：一个表有且只有一个聚簇索引，默认以主键作为索引。InnoDB要求表必须有主键（MyISAM可以没有），如果没有显式指定，则MySQL系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则MySQL自动为InnoDB表生成一个隐含字段作为主键，这个字段长度为6个字节，类型为长整形。<br>   聚簇索引中，叶子节点存放的数据直接是键值所对应的的数据。辅助索引则存放的数据是主键，找到主键值后再去聚簇索引中寻找完整的数据，此过程为 <em>回表</em></p>
@@ -480,15 +480,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -496,11 +488,27 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -509,10 +517,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">ml</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
               </li>
             
             <div class="clearfix"></div>
