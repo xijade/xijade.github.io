@@ -6,15 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: kafka 消息队列 分布式 | xijue&#39;s blog</title>
+  <title>rabbitMQ基础 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="xijue&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/tags/kafka-消息队列-分布式/index.html">
+  <meta name="description" content="rabbit结构    消费者是直接从Queue取出数据的，但生产者并非直接把数据传给Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。 exchange(交换机种类) direct(默认)：比较Message的routing key和Queue的binding key，完全匹配时，Message才会发送到该Queue。即一对一 fanout：忽略key对比，发送Messag">
+<meta name="keywords" content="消息队列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rabbitMQ基础">
+<meta property="og:url" content="http://yoursite.com/2020/01/06/rabbitMQ基础/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
+<meta property="og:description" content="rabbit结构    消费者是直接从Queue取出数据的，但生产者并非直接把数据传给Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。 exchange(交换机种类) direct(默认)：比较Message的routing key和Queue的binding key，完全匹配时，Message才会发送到该Queue。即一对一 fanout：忽略key对比，发送Messag">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/rabbit.png">
+<meta property="og:updated_time" content="2020-01-07T02:46:54.555Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="xijue&#39;s blog">
+<meta name="twitter:title" content="rabbitMQ基础">
+<meta name="twitter:description" content="rabbit结构    消费者是直接从Queue取出数据的，但生产者并非直接把数据传给Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。 exchange(交换机种类) direct(默认)：比较Message的routing key和Queue的binding key，完全匹配时，Message才会发送到该Queue。即一对一 fanout：忽略key对比，发送Messag">
+<meta name="twitter:image" content="http://yoursite.com/img/rabbit.png">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -150,60 +157,183 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-rabbitMQ基础" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/12/15/kafka基本原理和使用/" class="archive-article-date">
-  	<time datetime="2019-12-15T15:41:53.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-15</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/12/15/kafka基本原理和使用/">kafka基本原理和使用</a>
+    <h1 class="article-title" itemprop="name">
+      rabbitMQ基础
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2020/01/06/rabbitMQ基础/" class="archive-article-date">
+  	<time datetime="2020-01-06T06:03:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-06</time>
+</a>
+        
+		
+      
+	  
+        <span class="archive-article-date">
+            本文阅读量 <span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="rabbit结构"><a href="#rabbit结构" class="headerlink" title="rabbit结构"></a>rabbit结构</h1><p><img src="/img/rabbit.png" alt="rabbit结构"></p>
+<p>   消费者是直接从Queue取出数据的，但生产者并非直接把数据传给Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。</p>
+<h3 id="exchange-交换机种类"><a href="#exchange-交换机种类" class="headerlink" title="exchange(交换机种类)"></a>exchange(交换机种类)</h3><ul>
+<li>direct(默认)：比较Message的routing key和Queue的binding key，完全匹配时，Message才会发送到该Queue。即一对一</li>
+<li>fanout：忽略key对比，发送Message到Exchange下游绑定的所有Queue。即一对所有</li>
+<li>topic：*匹配单个词组，#匹配0或多个词组。每个词组用.分开。即一对若干</li>
+<li>header 效果差几乎不实用</li>
+</ul>
+<h3 id="消息的确认"><a href="#消息的确认" class="headerlink" title="消息的确认"></a>消息的确认</h3><p>  消费者通过AMQP的basic.ack命令显式地向RabbitMQ发送一个确认，当然，默认的auto_ack为true会自动进行确认，只有确认了才会rabbit才会从队列中将该消息删除。如果消费者接收到信息未发送确认信息就断开连接，则会发送给下一个订阅的消费者。如果因为bug导致没有ack但是连接又不中断，rabbit会认为这个消费者没有准备好接收下一条消息，将不会给该消费者发送更多的消息。利用这一点，可以防止rabbit持续不断的消息涌向你的应用而导致过载。</p>
+<p>  使用AMQP的basic.reject命令：如果把reject命令的requeue设置为true的话，RabbitMQ会将消息重新发送给下一个订阅者。如果设置为false的话，RabbitMQ会立即把消息从队列中移除，而不会把它发送给新的消费者。</p>
+<h1 id="持久化-durable"><a href="#持久化-durable" class="headerlink" title="持久化(durable)"></a>持久化(durable)</h1><p>  非持久化的队列在rabbit重启后就会消失。需要持久化只需要几个配置参数而已。在队列声明中设置durable参数<br>  需要注意的是durable=True只是持久化了队列，但消息重启后会消失。再发送消息时添加 properties=pika.BasicProperties(delivery_mode=2) 参数设置消息持久化</p>
+<h1 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h1><p>  分为普通模式和镜像模式。</p>
+<ul>
+<li>普通模式，当用户请求Node1但数据在Node2时，RabbitMQ会临时在Node1、Node2间进行消息传输。</li>
+<li>镜像模式中消息实体会主动在镜像节点间同步，而不是在客户端取数据时临时拉取。该模式带来的副作用也很明显，除了降低系统性能外，如果镜像队列数量过多，加之大量的消息进入，集群内部的网络带宽将会被这种同步通讯大大消耗掉。所以在对可靠性要求较高的场合中适用。</li>
+</ul>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">kafka 消息队列 分布式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">消息队列</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/01/06/rabbitMQ基础/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2019/12/23/初识springcloud/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">初识springcloud</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#rabbit结构"><span class="toc-number">1.</span> <span class="toc-text">rabbit结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#exchange-交换机种类"><span class="toc-number">1.0.1.</span> <span class="toc-text">exchange(交换机种类)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#消息的确认"><span class="toc-number">1.0.2.</span> <span class="toc-text">消息的确认</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#持久化-durable"><span class="toc-number">2.</span> <span class="toc-text">持久化(durable)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#集群"><span class="toc-number">3.</span> <span class="toc-text">集群</span></a></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -235,9 +365,9 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,

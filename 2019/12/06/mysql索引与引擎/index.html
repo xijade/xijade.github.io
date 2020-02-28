@@ -16,14 +16,15 @@
 <meta property="og:site_name" content="xijue&#39;s blog">
 <meta property="og:description" content="引擎  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。  主要分析使用MyIsam 和InnoDB InnoDB  InnoDB是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/mysqlindex.PNG">
 <meta property="og:image" content="http://yoursite.com/img/btree.png">
 <meta property="og:image" content="http://yoursite.com/img/insert1.png">
 <meta property="og:image" content="http://yoursite.com/img/insert2.png">
-<meta property="og:updated_time" content="2019-12-19T07:07:26.181Z">
+<meta property="og:updated_time" content="2020-02-28T07:21:49.970Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql索引与引擎">
 <meta name="twitter:description" content="引擎  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。  主要分析使用MyIsam 和InnoDB InnoDB  InnoDB是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属">
-<meta name="twitter:image" content="http://yoursite.com/img/btree.png">
+<meta name="twitter:image" content="http://yoursite.com/img/mysqlindex.PNG">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -193,8 +194,8 @@
 <h2 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h2><p>  它没有提供对数据库事务的支持，不能从灾难中恢复，也不支持行级锁和外键。修改时需要锁住整个表所以效率低，但查询速度很快。索引文件较小</p>
 <h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>  索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行INSERT、UPDATE和DELETE。因为更新表时，MySQL不仅要保存数据，还要保存索引文件。<br><a id="more"></a></p>
 <h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><h3 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h3><p>  联合索引有一个 <em>最左前缀匹配原则</em>。所以当我们创建一个联合索引的时候，如(key1,key2,key3)，相当于创建了（key1）、(key1,key2)和(key1,key2,key3)三个索引，这就是最左匹配原则。<br>  在检索数据时从联合索引的最左边开始匹配，因此应该将识别度高的字段放在左边。只查key1也会用到索引，但只查key2就没有索引了。</p>
-<h3 id="聚簇索引-与-非聚簇索引"><a href="#聚簇索引-与-非聚簇索引" class="headerlink" title="聚簇索引 与 非聚簇索引"></a>聚簇索引 与 非聚簇索引</h3><p>   非聚簇索引：MyISAM的中，B+索引的叶子节点存放的是键值所对应的数据的<em>地址</em> ,主键索引与辅助索引的区别只是辅助索引允许key重复。</p>
-<p>   聚簇索引：一个表有且只有一个聚簇索引，默认以主键作为索引。InnoDB要求表必须有主键（MyISAM可以没有），如果没有显式指定，则MySQL系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则MySQL自动为InnoDB表生成一个隐含字段作为主键，这个字段长度为6个字节，类型为长整形。<br>   聚簇索引中，叶子节点存放的数据直接是键值所对应的的数据。辅助索引则存放的数据是主键，找到主键值后再去聚簇索引中寻找完整的数据，此过程为 <em>回表</em></p>
+<h3 id="聚簇索引-与-非聚簇索引-辅助索引"><a href="#聚簇索引-与-非聚簇索引-辅助索引" class="headerlink" title="聚簇索引 与 非聚簇索引(辅助索引)"></a>聚簇索引 与 非聚簇索引(辅助索引)</h3><p>   使用的都是B+索引。不过不同的引擎有区别。<br>   InnoDB中：<br>   聚簇索引：一个表有且只有一个聚簇索引，默认以主键作为索引。InnoDB要求表必须有主键（MyISAM可以没有），如果没有显式指定，则MySQL系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则MySQL自动为InnoDB表生成一个隐含字段作为主键，这个字段长度为6个字节，类型为长整形。<br>   聚簇索引中，叶子节点存放的数据直接是键值所对应的的数据。<br>   非聚簇索引：辅助索引则存放的数据是主键，找到主键值后再去聚簇索引中寻找完整的数据，此过程为 <em>回表</em><br>   MyISAM的中，B+索引的叶子节点存放的是键值所对应的数据的<em>地址</em> ,主键索引与辅助索引的区别只是辅助索引允许key重复。</p>
+<p>   <img src="/img/mysqlindex.PNG" alt="InnoDB和MyISAM的区别"></p>
 <h3 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h3><p>   类似like的模糊查询作用，但like + % 在文本比较少时是合适的。全文索引在大量的数据面前，能比 like + % 快 N 倍，速度不是一个数量级，但是全文索引可能存在精度问题</p>
 <ul>
 <li>MySQL 5.6 以前的版本，只有 MyISAM 存储引擎支持全文索引；</li>
@@ -212,10 +213,10 @@
 <h4 id="B-树的插入："><a href="#B-树的插入：" class="headerlink" title="B+树的插入："></a>B+树的插入：</h4><p>  叶子节点超过限制后，左右两部分分裂。如下图，插入键值为7的元素<br>  <img src="/img/insert1.png" alt="插入步骤1"><br>  假设一个叶子节点只能存放4个项，那么：<br>  <img src="/img/insert2.png" alt="插入步骤2"></p>
 <h2 id="索引的优化"><a href="#索引的优化" class="headerlink" title="索引的优化"></a>索引的优化</h2><p>   下列讲的都是mysql自己优化的，不需要使用者手动操作</p>
 <h3 id="覆盖索引-covering-index"><a href="#覆盖索引-covering-index" class="headerlink" title="覆盖索引(covering index)"></a>覆盖索引(covering index)</h3><p>  一个查询语句的执行只用从索引中就能够取得，不必从数据表中读取。（① select和where的字段被包含在一个索引里；② 如果select的是主键也可以，因为辅助索引的节点保存的值是主键）这样非主键索引不需要回表，减少一次IO<br>  列如：(key1，key2)为普通索引：<strong><em>select key2 from covering_index_sample where key1 = ‘keytest’</em></strong></p>
-<h3 id="索引下推-Index-Condition-Pushdown-ICP"><a href="#索引下推-Index-Condition-Pushdown-ICP" class="headerlink" title="索引下推(Index Condition Pushdown, ICP)"></a>索引下推(Index Condition Pushdown, ICP)</h3><p>   假设语句是<strong><em>select </em> from tuser where name like ‘张 %’ and age=10 and ismale=1;*</strong><br>   辅助索引是(name,age)<br>   mysql找到第一个姓张的后，不是马上回表检测age和ismale。而是判断索引剩下的字段age是否等于10，若不等于则直接找下一项，省去一次回表的IO</p>
+<h3 id="索引下推-Index-Condition-Pushdown-ICP"><a href="#索引下推-Index-Condition-Pushdown-ICP" class="headerlink" title="索引下推(Index Condition Pushdown, ICP)"></a>索引下推(Index Condition Pushdown, ICP)</h3><p>   假设语句是 select * from tuser where name like ‘张 %’ and age=10 and ismale=1<br>   辅助索引是(name,age)<br>   mysql找到第一个姓张的后，不是马上回表检测age和ismale。而是判断索引剩下的字段age是否等于10，若不等于则直接找下一项，省去一次回表的IO</p>
 <h3 id="查询优化器"><a href="#查询优化器" class="headerlink" title="查询优化器"></a>查询优化器</h3><p>   在一条单表查询语句真正执行之前，MySQL的查询优化器会找出执行该语句所有可能使用的方案，对比之后找出成本最低的方案。这个成本最低的方案就是所谓的执行计划。 优化过程大致如下： 1、根据搜索条件，找出所有可能使用的索引 2、计算全表扫描的代价 3、计算使用不同索引执行查询的代价 4、对比各种执行方案的代价，找出成本最低的那一个</p>
 <h2 id="select查询优化"><a href="#select查询优化" class="headerlink" title="select查询优化"></a>select查询优化</h2><ul>
-<li>select <em> 少用。业务上，可能只看sql语句不能知道该语句的功能；增加了字段后，所有select </em>的查询都会多查出一个字段。技术上，本来可以使用覆盖索引，但select*后不会使用了；占用缓冲池空间</li>
+<li>select /<em> 少用。业务上，可能只看sql语句不能知道该语句的功能；增加了字段后，所有select </em>的查询都会多查出一个字段。技术上，本来可以使用覆盖索引，但select*后不会使用了；占用缓冲池空间</li>
 </ul>
 
       
@@ -338,7 +339,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引擎"><span class="toc-number">1.</span> <span class="toc-text">引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#InnoDB"><span class="toc-number">1.1.</span> <span class="toc-text">InnoDB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MyISAM"><span class="toc-number">1.2.</span> <span class="toc-text">MyISAM</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#索引"><span class="toc-number">2.</span> <span class="toc-text">索引</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#索引类型"><span class="toc-number">2.1.</span> <span class="toc-text">索引类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#联合索引"><span class="toc-number">2.1.1.</span> <span class="toc-text">联合索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#聚簇索引-与-非聚簇索引"><span class="toc-number">2.1.2.</span> <span class="toc-text">聚簇索引 与 非聚簇索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全文索引"><span class="toc-number">2.1.3.</span> <span class="toc-text">全文索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#哈希索引"><span class="toc-number">2.1.4.</span> <span class="toc-text">哈希索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-索引"><span class="toc-number">2.1.5.</span> <span class="toc-text">B+索引</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#B-树的插入："><span class="toc-number">2.1.5.1.</span> <span class="toc-text">B+树的插入：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#索引的优化"><span class="toc-number">2.2.</span> <span class="toc-text">索引的优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#覆盖索引-covering-index"><span class="toc-number">2.2.1.</span> <span class="toc-text">覆盖索引(covering index)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#索引下推-Index-Condition-Pushdown-ICP"><span class="toc-number">2.2.2.</span> <span class="toc-text">索引下推(Index Condition Pushdown, ICP)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查询优化器"><span class="toc-number">2.2.3.</span> <span class="toc-text">查询优化器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#select查询优化"><span class="toc-number">2.3.</span> <span class="toc-text">select查询优化</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引擎"><span class="toc-number">1.</span> <span class="toc-text">引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#InnoDB"><span class="toc-number">1.1.</span> <span class="toc-text">InnoDB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MyISAM"><span class="toc-number">1.2.</span> <span class="toc-text">MyISAM</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#索引"><span class="toc-number">2.</span> <span class="toc-text">索引</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#索引类型"><span class="toc-number">2.1.</span> <span class="toc-text">索引类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#联合索引"><span class="toc-number">2.1.1.</span> <span class="toc-text">联合索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#聚簇索引-与-非聚簇索引-辅助索引"><span class="toc-number">2.1.2.</span> <span class="toc-text">聚簇索引 与 非聚簇索引(辅助索引)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全文索引"><span class="toc-number">2.1.3.</span> <span class="toc-text">全文索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#哈希索引"><span class="toc-number">2.1.4.</span> <span class="toc-text">哈希索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-索引"><span class="toc-number">2.1.5.</span> <span class="toc-text">B+索引</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#B-树的插入："><span class="toc-number">2.1.5.1.</span> <span class="toc-text">B+树的插入：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#索引的优化"><span class="toc-number">2.2.</span> <span class="toc-text">索引的优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#覆盖索引-covering-index"><span class="toc-number">2.2.1.</span> <span class="toc-text">覆盖索引(covering index)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#索引下推-Index-Condition-Pushdown-ICP"><span class="toc-number">2.2.2.</span> <span class="toc-text">索引下推(Index Condition Pushdown, ICP)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查询优化器"><span class="toc-number">2.2.3.</span> <span class="toc-text">查询优化器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#select查询优化"><span class="toc-number">2.3.</span> <span class="toc-text">select查询优化</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -368,7 +369,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 惜玦
+    		&copy; 2020 惜玦
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -480,11 +481,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -492,11 +489,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -504,7 +501,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">java spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -516,7 +521,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>

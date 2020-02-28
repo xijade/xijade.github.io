@@ -152,6 +152,100 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-rabbitMQ基础" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/01/06/rabbitMQ基础/">rabbitMQ基础</a>
+    </h1>
+  
+
+        
+        <a href="/2020/01/06/rabbitMQ基础/" class="archive-article-date">
+  	<time datetime="2020-01-06T06:03:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-06</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="rabbit结构"><a href="#rabbit结构" class="headerlink" title="rabbit结构"></a>rabbit结构</h1><p><img src="/img/rabbit.png" alt="rabbit结构"></p>
+<p>   消费者是直接从Queue取出数据的，但生产者并非直接把数据传给Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。</p>
+<h3 id="exchange-交换机种类"><a href="#exchange-交换机种类" class="headerlink" title="exchange(交换机种类)"></a>exchange(交换机种类)</h3><ul>
+<li>direct(默认)：比较Message的routing key和Queue的binding key，完全匹配时，Message才会发送到该Queue。即一对一</li>
+<li>fanout：忽略key对比，发送Message到Exchange下游绑定的所有Queue。即一对所有</li>
+<li>topic：*匹配单个词组，#匹配0或多个词组。每个词组用.分开。即一对若干</li>
+<li>header 效果差几乎不实用</li>
+</ul>
+<h3 id="消息的确认"><a href="#消息的确认" class="headerlink" title="消息的确认"></a>消息的确认</h3><p>  消费者通过AMQP的basic.ack命令显式地向RabbitMQ发送一个确认，当然，默认的auto_ack为true会自动进行确认，只有确认了才会rabbit才会从队列中将该消息删除。如果消费者接收到信息未发送确认信息就断开连接，则会发送给下一个订阅的消费者。如果因为bug导致没有ack但是连接又不中断，rabbit会认为这个消费者没有准备好接收下一条消息，将不会给该消费者发送更多的消息。利用这一点，可以防止rabbit持续不断的消息涌向你的应用而导致过载。</p>
+<p>  使用AMQP的basic.reject命令：如果把reject命令的requeue设置为true的话，RabbitMQ会将消息重新发送给下一个订阅者。如果设置为false的话，RabbitMQ会立即把消息从队列中移除，而不会把它发送给新的消费者。</p>
+<h1 id="持久化-durable"><a href="#持久化-durable" class="headerlink" title="持久化(durable)"></a>持久化(durable)</h1><p>  非持久化的队列在rabbit重启后就会消失。需要持久化只需要几个配置参数而已。在队列声明中设置durable参数<br>  需要注意的是durable=True只是持久化了队列，但消息重启后会消失。再发送消息时添加 properties=pika.BasicProperties(delivery_mode=2) 参数设置消息持久化</p>
+<h1 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h1><p>  分为普通模式和镜像模式。</p>
+<ul>
+<li>普通模式，当用户请求Node1但数据在Node2时，RabbitMQ会临时在Node1、Node2间进行消息传输。</li>
+<li>镜像模式中消息实体会主动在镜像节点间同步，而不是在客户端取数据时临时拉取。该模式带来的副作用也很明显，除了降低系统性能外，如果镜像队列数量过多，加之大量的消息进入，集群内部的网络带宽将会被这种同步通讯大大消耗掉。所以在对可靠性要求较高的场合中适用。</li>
+</ul>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">消息队列</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/01/06/rabbitMQ基础/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-初识springcloud" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -177,9 +271,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h1><p>  springcloud和整合多个springboot项目用的。本质的业务代码和mvc还是springboot那套，通过springcloud可以让一个springboot项目调用另一个springboot项目的接口，一个springboot只负责一个微服务。<br>  下面介绍的组件本身是一个springboot</p>
+        <h1 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h1><p>  springcloud是整合多个springboot项目用的。本质的业务代码和mvc还是springboot那套，通过springcloud可以让一个springboot项目调用另一个springboot项目的接口，一个springboot只负责一个微服务。<br>  下面介绍的组件本身是一个springboot</p>
 <h2 id="Eureka"><a href="#Eureka" class="headerlink" title="Eureka"></a>Eureka</h2><p>   注册服务中心，用于注册各种微服务，以便于其他微服务找到和访问。本身也是个springboot<br>   @EnableEurekaServer代表服务注册中心，@EnableDiscoveryClient， 表示用于发现eureka 注册中心的微服务。</p>
-<h2 id="Ribbon和Fegin"><a href="#Ribbon和Fegin" class="headerlink" title="Ribbon和Fegin"></a>Ribbon和Fegin</h2><p>   Ribbon用于微服务间的调用、API网关的请求转发，Fegin则是对Ribbon的封装。<br>   比如需要调用一个获取数据的api，目前有两个springboot启动着，application-name都是product-data-service，需要进行负载均衡来选择每次访问哪个。<br>   原本springboot中service层调用DAO层的Mapper接口，现在不是DAO层而是Ribbon/Fegin层<br>   使用Ribbon，用##restTemplate.getForObject(“<a href="http://PRODUCT-DATA-SERVICE/products&quot;,List.class)##去调用其他服务的接口获得数据。restTemplate是一个通过依赖注入的工具类" target="_blank" rel="noopener">http://PRODUCT-DATA-SERVICE/products&quot;,List.class)##去调用其他服务的接口获得数据。restTemplate是一个通过依赖注入的工具类</a></p>
+<h2 id="Ribbon和Fegin-服务消费者"><a href="#Ribbon和Fegin-服务消费者" class="headerlink" title="Ribbon和Fegin 服务消费者"></a>Ribbon和Fegin 服务消费者</h2><p>   Ribbon用于微服务间的调用、API网关的请求转发，Fegin则是对Ribbon的封装。<br>   比如需要调用一个获取数据的api，目前有两个springboot启动着，application-name都是product-data-service，需要进行负载均衡来选择每次访问哪个。<br>   原本springboot中service层调用DAO层的Mapper接口，现在不是DAO层而是Ribbon/Fegin层<br>   使用Ribbon，用## restTemplate.getForObject(“<a href="http://PRODUCT-DATA-SERVICE/products&quot;,List.class" target="_blank" rel="noopener">http://PRODUCT-DATA-SERVICE/products&quot;,List.class</a>) ##去调用其他服务的接口获得数据。restTemplate是一个通过依赖注入的工具类</p>
 <p>   使用Fegin，先注明要调用的应用名称，再以控制器的写法调用该应用的具体接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FeignClient</span>(value = <span class="string">"PRODUCT-DATA-SERVICE"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ProductClientFeign</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/products"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Product&gt; <span class="title">listProdcuts</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
         
           <a class="article-more-a" href="/2019/12/23/初识springcloud/#more">more >></a>
@@ -914,87 +1008,6 @@
 
 
   
-    <article id="post-同步器框架AQS" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/20/同步器框架AQS/">同步器框架AQS</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/20/同步器框架AQS/" class="archive-article-date">
-  	<time datetime="2019-04-20T12:16:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-20</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="AQS简介"><a href="#AQS简介" class="headerlink" title="AQS简介"></a>AQS简介</h1><p>  AQS 即 AbstractQueuedSynchronizer 队列同步器，是 java 并发包一个基础部件。在 java.util.concurrent 包中，大部分的并发类都是基于 AQS 来实现的。<br>  在业务逻辑中将同步变量和同步器绑定，而不是在同步器里绑定同步变量。比如，先初始化一个同步器，业务要操作同步变量前tryacpuire。<br><img src="/img/aqs.png" alt="以AQS为核心的类"><br>
-        
-          <a class="article-more-a" href="/2019/04/20/同步器框架AQS/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">java 并发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/20/同步器框架AQS/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1010,7 +1023,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 惜玦
+    		&copy; 2020 惜玦
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -1122,11 +1135,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1134,11 +1143,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1146,7 +1155,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">java spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1158,7 +1175,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>
