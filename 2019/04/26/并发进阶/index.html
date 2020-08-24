@@ -17,7 +17,7 @@
 <meta property="og:description" content="并发编程分为三个核心  分工，以什么样的方式去拆分任务，比如说生产者-消费者模式。 同步，任务间的依赖如何相互通知，或者说任务之间如何相互协作。 互斥，如何保证共享变量的安全性。比如各种锁">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/bingfa.png">
-<meta property="og:updated_time" content="2020-08-24T16:25:09.443Z">
+<meta property="og:updated_time" content="2020-08-24T16:29:13.745Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="并发进阶">
 <meta name="twitter:description" content="并发编程分为三个核心  分工，以什么样的方式去拆分任务，比如说生产者-消费者模式。 同步，任务间的依赖如何相互通知，或者说任务之间如何相互协作。 互斥，如何保证共享变量的安全性。比如各种锁">
@@ -206,23 +206,14 @@
 <h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><p>  如果同步块过于简单，没有线程的阻塞和唤醒开销大，此时就很浪费资源。如果有多个处理器同时运行多个线程，第一个线程已经持有锁。此时第二个线程想去占有锁，让它”稍等一下”而不是切换线程。等待第一个线程处理完，这就是自旋。只有锁占用时间很短的简单操作才会获得好的效果。</p>
 <h2 id="原子类"><a href="#原子类" class="headerlink" title="原子类"></a>原子类</h2><h3 id="原子类整形"><a href="#原子类整形" class="headerlink" title="原子类整形"></a>原子类整形</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test2</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> AtomicInteger count = <span class="keyword">new</span> AtomicInteger();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">increment</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                  count.incrementAndGet();</span><br><span class="line">        &#125;</span><br><span class="line">      <span class="comment">//使用AtomicInteger之后，不需要加锁，也可以实现线程安全。</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> count.get();</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="原子类引用类型"><a href="#原子类引用类型" class="headerlink" title="原子类引用类型"></a>原子类引用类型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import java.util.concurrent.atomic.AtomicReference;</span><br><span class="line">public class AtomicReferenceTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        AtomicReference&lt;Person&gt; ar = new AtomicReference&lt;Person&gt;();</span><br><span class="line">        Person person = new Person(&quot;SnailClimb&quot;, 22);</span><br><span class="line">        ar.set(person);</span><br><span class="line">        Person updatePerson = new Person(&quot;Daisy&quot;, 20);</span><br><span class="line">        ar.compareAndSet(person, updatePerson);   //ar的引用是否为person，若是则更新为updatePerson</span><br><span class="line"></span><br><span class="line">        System.out.println(ar.get().getName());</span><br><span class="line">        System.out.println(ar.get().getAge());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="分工"><a href="#分工" class="headerlink" title="分工"></a>分工</h1><h2 id="多线程设计模式"><a href="#多线程设计模式" class="headerlink" title="多线程设计模式"></a>多线程设计模式</h2><ol>
-<li><p>Single Threaded Execution Pattern[同一时刻只允许一个线程操作] ： 最基础的互斥 </p>
-</li>
-<li><p>Guarded Suspension Pattern ：满足条件暂时wait()挂起</p>
-</li>
-<li><p>Balking Pattern（有人在做了？哈哈，太好了，我就不过去了！） ：别的线程已经做过的事不需要重读再做。</p>
-</li>
-<li><p>Producer-Consumer：生产者把产品add到queue，消费者从queue中poll出来</p>
-</li>
-<li><p>thread per message：线程池，给一个任务分配一个线程</p>
-</li>
-<li><p>Worker Thread模式（工作没来，就一直等，工作来了就干活）：线程池的核心线程</p>
-</li>
-<li><p>两阶段终止模式（Two-Phase Termination Patter）模式：优雅安全的关闭线程，让线程可以完成它本应完成的当前任务并可以附加一些收尾工作后再进行关闭，比如线程池shutdown()后会把未执行完毕的任务和阻塞队列的任务执行完毕后再关闭。一个线程善后完毕后修改中断信号为真；里面一个线程则是不停在判断中断信号来觉得是否关闭</p>
-</li>
-</ol>
-<h2 id="Callable-与-future"><a href="#Callable-与-future" class="headerlink" title="Callable 与 future"></a>Callable 与 future</h2><p>  Callable与Runnable类似，Callable有返回的结果。实现了future接口会保存返回结果。FutureTask包装器会把Callable同时实现Runnable和Future接口。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Callable&lt;Integer&gt; myComputation = ...;</span><br><span class="line">FutureTask&lt;Integer&gt; task = <span class="keyword">new</span> FutureTask&lt;Integer&gt;(myComputation);</span><br><span class="line">Thread t = <span class="keyword">new</span> Thread(task);</span><br><span class="line">t.start();</span><br><span class="line">Integer result = task.get();</span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## 线程池</span><br><span class="line">  阿里巴巴建议不使用Executors类，请求队列过大超过<span class="keyword">int</span>最大值问题时，操作者对ThreadPoolExecutor更有数</span><br><span class="line">``` java</span><br><span class="line">ThreadPoolExecutor(<span class="keyword">int</span> corePoolSize,  <span class="comment">//核心线程数量,就算任务数量比核心线程数量少，也要创建这么多的线程</span></span><br><span class="line">                              <span class="keyword">int</span> maximumPoolSize, <span class="comment">//阻塞队列满时，能创建这么多线程（核心+临时）</span></span><br><span class="line">                              <span class="keyword">long</span> keepAliveTime,</span><br><span class="line">                              TimeUnit unit,</span><br><span class="line">                              BlockingQueue&lt;Runnable&gt; workQueue, </span><br><span class="line">                              ThreadFactory threadFactory,</span><br><span class="line">                              RejectedExecutionHandler handler)<span class="comment">//饱和策略</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="分工"><a href="#分工" class="headerlink" title="分工"></a>分工</h1><h2 id="多线程设计模式"><a href="#多线程设计模式" class="headerlink" title="多线程设计模式"></a>多线程设计模式</h2><p>1.Single Threaded Execution Pattern[同一时刻只允许一个线程操作] ： 最基础的互斥 </p>
+<p>2.Guarded Suspension Pattern ：满足条件暂时wait()挂起</p>
+<p>3.Balking Pattern（有人在做了？哈哈，太好了，我就不过去了！） ：别的线程已经做过的事不需要重读再做。</p>
+<p>4.Producer-Consumer：生产者把产品add到queue，消费者从queue中poll出来</p>
+<p>5.thread per message：线程池，给一个任务分配一个线程</p>
+<p>6.Worker Thread模式（工作没来，就一直等，工作来了就干活）：线程池的核心线程</p>
+<p>7.两阶段终止模式（Two-Phase Termination Patter）模式：优雅安全的关闭线程，让线程可以完成它本应完成的当前任务并可以附加一些收尾工作后再进行关闭，比如线程池shutdown()后会把未执行完毕的任务和阻塞队列的任务执行完毕后再关闭。一个线程善后完毕后修改中断信号为真；里面一个线程则是不停在判断中断信号来觉得是否关闭</p>
+<h2 id="Callable-与-future"><a href="#Callable-与-future" class="headerlink" title="Callable 与 future"></a>Callable 与 future</h2><p>  Callable与Runnable类似，Callable有返回的结果。实现了future接口会保存返回结果。FutureTask包装器会把Callable同时实现Runnable和Future接口。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Callable&lt;Integer&gt; myComputation = ...;</span><br><span class="line">FutureTask&lt;Integer&gt; task = <span class="keyword">new</span> FutureTask&lt;Integer&gt;(myComputation);</span><br><span class="line">Thread t = <span class="keyword">new</span> Thread(task);</span><br><span class="line">t.start();</span><br><span class="line">Integer result = task.get();</span><br><span class="line">```  </span><br><span class="line">## 线程池</span><br><span class="line">  阿里巴巴建议不使用Executors类，请求队列过大超过<span class="keyword">int</span>最大值问题时，操作者对ThreadPoolExecutor更有数</span><br><span class="line">``` java</span><br><span class="line">ThreadPoolExecutor(<span class="keyword">int</span> corePoolSize,  <span class="comment">//核心线程数量,就算任务数量比核心线程数量少，也要创建这么多的线程</span></span><br><span class="line">                              <span class="keyword">int</span> maximumPoolSize, <span class="comment">//阻塞队列满时，能创建这么多线程（核心+临时）</span></span><br><span class="line">                              <span class="keyword">long</span> keepAliveTime,</span><br><span class="line">                              TimeUnit unit,</span><br><span class="line">                              BlockingQueue&lt;Runnable&gt; workQueue, </span><br><span class="line">                              ThreadFactory threadFactory,</span><br><span class="line">                              RejectedExecutionHandler handler)<span class="comment">//饱和策略</span></span><br></pre></td></tr></table></figure></p>
 <p>饱和策略：</p>
 <ul>
 <li>AbortPolicy： 直接拒绝所提交的任务，并抛出RejectedExecutionException异常；</li>
@@ -556,11 +547,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -588,11 +579,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
+                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
               </li>
             
             <div class="clearfix"></div>
