@@ -20,7 +20,7 @@
 <meta property="og:image" content="http://yoursite.com/img/btree.png">
 <meta property="og:image" content="http://yoursite.com/img/insert1.png">
 <meta property="og:image" content="http://yoursite.com/img/insert2.png">
-<meta property="og:updated_time" content="2020-02-28T07:21:49.970Z">
+<meta property="og:updated_time" content="2020-02-28T07:50:04.079Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql索引与引擎">
 <meta name="twitter:description" content="引擎  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。  主要分析使用MyIsam 和InnoDB InnoDB  InnoDB是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属">
@@ -208,8 +208,8 @@
 <li>使用全文索引时，测试表里至少要有 4 条以上的记录，否则，会出现意想不到的结果。</li>
 </ol>
 <h3 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h3><p>  不需要类似B+树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。<br>  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定index的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。</p>
-<h3 id="B-索引"><a href="#B-索引" class="headerlink" title="B+索引"></a>B+索引</h3><p>  是最常用的最为频繁使用的索引。因为普通的平衡二叉树对每个键值都去磁盘进行IO，如果范围查找有1000个键值在范围中，就要去对磁盘进行1000次IO。<br>  <strong>局部性原理： 当一个数据被用到时，其附近的数据也通常会马上被使用。 </strong><br>  所以可以顺序向后读取一定长度的数据放入内存，这就是磁盘预读。<br>  B树(平衡多路搜索树)的一个节点存放的不再是一个关键字，而是将关键字所在的一整个磁盘页读入到内存中。<br>  B+树则是进一步的改进版，叶子节点中有一个指针指向一下个叶子节点，提高区间访问的性能，方便范围查询。且只有叶子节点存放数据，非叶子节点只存储键值信息。<br>  <img src="/img/btree.png" alt="B+树"></p>
-<p>  树的一个节点的储存大小就是一个磁盘页(16kb)，如果同时存放 key值(4b)和date(4b)，那一个节点能记录的项数(2k)就少。如果节点只记录key值，那么一个节点能记录的项数就增加(4k)，有利于树的高度减小。<br>  mysql的InnoDB存储引擎在设计时是将根节点常驻内存的。</p>
+<h3 id="B-索引"><a href="#B-索引" class="headerlink" title="B+索引"></a>B+索引</h3><p>  是最常用的最为频繁使用的索引。一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储的磁盘上。因为普通的平衡二叉树对每个键值都去磁盘进行IO，如果范围查找有1000个键值在范围中，就要去对磁盘进行1000次IO。<br>  <strong>局部性原理： 当一个数据被用到时，其附近的数据也通常会马上被使用。 </strong><br>  所以可以顺序向后读取一定长度的数据放入内存，这就是磁盘预读。<br>  B树(平衡多路搜索树)的一个节点存放的不再是一个关键字，而是将关键字所在的一整个磁盘页读入到内存中。<br>  B+树则是进一步的改进版，叶子节点中有一个指针指向一下个叶子节点，提高区间访问的性能，方便范围查询。且只有叶子节点存放数据，非叶子节点只存储键值信息。<br>  <img src="/img/btree.png" alt="B+树"></p>
+<p>  树的一个非叶子节点的储存大小就是一个磁盘页(16kb)，如果同时存放 key值(4b)和date(4b)，那一个节点能记录的项数(2k)就少。如果节点只记录key值，那么一个节点能记录的项数就增加(4k)，有利于树的高度减小。<br>  mysql的InnoDB存储引擎在设计时是将根节点常驻内存的。</p>
 <h4 id="B-树的插入："><a href="#B-树的插入：" class="headerlink" title="B+树的插入："></a>B+树的插入：</h4><p>  叶子节点超过限制后，左右两部分分裂。如下图，插入键值为7的元素<br>  <img src="/img/insert1.png" alt="插入步骤1"><br>  假设一个叶子节点只能存放4个项，那么：<br>  <img src="/img/insert2.png" alt="插入步骤2"></p>
 <h2 id="索引的优化"><a href="#索引的优化" class="headerlink" title="索引的优化"></a>索引的优化</h2><p>   下列讲的都是mysql自己优化的，不需要使用者手动操作</p>
 <h3 id="覆盖索引-covering-index"><a href="#覆盖索引-covering-index" class="headerlink" title="覆盖索引(covering index)"></a>覆盖索引(covering index)</h3><p>  一个查询语句的执行只用从索引中就能够取得，不必从数据表中读取。（① select和where的字段被包含在一个索引里；② 如果select的是主键也可以，因为辅助索引的节点保存的值是主键）这样非主键索引不需要回表，减少一次IO<br>  列如：(key1，key2)为普通索引：<strong><em>select key2 from covering_index_sample where key1 = ‘keytest’</em></strong></p>
@@ -481,11 +481,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -493,7 +489,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -509,10 +509,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
               </li>
              
@@ -522,6 +518,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
             
             <div class="clearfix"></div>
