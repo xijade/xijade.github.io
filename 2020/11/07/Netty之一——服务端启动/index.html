@@ -8,19 +8,19 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Netty的服务端启动和接受连接 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Netty的服务端启动​    netty的服务端启动代码通常也就两块——方法链的参数设置、bind().sync()的服务端端口绑定 参数设置​    netty通常以调用链方法进行参数设置，这里举一个服务端channel类型设置的例子 .channel(NioServerSocketChannel.class)​            这步操作本身只是设置channel工厂，serverCha">
+  <meta name="description" content="Netty的服务端启动​     ​        netty的服务端启动代码通常也就两块——方法链的参数设置、bind().sync()的服务端端口绑定 参数设置​    netty通常以调用链方法进行参数设置，这里举一个服务端channel类型设置的例子 .channel(NioServerSocketChannel.class)​            这步操作本身只是设置channel工厂">
 <meta name="keywords" content="java netty">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Netty的服务端启动和接受连接">
 <meta property="og:url" content="http://yoursite.com/2020/11/07/Netty之一——服务端启动/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="Netty的服务端启动​    netty的服务端启动代码通常也就两块——方法链的参数设置、bind().sync()的服务端端口绑定 参数设置​    netty通常以调用链方法进行参数设置，这里举一个服务端channel类型设置的例子 .channel(NioServerSocketChannel.class)​            这步操作本身只是设置channel工厂，serverCha">
+<meta property="og:description" content="Netty的服务端启动​     ​        netty的服务端启动代码通常也就两块——方法链的参数设置、bind().sync()的服务端端口绑定 参数设置​    netty通常以调用链方法进行参数设置，这里举一个服务端channel类型设置的例子 .channel(NioServerSocketChannel.class)​            这步操作本身只是设置channel工厂">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/channel.jpg">
-<meta property="og:updated_time" content="2020-11-07T06:52:36.852Z">
+<meta property="og:updated_time" content="2020-11-07T07:03:00.291Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Netty的服务端启动和接受连接">
-<meta name="twitter:description" content="Netty的服务端启动​    netty的服务端启动代码通常也就两块——方法链的参数设置、bind().sync()的服务端端口绑定 参数设置​    netty通常以调用链方法进行参数设置，这里举一个服务端channel类型设置的例子 .channel(NioServerSocketChannel.class)​            这步操作本身只是设置channel工厂，serverCha">
+<meta name="twitter:description" content="Netty的服务端启动​     ​        netty的服务端启动代码通常也就两块——方法链的参数设置、bind().sync()的服务端端口绑定 参数设置​    netty通常以调用链方法进行参数设置，这里举一个服务端channel类型设置的例子 .channel(NioServerSocketChannel.class)​            这步操作本身只是设置channel工厂">
 <meta name="twitter:image" content="http://yoursite.com/img/channel.jpg">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
@@ -186,11 +186,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Netty的服务端启动"><a href="#Netty的服务端启动" class="headerlink" title="Netty的服务端启动"></a>Netty的服务端启动</h1><p>​    netty的服务端启动代码通常也就两块——方法链的参数设置、bind().sync()的服务端端口绑定</p>
+        <h1 id="Netty的服务端启动"><a href="#Netty的服务端启动" class="headerlink" title="Netty的服务端启动"></a>Netty的服务端启动</h1><p>​    </p>
+<p>​        netty的服务端启动代码通常也就两块——方法链的参数设置、bind().sync()的服务端端口绑定</p>
 <h1 id="参数设置"><a href="#参数设置" class="headerlink" title="参数设置"></a>参数设置</h1><p>​    netty通常以调用链方法进行参数设置，这里举一个服务端channel类型设置的例子</p>
 <h2 id="channel-NioServerSocketChannel-class"><a href="#channel-NioServerSocketChannel-class" class="headerlink" title=".channel(NioServerSocketChannel.class)"></a>.channel(NioServerSocketChannel.class)</h2><p>​            这步操作本身只是设置channel工厂，serverChannel实际创建在bind()的步骤中</p>
 <h3 id="设置channel工厂"><a href="#设置channel工厂" class="headerlink" title="设置channel工厂"></a>设置channel工厂</h3><p>​        将BootStrap的成员变量channelFactory设置为ReflectiveChannelFactory\&lt;NioServerSocketChannel>，看名字也知道，这个工厂是通过反射的方式创建Channel的：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">newChannel</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> (Channel)<span class="keyword">this</span>.clazz.newInstance(); &#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 <h3 id="NioServerSocketChannel创建"><a href="#NioServerSocketChannel创建" class="headerlink" title="NioServerSocketChannel创建"></a>NioServerSocketChannel创建</h3><p>​       channel工厂的newChannel就是通过反射使用无参的构造方法创建NioServerSocketChannel。通过静态变量provider.openServerSocketChannel()打开一个jdk的ServerSocketChannel，NIOServerSocketChannel对其进行一些封装操作：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">NioServerSocketChannel</span><span class="params">(java.nio.channels.ServerSocketChannel channel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>((Channel)<span class="keyword">null</span>, channel, <span class="number">16</span>);</span><br><span class="line">        <span class="keyword">this</span>.config = <span class="keyword">new</span> NioServerSocketChannel.NioServerSocketChannelConfig(<span class="keyword">this</span>, <span class="keyword">this</span>.javaChannel().socket());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p>​        这个super重要的有两个过程：</p>
@@ -239,7 +241,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">read</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">assert</span> <span class="title">eventLoop</span><span class="params">()</span>.<span class="title">inEventLoop</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="keyword">final</span> ChannelPipeline pipeline = pipeline();</span><br><span class="line">    <span class="keyword">final</span> RecvByteBufAllocator.Handle allocHandle = unsafe().recvBufAllocHandle();</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> localRead = doReadMessages(readBuf);</span><br><span class="line">    &#125; <span class="keyword">while</span> (allocHandle.continueReading());</span><br><span class="line">    <span class="keyword">int</span> size = readBuf.size();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i ++) &#123;</span><br><span class="line">        pipeline.fireChannelRead(readBuf.get(i));</span><br><span class="line">    &#125;</span><br><span class="line">    readBuf.clear();</span><br><span class="line">    pipeline.fireChannelReadComplete();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>​          和预想的差不多，读到数据，然后调用pipeline的回调方法。这里的疑问是究竟读到的什么？有一个关键的doReadMessages(readBuf)：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">doReadMessages</span><span class="params">(List&lt;Object&gt; buf)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    SocketChannel ch = javaChannel().accept();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (ch != <span class="keyword">null</span>) &#123;</span><br><span class="line">            buf.add(<span class="keyword">new</span> NioSocketChannel(<span class="keyword">this</span>, ch));</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>​          总结就是调用jdk的nio接口获得新的channel，然后封装为NioSocketChannel后加入到一个列表中。之后遍历每一个新生成的NioSocketChannel，调用pipeline的fireChannelRead。因为是BossGroup并不处理IO事件只处理新连接，read()方法自然不像它的名字那样去读取数据而是接受作用。</p>
+<p>​          总结就是调用jdk的nio接口获得新的channel，然后封装为NioSocketChannel后加入到一个列表中(事件为READ)。之后遍历每一个新生成的NioSocketChannel，调用pipeline的fireChannelRead。因为是BossGroup并不处理IO事件只处理新连接，read()方法自然不像它的名字那样去读取数据而是接受作用。</p>
 <p>​          第一篇介绍过，AbstractNioMessageChannel是NioServerSocketChannel父类，所以回忆NioServerSocketChannel初始化时，在pipeline中添加了一个入站Handler——ServerBootstrapAcceptor。也就是它来处理将新的连接注册到Selecor</p>
 
       
@@ -334,8 +336,8 @@
     </a>
   
   
-    <a href="/2020/11/07/Netty之三——新连接进入/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title"></div>
+    <a href="/2020/01/06/rabbitMQ基础/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">rabbitMQ基础</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -512,31 +514,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -548,7 +530,27 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
               </li>
             
             <div class="clearfix"></div>

@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>NioEventLoop的run方法 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="NioEventLoop的run方法run()方法可以分为三个功能  select 选择任务 processSelectedKeys 处理Channel 感兴趣的就绪 IO 事件 runAllTasks 运行所有普通任务和定时任务  select​        这个select是方法是NIOEventLoop实现的， 123456789101112131415161718192021222324">
+  <meta name="description" content="NioEventLoop的run方法run()方法可以分为三个功能  select 选择任务 processSelectedKeys 处理Channel 感兴趣的就绪 IO 事件 runAllTasks 运行所有普通任务和定时任务">
 <meta name="keywords" content="java 数据结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NioEventLoop的run方法">
 <meta property="og:url" content="http://yoursite.com/2020/11/08/Netty之二——NioEventLoop的run方法/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="NioEventLoop的run方法run()方法可以分为三个功能  select 选择任务 processSelectedKeys 处理Channel 感兴趣的就绪 IO 事件 runAllTasks 运行所有普通任务和定时任务  select​        这个select是方法是NIOEventLoop实现的， 123456789101112131415161718192021222324">
+<meta property="og:description" content="NioEventLoop的run方法run()方法可以分为三个功能  select 选择任务 processSelectedKeys 处理Channel 感兴趣的就绪 IO 事件 runAllTasks 运行所有普通任务和定时任务">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-11-07T06:53:18.423Z">
+<meta property="og:updated_time" content="2020-11-07T07:03:05.791Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NioEventLoop的run方法">
-<meta name="twitter:description" content="NioEventLoop的run方法run()方法可以分为三个功能  select 选择任务 processSelectedKeys 处理Channel 感兴趣的就绪 IO 事件 runAllTasks 运行所有普通任务和定时任务  select​        这个select是方法是NIOEventLoop实现的， 123456789101112131415161718192021222324">
+<meta name="twitter:description" content="NioEventLoop的run方法run()方法可以分为三个功能  select 选择任务 processSelectedKeys 处理Channel 感兴趣的就绪 IO 事件 runAllTasks 运行所有普通任务和定时任务">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -190,6 +190,7 @@
 <li>processSelectedKeys 处理Channel 感兴趣的就绪 IO 事件</li>
 <li>runAllTasks 运行所有普通任务和定时任务</li>
 </ol>
+<a id="more"></a>
 <h2 id="select"><a href="#select" class="headerlink" title="select"></a>select</h2><p>​        这个select是方法是NIOEventLoop实现的，</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">select</span><span class="params">(<span class="keyword">boolean</span> oldWakenUp)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    Selector selector = <span class="keyword">this</span>.selector;<span class="comment">//JDK原生的Selector</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> selectCnt = <span class="number">0</span>;<span class="comment">//连续空轮询次数</span></span><br><span class="line">        <span class="keyword">long</span> currentTimeNanos = System.nanoTime();</span><br><span class="line">        <span class="comment">//计算本次轮询的截止时间，delayNanos方法用于计算定时任务队列中最近要执行的任务距离当前时间的差值</span></span><br><span class="line">        <span class="keyword">long</span> selectDeadLineNanos = currentTimeNanos + delayNanos(currentTimeNanos);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            <span class="comment">//timeoutMillis为本次轮询的超时时间</span></span><br><span class="line">            <span class="keyword">long</span> timeoutMillis = (selectDeadLineNanos - currentTimeNanos + <span class="number">500000L</span>) / <span class="number">1000000L</span>;</span><br><span class="line">            <span class="comment">//检查定时任务已延误5ms，若是则调用非阻塞的selectNow()后直接break</span></span><br><span class="line">            <span class="keyword">if</span> (timeoutMillis &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (selectCnt == <span class="number">0</span>) &#123;</span><br><span class="line">                    selector.selectNow();</span><br><span class="line">                    selectCnt = <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//检查是否有任务执行</span></span><br><span class="line">            <span class="keyword">if</span> (hasTasks() &amp;&amp; wakenUp.compareAndSet(<span class="keyword">false</span>, <span class="keyword">true</span>)) &#123;</span><br><span class="line">                selector.selectNow();</span><br><span class="line">                selectCnt = <span class="number">1</span>;<span class="comment">//将已轮训次数重置为1</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//执行到这里表示任务队列中没有要执行的任务,故将selector阻塞timeoutMillis毫秒</span></span><br><span class="line">            <span class="keyword">int</span> selectedKeys = selector.select(timeoutMillis);</span><br><span class="line">            selectCnt ++;<span class="comment">//已轮训次数加一</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * selectedKeys != 0 表示轮询到有已经就绪的IO事件</span></span><br><span class="line"><span class="comment">             * wakenUp.get() 表示是否被用户唤醒</span></span><br><span class="line"><span class="comment">             * hasTasks() 表示普通任务队列中有未完成的任务</span></span><br><span class="line"><span class="comment">             * hasScheduledTasks() 表示定时任务队列中有未完成的任务</span></span><br><span class="line"><span class="comment">             * 上述条件任何一个条件为真,则退出select()，准备处理对应任务</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">if</span> (selectedKeys != <span class="number">0</span> || oldWakenUp || wakenUp.get() || hasTasks() || hasScheduledTasks()) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">long</span> time = System.nanoTime();</span><br><span class="line">            <span class="comment">//可以移项time-currentTimeNanos &gt;= timeoutMillis来理解:</span></span><br><span class="line">            <span class="comment">//如果没有轮询到东西，正常情况至少阻塞了timeoutMillis秒</span></span><br><span class="line">            <span class="comment">//没轮询到东西执行时间又十分短，就是出现空轮询了</span></span><br><span class="line">            <span class="keyword">if</span> (time - TimeUnit.MILLISECONDS.toNanos(timeoutMillis) &gt;= currentTimeNanos) &#123;</span><br><span class="line">                selectCnt = <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (SELECTOR_AUTO_REBUILD_THRESHOLD &gt; <span class="number">0</span> &amp;&amp;</span><br><span class="line">                    selectCnt &gt;= SELECTOR_AUTO_REBUILD_THRESHOLD) &#123;</span><br><span class="line">            <span class="comment">//如果空轮训的次数大于事先设定的阈值SELECTOR_AUTO_REBUILD_THRESHOLD(连续512次空轮询),则执行rebuildSelector()避免该bug</span></span><br><span class="line">                rebuildSelector();</span><br><span class="line">                selector = <span class="keyword">this</span>.selector;</span><br><span class="line">                selector.selectNow();</span><br><span class="line">                selectCnt = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            currentTimeNanos = time;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="processSelectedKeys"><a href="#processSelectedKeys" class="headerlink" title="processSelectedKeys"></a>processSelectedKeys</h2><p>​      netty这里做了一个优化（我感觉没多大影响），使用SelectedSelectionKeySet替换了NIO中的HashSet\&lt;selectedKeys>。SelectedSelectionKeySet实现了抽象Set接口，底层使用selectedKeys[]数组来存储，add()时比hashset快一点(哈希冲突情况)。</p>
@@ -458,31 +459,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -494,7 +475,27 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
               </li>
             
             <div class="clearfix"></div>
