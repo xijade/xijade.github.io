@@ -159,7 +159,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/11/08/Netty之二——NioEventLoop的run方法/">NioEventLoop的run方法</a>
+      <a class="article-title" href="/2020/11/08/Netty之二——NioEventLoop的run方法/">NioEventLoop 的 run 方法</a>
     </h1>
   
 
@@ -177,10 +177,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="NioEventLoop的run方法"><a href="#NioEventLoop的run方法" class="headerlink" title="NioEventLoop的run方法"></a>NioEventLoop的run方法</h1><p>run()方法可以分为三个功能</p>
+        <h1 id="NioEventLoop-的-run-方法"><a href="#NioEventLoop-的-run-方法" class="headerlink" title="NioEventLoop 的 run 方法"></a>NioEventLoop 的 run 方法</h1><p>run () 方法可以分为三个功能</p>
 <ol>
 <li>select 选择任务</li>
-<li>processSelectedKeys 处理Channel 感兴趣的就绪 IO 事件</li>
+<li>processSelectedKeys 处理 Channel 感兴趣的就绪 IO 事件</li>
 <li>runAllTasks 运行所有普通任务和定时任务</li>
 </ol>
         
@@ -245,7 +245,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/11/07/Netty之一——服务端启动/">Netty的服务端启动和接受连接</a>
+      <a class="article-title" href="/2020/11/07/Netty之一——服务端启动/">Netty 的服务端启动和接受连接</a>
     </h1>
   
 
@@ -263,12 +263,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="Netty的服务端启动"><a href="#Netty的服务端启动" class="headerlink" title="Netty的服务端启动"></a>Netty的服务端启动</h1><p>​    </p>
-<p>​        netty的服务端启动代码通常也就两块——方法链的参数设置、bind().sync()的服务端端口绑定</p>
-<h1 id="参数设置"><a href="#参数设置" class="headerlink" title="参数设置"></a>参数设置</h1><p>​    netty通常以调用链方法进行参数设置，这里举一个服务端channel类型设置的例子</p>
-<h2 id="channel-NioServerSocketChannel-class"><a href="#channel-NioServerSocketChannel-class" class="headerlink" title=".channel(NioServerSocketChannel.class)"></a>.channel(NioServerSocketChannel.class)</h2><p>​            这步操作本身只是设置channel工厂，serverChannel实际创建在bind()的步骤中</p>
-<h3 id="设置channel工厂"><a href="#设置channel工厂" class="headerlink" title="设置channel工厂"></a>设置channel工厂</h3><p>​        将BootStrap的成员变量channelFactory设置为ReflectiveChannelFactory\&lt;NioServerSocketChannel>，看名字也知道，这个工厂是通过反射的方式创建Channel的：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">newChannel</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> (Channel)<span class="keyword">this</span>.clazz.newInstance(); &#125;</span><br></pre></td></tr></table></figure>
+        <h1 id="Netty-的服务端启动"><a href="#Netty-的服务端启动" class="headerlink" title="Netty 的服务端启动"></a>Netty 的服务端启动</h1><p>​    </p>
+<p>​        netty 的服务端启动代码通常也就两块 —— 方法链的参数设置、bind ().sync () 的服务端端口绑定</p>
+<h1 id="参数设置"><a href="#参数设置" class="headerlink" title="参数设置"></a>参数设置</h1><p>​    netty 通常以调用链方法进行参数设置，这里举一个服务端 channel 类型设置的例子</p>
+<h2 id="channel-NioServerSocketChannel-class"><a href="#channel-NioServerSocketChannel-class" class="headerlink" title=".channel (NioServerSocketChannel.class)"></a>.channel (NioServerSocketChannel.class)</h2><p>​            这步操作本身只是设置 channel 工厂，serverChannel 实际创建在 bind () 的步骤中</p>
+<h3 id="设置-channel-工厂"><a href="#设置-channel-工厂" class="headerlink" title="设置 channel 工厂"></a>设置 channel 工厂</h3><p>​        将 BootStrap 的成员变量 channelFactory 设置为 ReflectiveChannelFactory\&lt;NioServerSocketChannel>，看名字也知道，这个工厂是通过反射的方式创建 Channel 的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">newChannel</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> (Channel)<span class="keyword">this</span>.clazz.newInstance (); &#125;</span><br></pre></td></tr></table></figure>
         
           <a class="article-more-a" href="/2020/11/07/Netty之一——服务端启动/#more">more >></a>
         
@@ -331,7 +331,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/06/rabbitMQ基础/">rabbitMQ基础</a>
+      <a class="article-title" href="/2020/01/06/rabbitMQ基础/">rabbitMQ 基础</a>
     </h1>
   
 
@@ -349,20 +349,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="rabbit结构"><a href="#rabbit结构" class="headerlink" title="rabbit结构"></a>rabbit结构</h1><p><img src="/img/rabbit.png" alt="rabbit结构"></p>
-<p>   消费者是直接从Queue取出数据的，但生产者并非直接把数据传给Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。</p>
-<h3 id="exchange-交换机种类"><a href="#exchange-交换机种类" class="headerlink" title="exchange(交换机种类)"></a>exchange(交换机种类)</h3><ul>
-<li>direct(默认)：比较Message的routing key和Queue的binding key，完全匹配时，Message才会发送到该Queue。即一对一</li>
-<li>fanout：忽略key对比，发送Message到Exchange下游绑定的所有Queue。即一对所有</li>
-<li>topic：*匹配单个词组，#匹配0或多个词组。每个词组用.分开。即一对若干</li>
+        <h1 id="rabbit-结构"><a href="#rabbit-结构" class="headerlink" title="rabbit 结构"></a>rabbit 结构</h1><p><img src="/img/rabbit.png" alt="rabbit 结构"></p>
+<p>   消费者是直接从 Queue 取出数据的，但生产者并非直接把数据传给 Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。</p>
+<h3 id="exchange-交换机种类"><a href="#exchange-交换机种类" class="headerlink" title="exchange (交换机种类)"></a>exchange (交换机种类)</h3><ul>
+<li>direct (默认)：比较 Message 的 routing key 和 Queue 的 binding key，完全匹配时，Message 才会发送到该 Queue。即一对一</li>
+<li>fanout：忽略 key 对比，发送 Message 到 Exchange 下游绑定的所有 Queue。即一对所有</li>
+<li>topic：* 匹配单个词组，# 匹配 0 或多个词组。每个词组用。分开。即一对若干</li>
 <li>header 效果差几乎不实用</li>
 </ul>
-<h3 id="消息的确认"><a href="#消息的确认" class="headerlink" title="消息的确认"></a>消息的确认</h3><p>  消费者通过AMQP的basic.ack命令显式地向RabbitMQ发送一个确认，当然，默认的auto_ack为true会自动进行确认，只有确认了才会rabbit才会从队列中将该消息删除。如果消费者接收到信息未发送确认信息就断开连接，则会发送给下一个订阅的消费者。如果因为bug导致没有ack但是连接又不中断，rabbit会认为这个消费者没有准备好接收下一条消息，将不会给该消费者发送更多的消息。利用这一点，可以防止rabbit持续不断的消息涌向你的应用而导致过载。</p>
-<p>  使用AMQP的basic.reject命令：如果把reject命令的requeue设置为true的话，RabbitMQ会将消息重新发送给下一个订阅者。如果设置为false的话，RabbitMQ会立即把消息从队列中移除，而不会把它发送给新的消费者。</p>
-<h1 id="持久化-durable"><a href="#持久化-durable" class="headerlink" title="持久化(durable)"></a>持久化(durable)</h1><p>  非持久化的队列在rabbit重启后就会消失。需要持久化只需要几个配置参数而已。在队列声明中设置durable参数<br>  需要注意的是durable=True只是持久化了队列，但消息重启后会消失。再发送消息时添加 properties=pika.BasicProperties(delivery_mode=2) 参数设置消息持久化</p>
+<h3 id="消息的确认"><a href="#消息的确认" class="headerlink" title="消息的确认"></a>消息的确认</h3><p>  消费者通过 AMQP 的 basic.ack 命令显式地向 RabbitMQ 发送一个确认，当然，默认的 auto_ack 为 true 会自动进行确认，只有确认了才会 rabbit 才会从队列中将该消息删除。如果消费者接收到信息未发送确认信息就断开连接，则会发送给下一个订阅的消费者。如果因为 bug 导致没有 ack 但是连接又不中断，rabbit 会认为这个消费者没有准备好接收下一条消息，将不会给该消费者发送更多的消息。利用这一点，可以防止 rabbit 持续不断的消息涌向你的应用而导致过载。</p>
+<p>  使用 AMQP 的 basic.reject 命令：如果把 reject 命令的 requeue 设置为 true 的话，RabbitMQ 会将消息重新发送给下一个订阅者。如果设置为 false 的话，RabbitMQ 会立即把消息从队列中移除，而不会把它发送给新的消费者。</p>
+<h1 id="持久化-durable"><a href="#持久化-durable" class="headerlink" title="持久化 (durable)"></a>持久化 (durable)</h1><p>  非持久化的队列在 rabbit 重启后就会消失。需要持久化只需要几个配置参数而已。在队列声明中设置 durable 参数<br>  需要注意的是 durable=True 只是持久化了队列，但消息重启后会消失。再发送消息时添加 properties=pika.BasicProperties (delivery_mode=2) 参数设置消息持久化</p>
 <h1 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h1><p>  分为普通模式和镜像模式。</p>
 <ul>
-<li>普通模式，当用户请求Node1但数据在Node2时，RabbitMQ会临时在Node1、Node2间进行消息传输。</li>
+<li>普通模式，当用户请求 Node1 但数据在 Node2 时，RabbitMQ 会临时在 Node1、Node2 间进行消息传输。</li>
 <li>镜像模式中消息实体会主动在镜像节点间同步，而不是在客户端取数据时临时拉取。该模式带来的副作用也很明显，除了降低系统性能外，如果镜像队列数量过多，加之大量的消息进入，集群内部的网络带宽将会被这种同步通讯大大消耗掉。所以在对可靠性要求较高的场合中适用。</li>
 </ul>
 
@@ -425,7 +425,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/23/初识springcloud/">初识springcloud</a>
+      <a class="article-title" href="/2019/12/23/初识springcloud/">初识 springcloud</a>
     </h1>
   
 
@@ -443,10 +443,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h1><p>  springcloud是整合多个springboot项目用的。本质的业务代码和mvc还是springboot那套，通过springcloud可以让一个springboot项目调用另一个springboot项目的接口，一个springboot只负责一个微服务。<br>  下面介绍的组件本身是一个springboot</p>
-<h2 id="Eureka"><a href="#Eureka" class="headerlink" title="Eureka"></a>Eureka</h2><p>   注册服务中心，用于注册各种微服务，以便于其他微服务找到和访问。本身也是个springboot<br>   @EnableEurekaServer代表服务注册中心，@EnableDiscoveryClient， 表示用于发现eureka 注册中心的微服务。</p>
-<h2 id="Ribbon和Fegin-服务消费者"><a href="#Ribbon和Fegin-服务消费者" class="headerlink" title="Ribbon和Fegin 服务消费者"></a>Ribbon和Fegin 服务消费者</h2><p>   Ribbon用于微服务间的调用、API网关的请求转发，Fegin则是对Ribbon的封装。<br>   比如需要调用一个获取数据的api，目前有两个springboot启动着，application-name都是product-data-service，需要进行负载均衡来选择每次访问哪个。<br>   原本springboot中service层调用DAO层的Mapper接口，现在不是DAO层而是Ribbon/Fegin层<br>   使用Ribbon，用## restTemplate.getForObject(“<a href="http://PRODUCT-DATA-SERVICE/products&quot;,List.class" target="_blank" rel="noopener">http://PRODUCT-DATA-SERVICE/products&quot;,List.class</a>) ##去调用其他服务的接口获得数据。restTemplate是一个通过依赖注入的工具类</p>
-<p>   使用Fegin，先注明要调用的应用名称，再以控制器的写法调用该应用的具体接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FeignClient</span>(value = <span class="string">"PRODUCT-DATA-SERVICE"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ProductClientFeign</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/products"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Product&gt; <span class="title">listProdcuts</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+        <h1 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h1><p>  springcloud 是整合多个 springboot 项目用的。本质的业务代码和 mvc 还是 springboot 那套，通过 springcloud 可以让一个 springboot 项目调用另一个 springboot 项目的接口，一个 springboot 只负责一个微服务。<br>  下面介绍的组件本身是一个 springboot</p>
+<h2 id="Eureka"><a href="#Eureka" class="headerlink" title="Eureka"></a>Eureka</h2><p>   注册服务中心，用于注册各种微服务，以便于其他微服务找到和访问。本身也是个 springboot<br>   @EnableEurekaServer 代表服务注册中心，@EnableDiscoveryClient， 表示用于发现 eureka 注册中心的微服务。</p>
+<h2 id="Ribbon-和-Fegin-服务消费者"><a href="#Ribbon-和-Fegin-服务消费者" class="headerlink" title="Ribbon 和 Fegin 服务消费者"></a>Ribbon 和 Fegin 服务消费者</h2><p>   Ribbon 用于微服务间的调用、API 网关的请求转发，Fegin 则是对 Ribbon 的封装。<br>   比如需要调用一个获取数据的 api，目前有两个 springboot 启动着，application-name 都是 product-data-service，需要进行负载均衡来选择每次访问哪个。<br>   原本 springboot 中 service 层调用 DAO 层的 Mapper 接口，现在不是 DAO 层而是 Ribbon/Fegin 层<br>   使用 Ribbon，用 ## restTemplate.getForObject (“<a href="http://PRODUCT-DATA-SERVICE/products&quot;,List.class" target="_blank" rel="noopener">http://PRODUCT-DATA-SERVICE/products&quot;,List.class</a>) ## 去调用其他服务的接口获得数据。restTemplate 是一个通过依赖注入的工具类</p>
+<p>   使用 Fegin，先注明要调用的应用名称，再以控制器的写法调用该应用的具体接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FeignClient</span>(value = <span class="string">"PRODUCT-DATA-SERVICE"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ProductClientFeign</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/products"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Product&gt; <span class="title">listProdcuts</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
         
           <a class="article-more-a" href="/2019/12/23/初识springcloud/#more">more >></a>
         
@@ -509,7 +509,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/15/kafka基本原理和使用/">kafka基本原理和使用</a>
+      <a class="article-title" href="/2019/12/15/kafka基本原理和使用/">kafka 基本原理和使用</a>
     </h1>
   
 
@@ -527,14 +527,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="kafka的使用"><a href="#kafka的使用" class="headerlink" title="kafka的使用"></a>kafka的使用</h1><h1 id="kafka的结构组成以及特性"><a href="#kafka的结构组成以及特性" class="headerlink" title="kafka的结构组成以及特性"></a>kafka的结构组成以及特性</h1><p>   kafka可以为每一个应用场景设置一个Topic，创建topic时可以指定replicationfactor(副本数量，此topic用到几台机器，不能大于Broker数量),以及partitions分区数量，一个topic的不同序号分区用来存放不同的内容。partitions分区分为两个类型————leader和follow。在整个集群的所有机器中，一个序号的leader分区只有一个，该序号的其他分区都是副本</p>
-<p>   <img src="/img/kafka.png" alt="kafka结构"><br>   假设一共有3个Broker，一个topic有2个partitions。<strong><em>生产者和消费者直接进行读写操作的分区都是leader类型</em></strong>，follow类型只有备份功能。leader类型的分区分布在多个的Broker上。</p>
-<p>   ack参数为all时，leader将消息写入本地文件后，follow主动去push，完成后follow发送ack进行确认。leader在收到所有副本的ack向product发送ack。</p>
-<p>   若干个 Broker 组成一个集群（Cluster），其中集群内某个 Broker 会成为集群控制器（Cluster Controller），它负责管理集群，包括分配分区到 Broker、监控 Broker 故障等。如果一个broker挂了，某个序号的leader分区在该broker中，则会将另一个broker中的follow分区升级为leader</p>
-<p>   kafka由zookpeer调度，所以依赖于zookpeer服务。</p>
+        <h1 id="kafka-的使用"><a href="#kafka-的使用" class="headerlink" title="kafka 的使用"></a>kafka 的使用</h1><h1 id="kafka-的结构组成以及特性"><a href="#kafka-的结构组成以及特性" class="headerlink" title="kafka 的结构组成以及特性"></a>kafka 的结构组成以及特性</h1><p>   kafka 可以为每一个应用场景设置一个 Topic，创建 topic 时可以指定 replicationfactor (副本数量，此 topic 用到几台机器，不能大于 Broker 数量), 以及 partitions 分区数量，一个 topic 的不同序号分区用来存放不同的内容。partitions 分区分为两个类型 ————leader 和 follow。在整个集群的所有机器中，一个序号的 leader 分区只有一个，该序号的其他分区都是副本</p>
+<p>   <img src="/img/kafka.png" alt="kafka 结构"><br>   假设一共有 3 个 Broker，一个 topic 有 2 个 partitions。<strong><em> 生产者和消费者直接进行读写操作的分区都是 leader 类型 </em></strong>，follow 类型只有备份功能。leader 类型的分区分布在多个的 Broker 上。</p>
+<p>   ack 参数为 all 时，leader 将消息写入本地文件后，follow 主动去 push，完成后 follow 发送 ack 进行确认。leader 在收到所有副本的 ack 向 product 发送 ack。</p>
+<p>   若干个 Broker 组成一个集群（Cluster），其中集群内某个 Broker 会成为集群控制器（Cluster Controller），它负责管理集群，包括分配分区到 Broker、监控 Broker 故障等。如果一个 broker 挂了，某个序号的 leader 分区在该 broker 中，则会将另一个 broker 中的 follow 分区升级为 leader</p>
+<p>   kafka 由 zookpeer 调度，所以依赖于 zookpeer 服务。</p>
 <h2 id="一些概念"><a href="#一些概念" class="headerlink" title="一些概念"></a>一些概念</h2><ul>
-<li>消费者组：同一个消费组中的若干消费者不能同时访问同一个topic的同一个分区（如果只有三个partition，而消费者组有4个消费者，那么一个消费者会空闲）</li>
-<li>持久化：Kafka会将partition以消息日志的方式(落磁盘)存储起来，通过 顺序访问IO和缓存(等到一定的量或时间)才真正把数据写到磁盘上，来提高速度。</li>
+<li>消费者组：同一个消费组中的若干消费者不能同时访问同一个 topic 的同一个分区（如果只有三个 partition，而消费者组有 4 个消费者，那么一个消费者会空闲）</li>
+<li>持久化：Kafka 会将 partition 以消息日志的方式 (落磁盘) 存储起来，通过 顺序访问 IO 和缓存 (等到一定的量或时间) 才真正把数据写到磁盘上，来提高速度。</li>
 </ul>
 
       
@@ -596,7 +596,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/06/mysql索引与引擎/">mysql索引与引擎</a>
+      <a class="article-title" href="/2019/12/06/mysql索引与引擎/">mysql 索引与引擎</a>
     </h1>
   
 
@@ -614,10 +614,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="引擎"><a href="#引擎" class="headerlink" title="引擎"></a>引擎</h1><p>  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。<br>  主要分析使用MyIsam 和InnoDB</p>
-<h2 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h2><p>  InnoDB是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属性auto_increment，可以从灾难中恢复（通过bin-log日志等）。它没有保存表的行数，当SELECT COUNT(*) FROM TABLE时需要扫描全表。由于锁的粒度更小，写操作不会锁定全表，所以在并发较高时，使用Innodb引擎会提升效率。但是使用行级锁也不是绝对的，如果在执行一个SQL语句时MySQL不能确定要扫描的范围，InnoDB表同样会锁全表。</p>
+        <h1 id="引擎"><a href="#引擎" class="headerlink" title="引擎"></a>引擎</h1><p>  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。<br>  主要分析使用 MyIsam 和 InnoDB</p>
+<h2 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h2><p>  InnoDB 是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属性 auto_increment，可以从灾难中恢复（通过 bin-log 日志等）。它没有保存表的行数，当 SELECT COUNT (*) FROM TABLE 时需要扫描全表。由于锁的粒度更小，写操作不会锁定全表，所以在并发较高时，使用 Innodb 引擎会提升效率。但是使用行级锁也不是绝对的，如果在执行一个 SQL 语句时 MySQL 不能确定要扫描的范围，InnoDB 表同样会锁全表。</p>
 <h2 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h2><p>  它没有提供对数据库事务的支持，不能从灾难中恢复，也不支持行级锁和外键。修改时需要锁住整个表所以效率低，但查询速度很快。索引文件较小</p>
-<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>  索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行INSERT、UPDATE和DELETE。因为更新表时，MySQL不仅要保存数据，还要保存索引文件。<br>
+<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>  索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行 INSERT、UPDATE 和 DELETE。因为更新表时，MySQL 不仅要保存数据，还要保存索引文件。<br>
         
           <a class="article-more-a" href="/2019/12/06/mysql索引与引擎/#more">more >></a>
         
@@ -680,7 +680,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/">HashMap、ConcurrentHashMap的原理与区别</a>
+      <a class="article-title" href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/">HashMap、ConcurrentHashMap 的原理与区别</a>
     </h1>
   
 
@@ -700,9 +700,14 @@
       
         <h1 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h1><ul>
 <li>JDK1.7 之前 使用哈希表，拉链法解决冲突。</li>
-<li>JDK1.8 及之后 使用哈希表，拉链法解决冲突，但是在链过长后会转化为红黑树。<h2 id="hash冲突"><a href="#hash冲突" class="headerlink" title="hash冲突"></a>hash冲突</h2> 哈希值相同或者散列值相同导致争夺同一块内存。解决方法：<br> 1.开放定址法 ：继续寻找下一块未被占用的存储地址<br> 2.再散列法 ：再次调用hash函数<br> 3.链地址法（拉链法）：一个下标处对应一个链表，连接hash值相同的Node</li>
+<li>JDK1.8 及之后 使用哈希表，拉链法解决冲突，但是在链过长后会转化为红黑树。<h2 id="hash-冲突"><a href="#hash-冲突" class="headerlink" title="hash 冲突"></a>hash 冲突</h2> 哈希值相同或者散列值相同导致争夺同一块内存。解决方法：<ol>
+<li>开放定址法 ：继续寻找下一块未被占用的存储地址</li>
+<li>再散列法 ：再次调用 hash 函数</li>
+<li>链地址法（拉链法）：一个下标处对应一个链表，连接 hash 值相同的 Node</li>
+</ol>
+</li>
 </ul>
-<h3 id="put部分的源代码"><a href="#put部分的源代码" class="headerlink" title="put部分的源代码"></a>put部分的源代码</h3><p>   使用拉链法解决hash冲突<br>
+<h3 id="put-部分的源代码"><a href="#put-部分的源代码" class="headerlink" title="put 部分的源代码"></a>put 部分的源代码</h3><p>   使用拉链法解决 hash 冲突<br>
         
           <a class="article-more-a" href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/#more">more >></a>
         
@@ -765,7 +770,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/19/shiro认证授权流程原理/">shiro认证流程原理</a>
+      <a class="article-title" href="/2019/11/19/shiro认证授权流程原理/">shiro 认证流程原理</a>
     </h1>
   
 
@@ -783,8 +788,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="shiro"><a href="#shiro" class="headerlink" title="shiro"></a>shiro</h1><p>  shiro本质上是一个过滤器filter。<br>  securityManager是shiro的核心。大事小事都交由它。他是一个接口，有若干类层层<strong>继承</strong>。<br>  securityManager内部有验证器authenticator，授权器authenorizer，会话管理器SessionManager进行具体的行为（策略模式）<br>  不同的securityManager实现了不同的功能，比如AuthenticatingSecurityManager负责登录认证功能。其有一个Autheenticator的验证器，Autheenticator内有AuthenticatingRealm，需要实现doGetAuthenticationInfo（熟悉的朋友）。<br>  realm是和数据库进行交互的部分，通常需要依赖注入使用UserService类的数据库接口。</p>
-<p>  shiro结构：<br>
+        <h1 id="shiro"><a href="#shiro" class="headerlink" title="shiro"></a>shiro</h1><p>  shiro 本质上是一个过滤器 filter。<br>  securityManager 是 shiro 的核心。大事小事都交由它。他是一个接口，有若干类层层 <strong> 继承 </strong>。<br>  securityManager 内部有验证器 authenticator，授权器 authenorizer，会话管理器 SessionManager 进行具体的行为（策略模式）<br>  不同的 securityManager 实现了不同的功能，比如 AuthenticatingSecurityManager 负责登录认证功能。其有一个 Autheenticator 的验证器，Autheenticator 内有 AuthenticatingRealm，需要实现 doGetAuthenticationInfo（熟悉的朋友）。<br>  realm 是和数据库进行交互的部分，通常需要依赖注入使用 UserService 类的数据库接口。</p>
+<p>  shiro 结构：<br>
         
           <a class="article-more-a" href="/2019/11/19/shiro认证授权流程原理/#more">more >></a>
         
@@ -865,12 +870,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>  最近接触权限访问方面问题，阅读看shiro的源码。对Subject类如何区分每个线程进一步了解，研究了下底层ThreadLocal是怎么工作的。</p>
-<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&lt;Thread,Object&gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。<br>  ThreadLocal<t>。后面跟着泛型，ThreadLocal理解为一个变量，而不是一个容器</t></p>
+        <p>  最近接触权限访问方面问题，阅读看 shiro 的源码。对 Subject 类如何区分每个线程进一步了解，研究了下底层 ThreadLocal 是怎么工作的。</p>
+<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&lt;Thread,Object&gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。<br>  ThreadLocal<t>。后面跟着泛型，ThreadLocal 理解为一个变量，而不是一个容器</t></p>
 <h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><ul>
-<li>set(obj)：向当前线程中存储数据</li>
-<li>get()：获取当前线程中的数据</li>
-<li>remove()：删除当前线程中的数据</li>
+<li>set (obj)：向当前线程中存储数据</li>
+<li>get ()：获取当前线程中的数据</li>
+<li>remove ()：删除当前线程中的数据</li>
 </ul>
         
           <a class="article-more-a" href="/2019/11/16/ThreadLoacl/#more">more >></a>
@@ -952,8 +957,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>  SpringIOC的容器主要有两种：BeanFactory和ApplicationContext。BeanFactory是spring提供的基础IOC容器，AA构建与BB之上，提供了额外的功能。</p>
-<h2 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h2><p>   因为本篇涉及基础的IOC部分，所以以BeanFactory为例<br>
+        <p>  SpringIOC 的容器主要有两种：BeanFactory 和 ApplicationContext。BeanFactory 是 spring 提供的基础 IOC 容器，AA 构建与 BB 之上，提供了额外的功能。</p>
+<h2 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h2><p>   因为本篇涉及基础的 IOC 部分，所以以 BeanFactory 为例<br>
         
           <a class="article-more-a" href="/2019/10/03/springIOC/#more">more >></a>
         
@@ -1136,15 +1141,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1156,15 +1157,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1172,15 +1173,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>

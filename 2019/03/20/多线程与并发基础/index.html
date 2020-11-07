@@ -187,27 +187,33 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="多线程与并发基础"><a href="#多线程与并发基础" class="headerlink" title="多线程与并发基础"></a>多线程与并发基础</h1><p>  主要简单介绍多线程和同步的基础，以及互斥部分的互斥锁方面。<br>  <img src="/img/lock.png" alt="锁的种类"><br><a id="more"></a></p>
-<h2 id="并发例子"><a href="#并发例子" class="headerlink" title="并发例子"></a>并发例子</h2><p>  以一个懒汉单例模式为例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pubic class Singleto &#123;</span><br><span class="line">    static Singleto instance;</span><br><span class="line">    static Singleto getInstance()&#123;</span><br><span class="line">        if (instance == null) &#123;</span><br><span class="line">            synchronized(Singleto.class) &#123;</span><br><span class="line">                if (instance == null) &#123;</span><br><span class="line">                    instance = new Singleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong><em>instance = new Singleton();</em></strong> 分为两步，先让instance指向一块分配好的内存&amp;M，然后将M初始化。如果第一步结束后线程挂起，下一个线程执行时instancce不为null，但没初始化就被返回。</p>
-<h2 id="并发导致的问题"><a href="#并发导致的问题" class="headerlink" title="并发导致的问题"></a>并发导致的问题</h2><p>1.安全性<br>可能引发线程安全的问题：<br>   数据竞争，多个线程不采取保护措施地读取同一个数据。<br>   竞态条件，程序的执行结果依赖程序的执行的顺序。<br>解决这两个问题也很简单，互斥即可，互斥的实现就是锁。</p>
-<p>2.活跃性</p>
-<p>  活锁，线程虽然不阻塞但是无法继续执行。<br>    等待随机时间<br>  饥饿，线程无法访问资源而无法执行。<br>   保证资源充足<br>    公平分配资源<br>    避免持有锁的线程长时间执行</p>
-<p>3.性能问题<br>  锁会导致线程串行，串行就会降低效率</p>
-<h2 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h2><h3 id="多线程使用"><a href="#多线程使用" class="headerlink" title="多线程使用"></a>多线程使用</h3><p>   多线程的使用只要注意，调用的是runable的start()而不是run()，否则不会新建立一个线程<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public intface Runable&#123;</span><br><span class="line">   run()&#123;</span><br><span class="line">   </span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line">Runable r = new Runable();</span><br><span class="line">Thread t = new Thread(r);</span><br><span class="line">t.start();</span><br></pre></td></tr></table></figure></p>
+<h2 id="并发例子"><a href="#并发例子" class="headerlink" title="并发例子"></a>并发例子</h2><p>  以一个懒汉单例模式为例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pubic class Singleto &#123;</span><br><span class="line">    static Singleto instance;</span><br><span class="line">    static Singleto getInstance ()&#123;</span><br><span class="line">        if (instance == null) &#123;</span><br><span class="line">            synchronized (Singleto.class) &#123;</span><br><span class="line">                if (instance == null) &#123;</span><br><span class="line">                    instance = new Singleton ();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong><em>instance = new Singleton ();</em></strong> 分为两步，先让 instance 指向一块分配好的内存 &amp; M，然后将 M 初始化。如果第一步结束后线程挂起，下一个线程执行时 instancce 不为 null，但没初始化就被返回。</p>
+<h2 id="并发导致的问题"><a href="#并发导致的问题" class="headerlink" title="并发导致的问题"></a>并发导致的问题</h2><ol>
+<li><p>安全性<br>可能引发线程安全的问题：<br>数据竞争，多个线程不采取保护措施地读取同一个数据。<br>竞态条件，程序的执行结果依赖程序的执行的顺序。<br>解决这两个问题也很简单，互斥即可，互斥的实现就是锁。</p>
+</li>
+<li><p>活跃性</p>
+<p>活锁，线程虽然不阻塞但是无法继续执行。<br> 等待随机时间<br>饥饿，线程无法访问资源而无法执行。<br>保证资源充足<br> 公平分配资源<br> 避免持有锁的线程长时间执行</p>
+</li>
+<li><p>性能问题<br>锁会导致线程串行，串行就会降低效率</p>
+<h2 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h2><h3 id="多线程使用"><a href="#多线程使用" class="headerlink" title="多线程使用"></a>多线程使用</h3><p>多线程的使用只要注意，调用的是 runable 的 start () 而不是 run ()，否则不会新建立一个线程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public intface Runable&#123;</span><br><span class="line">   run ()&#123;</span><br><span class="line">   </span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line">Runable r = new Runable ();</span><br><span class="line">Thread t = new Thread (r);</span><br><span class="line">t.start ();</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
 <h3 id="守护线程"><a href="#守护线程" class="headerlink" title="守护线程"></a>守护线程</h3><p>守护线程为其他线程服务，如果出现只剩守护线程就没运行必要了。如计时线程。因为可能在任何时候中断，所以守护线程不能访问固有资源如文件、数据库。</p>
-<h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2><p>  为解决条件竞争，需要对临界区域上锁。先Lock.lock()后，在finally区块{Lock.unlock()解锁}</p>
-<h3 id="ReentrantLock-可重入锁"><a href="#ReentrantLock-可重入锁" class="headerlink" title="ReentrantLock(可重入锁)"></a>ReentrantLock(可重入锁)</h3><p>  假设类中有A，B两个方法，都需要锁。A中调用B，锁已经被占用，会永远阻塞。<br>  引入可重入锁，线程可重复获取已持有的锁。同一个线程占据多次锁不会阻塞，而是在线程内部有一个holdCount变量，同线程每次lock则会+1，一次unlock则会减1。holdCount为0时才会释放锁。</p>
-<h3 id="条件对象"><a href="#条件对象" class="headerlink" title="条件对象"></a>条件对象</h3><p>  有时线程进入临界区后需要满足条件才能继续执行，否则就暂时挂起。不同线程继续执行的条件可能不同，有些需要条件a，有些是条件b。一个锁可以有一个或多个条件对象。<br>   首先先实例一个条件对象赋值给类的成员变量a <strong><em>a = new Lock.condition()</em></strong><br>   发现条件对象不满足则挂起 <strong><em>a.await()</em></strong> ，进入<strong>该条件</strong>的等待集<br>   其他线程a.signall()，激活为<strong>a条件</strong>等待的所有线程。</p>
-<h3 id="ReentrantReadWriteLock-读-写锁"><a href="#ReentrantReadWriteLock-读-写锁" class="headerlink" title="ReentrantReadWriteLock(读/写锁)"></a>ReentrantReadWriteLock(读/写锁)</h3><p>   写锁排斥所有读操作和写操作，读锁只排斥所有写操作(对读操作是共享锁)。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">private ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();</span><br><span class="line">private Lock readlock = rwl.getReadLock();</span><br><span class="line">private Lock writelock = rwl.getWriteLock();</span><br></pre></td></tr></table></figure></p>
+<h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2><p>  为解决条件竞争，需要对临界区域上锁。先 Lock.lock () 后，在 finally 区块 {Lock.unlock () 解锁}</p>
+<h3 id="ReentrantLock-可重入锁"><a href="#ReentrantLock-可重入锁" class="headerlink" title="ReentrantLock (可重入锁)"></a>ReentrantLock (可重入锁)</h3><p>  假设类中有 A，B 两个方法，都需要锁。A 中调用 B，锁已经被占用，会永远阻塞。<br>  引入可重入锁，线程可重复获取已持有的锁。同一个线程占据多次锁不会阻塞，而是在线程内部有一个 holdCount 变量，同线程每次 lock 则会 + 1，一次 unlock 则会减 1。holdCount 为 0 时才会释放锁。</p>
+<h3 id="条件对象"><a href="#条件对象" class="headerlink" title="条件对象"></a>条件对象</h3><p>  有时线程进入临界区后需要满足条件才能继续执行，否则就暂时挂起。不同线程继续执行的条件可能不同，有些需要条件 a，有些是条件 b。一个锁可以有一个或多个条件对象。<br>   首先先实例一个条件对象赋值给类的成员变量 a <strong><em>a = new Lock.condition ()</em></strong><br>   发现条件对象不满足则挂起 <strong><em>a.await ()</em></strong> ，进入 <strong> 该条件 </strong> 的等待集<br>   其他线程 a.signall ()，激活为 <strong>a 条件 </strong> 等待的所有线程。</p>
+<h3 id="ReentrantReadWriteLock-读-写锁"><a href="#ReentrantReadWriteLock-读-写锁" class="headerlink" title="ReentrantReadWriteLock (读 / 写锁)"></a>ReentrantReadWriteLock (读 / 写锁)</h3><p>   写锁排斥所有读操作和写操作，读锁只排斥所有写操作 (对读操作是共享锁)。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">private ReentrantReadWriteLock rwl = new ReentrantReadWriteLock ();</span><br><span class="line">private Lock readlock = rwl.getReadLock ();</span><br><span class="line">private Lock writelock = rwl.getWriteLock ();</span><br></pre></td></tr></table></figure></p>
 <h3 id="StampedLock"><a href="#StampedLock" class="headerlink" title="StampedLock"></a>StampedLock</h3><p>  StampedLock 是一个改良版的 ReentrantReadWriteLock。一般的多线程情况下，读的情况远远大于写的情况。所以写操作可能会存在饥饿现象。</p>
 <ul>
 <li>读锁不会阻塞写锁。</li>
 <li>如果读时发生了写操作，那么就重读。</li>
 <li>重读操作使用了乐观锁。</li>
-<li>如果多次重读再上读锁<h3 id="锁测试与超时"><a href="#锁测试与超时" class="headerlink" title="锁测试与超时"></a>锁测试与超时</h3> 在申请锁时使用Lock.tryLock();可以设置时间参数等待。若返回false可以离开去做其他事情。<h3 id="synchronized"><a href="#synchronized" class="headerlink" title="synchronized"></a>synchronized</h3> 不再需要使用显式的锁。使用wait(),notifyAll()来取代await和signAll</li>
+<li>如果多次重读再上读锁<h3 id="锁测试与超时"><a href="#锁测试与超时" class="headerlink" title="锁测试与超时"></a>锁测试与超时</h3> 在申请锁时使用 Lock.tryLock (); 可以设置时间参数等待。若返回 false 可以离开去做其他事情。<h3 id="synchronized"><a href="#synchronized" class="headerlink" title="synchronized"></a>synchronized</h3> 不再需要使用显式的锁。使用 wait (),notifyAll () 来取代 await 和 signAll</li>
 </ul>
 <h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><p>  死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去。</p>
-<h3 id="Thread-sleep-0-的作用"><a href="#Thread-sleep-0-的作用" class="headerlink" title="Thread.sleep(0)的作用"></a>Thread.sleep(0)的作用</h3><p>  由于Java采用抢占式的线程调度算法，因此可能会出现某条线程常常获取到CPU控制权的情况，为了让某些优先级比较低的线程也能获取到CPU控制权，可以使用Thread.sleep(0)手动触发一次操作系统分配时间片的操作，这也是平衡CPU控制权的一种操作。</p>
+<h3 id="Thread-sleep-0-的作用"><a href="#Thread-sleep-0-的作用" class="headerlink" title="Thread.sleep (0) 的作用"></a>Thread.sleep (0) 的作用</h3><p>  由于 Java 采用抢占式的线程调度算法，因此可能会出现某条线程常常获取到 CPU 控制权的情况，为了让某些优先级比较低的线程也能获取到 CPU 控制权，可以使用 Thread.sleep (0) 手动触发一次操作系统分配时间片的操作，这也是平衡 CPU 控制权的一种操作。</p>
 
       
       
@@ -295,14 +301,14 @@
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          同步器框架AQS
+          同步器框架 AQS
         
       </div>
     </a>
   
   
     <a href="/2018/10/31/python闭包与延迟绑定/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">python闭包与延迟绑定</div>
+      <div class="article-nav-title">python 闭包与延迟绑定</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -329,7 +335,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#多线程与并发基础"><span class="toc-number">1.</span> <span class="toc-text">多线程与并发基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#并发例子"><span class="toc-number">1.1.</span> <span class="toc-text">并发例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#并发导致的问题"><span class="toc-number">1.2.</span> <span class="toc-text">并发导致的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多线程"><span class="toc-number">1.3.</span> <span class="toc-text">多线程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#多线程使用"><span class="toc-number">1.3.1.</span> <span class="toc-text">多线程使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#守护线程"><span class="toc-number">1.3.2.</span> <span class="toc-text">守护线程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步"><span class="toc-number">1.4.</span> <span class="toc-text">同步</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ReentrantLock-可重入锁"><span class="toc-number">1.4.1.</span> <span class="toc-text">ReentrantLock(可重入锁)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#条件对象"><span class="toc-number">1.4.2.</span> <span class="toc-text">条件对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ReentrantReadWriteLock-读-写锁"><span class="toc-number">1.4.3.</span> <span class="toc-text">ReentrantReadWriteLock(读/写锁)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#StampedLock"><span class="toc-number">1.4.4.</span> <span class="toc-text">StampedLock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#锁测试与超时"><span class="toc-number">1.4.5.</span> <span class="toc-text">锁测试与超时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#synchronized"><span class="toc-number">1.4.6.</span> <span class="toc-text">synchronized</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#死锁"><span class="toc-number">1.4.7.</span> <span class="toc-text">死锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Thread-sleep-0-的作用"><span class="toc-number">1.4.8.</span> <span class="toc-text">Thread.sleep(0)的作用</span></a></li></ol></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#多线程与并发基础"><span class="toc-number">1.</span> <span class="toc-text">多线程与并发基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#并发例子"><span class="toc-number">1.1.</span> <span class="toc-text">并发例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#并发导致的问题"><span class="toc-number">1.2.</span> <span class="toc-text">并发导致的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多线程"><span class="toc-number">1.3.</span> <span class="toc-text">多线程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#多线程使用"><span class="toc-number">1.3.1.</span> <span class="toc-text">多线程使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#守护线程"><span class="toc-number">1.3.2.</span> <span class="toc-text">守护线程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步"><span class="toc-number">1.4.</span> <span class="toc-text">同步</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ReentrantLock-可重入锁"><span class="toc-number">1.4.1.</span> <span class="toc-text">ReentrantLock (可重入锁)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#条件对象"><span class="toc-number">1.4.2.</span> <span class="toc-text">条件对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ReentrantReadWriteLock-读-写锁"><span class="toc-number">1.4.3.</span> <span class="toc-text">ReentrantReadWriteLock (读 / 写锁)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#StampedLock"><span class="toc-number">1.4.4.</span> <span class="toc-text">StampedLock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#锁测试与超时"><span class="toc-number">1.4.5.</span> <span class="toc-text">锁测试与超时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#synchronized"><span class="toc-number">1.4.6.</span> <span class="toc-text">synchronized</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#死锁"><span class="toc-number">1.4.7.</span> <span class="toc-text">死锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Thread-sleep-0-的作用"><span class="toc-number">1.4.8.</span> <span class="toc-text">Thread.sleep (0) 的作用</span></a></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -471,15 +477,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -491,15 +493,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -507,15 +509,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>

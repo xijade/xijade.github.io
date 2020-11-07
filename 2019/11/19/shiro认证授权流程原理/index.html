@@ -6,21 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>shiro认证流程原理 | xijue&#39;s blog</title>
+  <title>shiro 认证流程原理 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="shiro  shiro本质上是一个过滤器filter。  securityManager是shiro的核心。大事小事都交由它。他是一个接口，有若干类层层继承。  securityManager内部有验证器authenticator，授权器authenorizer，会话管理器SessionManager进行具体的行为（策略模式）  不同的securityManager实现了不同的功能，比如Auth">
+  <meta name="description" content="shiro  shiro 本质上是一个过滤器 filter。  securityManager 是 shiro 的核心。大事小事都交由它。他是一个接口，有若干类层层  继承 。  securityManager 内部有验证器 authenticator，授权器 authenorizer，会话管理器 SessionManager 进行具体的行为（策略模式）  不同的 securityManager">
 <meta name="keywords" content="java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="shiro认证流程原理">
+<meta property="og:title" content="shiro 认证流程原理">
 <meta property="og:url" content="http://yoursite.com/2019/11/19/shiro认证授权流程原理/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="shiro  shiro本质上是一个过滤器filter。  securityManager是shiro的核心。大事小事都交由它。他是一个接口，有若干类层层继承。  securityManager内部有验证器authenticator，授权器authenorizer，会话管理器SessionManager进行具体的行为（策略模式）  不同的securityManager实现了不同的功能，比如Auth">
+<meta property="og:description" content="shiro  shiro 本质上是一个过滤器 filter。  securityManager 是 shiro 的核心。大事小事都交由它。他是一个接口，有若干类层层  继承 。  securityManager 内部有验证器 authenticator，授权器 authenorizer，会话管理器 SessionManager 进行具体的行为（策略模式）  不同的 securityManager">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/shiro.jpg">
 <meta property="og:updated_time" content="2019-11-21T16:11:22.528Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="shiro认证流程原理">
-<meta name="twitter:description" content="shiro  shiro本质上是一个过滤器filter。  securityManager是shiro的核心。大事小事都交由它。他是一个接口，有若干类层层继承。  securityManager内部有验证器authenticator，授权器authenorizer，会话管理器SessionManager进行具体的行为（策略模式）  不同的securityManager实现了不同的功能，比如Auth">
+<meta name="twitter:title" content="shiro 认证流程原理">
+<meta name="twitter:description" content="shiro  shiro 本质上是一个过滤器 filter。  securityManager 是 shiro 的核心。大事小事都交由它。他是一个接口，有若干类层层  继承 。  securityManager 内部有验证器 authenticator，授权器 authenorizer，会话管理器 SessionManager 进行具体的行为（策略模式）  不同的 securityManager">
 <meta name="twitter:image" content="http://yoursite.com/img/shiro.jpg">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
@@ -164,7 +164,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      shiro认证流程原理
+      shiro 认证流程原理
     </h1>
   
 
@@ -186,18 +186,30 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="shiro"><a href="#shiro" class="headerlink" title="shiro"></a>shiro</h1><p>  shiro本质上是一个过滤器filter。<br>  securityManager是shiro的核心。大事小事都交由它。他是一个接口，有若干类层层<strong>继承</strong>。<br>  securityManager内部有验证器authenticator，授权器authenorizer，会话管理器SessionManager进行具体的行为（策略模式）<br>  不同的securityManager实现了不同的功能，比如AuthenticatingSecurityManager负责登录认证功能。其有一个Autheenticator的验证器，Autheenticator内有AuthenticatingRealm，需要实现doGetAuthenticationInfo（熟悉的朋友）。<br>  realm是和数据库进行交互的部分，通常需要依赖注入使用UserService类的数据库接口。</p>
-<p>  shiro结构：<br>  <a id="more"></a><br>  <img src="/img/shiro.jpg" alt="shiro结构"></p>
-<h2 id="登录"><a href="#登录" class="headerlink" title="登录"></a>登录</h2><p>  直接从程序的入口开始探索。在控制层，用户登录的api中<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Subject subject = SecurityUtils.getSubject();</span><br><span class="line">CustomToken token = <span class="keyword">new</span> CustomToken(mobile, password);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">            subject.login(token);</span><br><span class="line">            subject.getSession().setTimeout(<span class="number">86400000</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>  调用了subject.login()。来到SecurityUtils查看Subject到底是和物</p>
-<h3 id="Subject类"><a href="#Subject类" class="headerlink" title="Subject类"></a>Subject类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityUtils</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Subject <span class="title">getSubject</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Subject subject = ThreadContext.getSubject();</span><br><span class="line">        <span class="keyword">if</span> (subject == <span class="keyword">null</span>) &#123;</span><br><span class="line">            subject = (<span class="keyword">new</span> Subject.Builder()).buildSubject();</span><br><span class="line">            ThreadContext.bind(subject);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> subject;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  可以看到subject对象是在ThreadContext类中绑定的。ThreadContext类中维持着一个ThreadLocal对象。利用泛型把ThreadLocal定义为Map类型，以字符串“ThreadContext_subject_key”为键放入Subject。（额外说一下，这样目前的结构是，每个Thread内有个ThreadLocalMap，这个ThreadLocalMap存放键为resources值为Map&lt;Object,Object&gt;类型,此Map中存放着键为subject_key值为subject()）</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadContext</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String SUBJECT_KEY = ThreadContext.class.getName() + <span class="string">"_SUBJECT_KEY"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;Map&lt;Object, Object&gt;&gt; resources = <span class="keyword">new</span> InheritableThreadLocalMap&lt;Map&lt;Object, Object&gt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Subject <span class="title">getSubject</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> (Subject) get(SUBJECT_KEY);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">get</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (log.isTraceEnabled()) &#123;</span><br><span class="line">            String msg = <span class="string">"get() - in thread ["</span> + Thread.currentThread().getName() + <span class="string">"]"</span>;</span><br><span class="line">            log.trace(msg);</span><br><span class="line">        &#125;</span><br><span class="line">        Object value = getValue(key);</span><br><span class="line">        <span class="keyword">if</span> ((value != <span class="keyword">null</span>) &amp;&amp; log.isTraceEnabled()) &#123;</span><br><span class="line">            String msg = <span class="string">"Retrieved value of type ["</span> + value.getClass().getName() + <span class="string">"] for key ["</span> +</span><br><span class="line">                    key + <span class="string">"] "</span> + <span class="string">"bound to thread ["</span> + Thread.currentThread().getName() + <span class="string">"]"</span>;</span><br><span class="line">            log.trace(msg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">   &#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Object <span class="title">getValue</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">        Map&lt;Object, Object&gt; perThreadResources = resources.get();</span><br><span class="line">        <span class="keyword">return</span> perThreadResources != <span class="keyword">null</span> ? perThreadResources.get(key) : <span class="keyword">null</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>   Subject的创建是委托给SecurityManager的。最底层是创建一个SubjectContext对象，包含着sessionid，host，AUTHENTICATED等相关信息。subject.login()中还是把token交给securityManager验证，成功后获取session。</p>
-<h3 id="AuthenticatingSecurityManager"><a href="#AuthenticatingSecurityManager" class="headerlink" title="AuthenticatingSecurityManager"></a>AuthenticatingSecurityManager</h3><pre><code>AuthenticatingSecurityManager是SecurityManager的子类，他有一个验证器authenticator的引用，authenticator有一个realm的引用。SecurityManager的login()内调用的就是authenticator.authenticate(token)。authenticator.authenticate(token)调用realm.getAuthenticationInfo(token)。在这里面调用了this.doGetAuthenticationInfo(token)，也就是使用shiro要自定义编写的认证部分。
-</code></pre><h2 id="登录状态的验证"><a href="#登录状态的验证" class="headerlink" title="登录状态的验证"></a>登录状态的验证</h2><p>  在ShiroConfig中会有比如  <code>filterChainDefinitionMap.put(&quot;/**&quot;, &quot;authc&quot;)</code>  需要登录状态访问。  在配置文件中给authc配上对应的过滤器(继承AuthenticationFilter)并且实现isAccessAllowed()进行验证。简单的比如判断传来的subject是否存在session就行</p>
-<p>  授权认证流程一样。在配置文件中为perms权限设置PermsAuthorizationFilter过滤器。authenorizingtionsecuritymanager，authenorizer，authenorizingRealm的关系和登录的一样。自定义的Realm一般是authenorizingRealm</p>
-<h2 id="HTTP请求处理过程"><a href="#HTTP请求处理过程" class="headerlink" title="HTTP请求处理过程"></a>HTTP请求处理过程</h2><p>1.每个http请求都被ShoriFilter拦截进行处理<br>2.将SecurityManager对象和包装后的Request和Response作为构造参数创建WebSubject.Builder实例，并调用buildWebSubject方法创建Subject<br>3.在构造方法中创新新的SubjectContext实例，并将SecurityManager保存到SubjectContext实例中<br>4.将Request和Response也添加到SubjectContext中保存<br>5.将subjectContext作为参数，调用SecurityManager的createSubject方法创建Subject对象<br>6.将SubjectContext作为参数，调用SubjectFactory【DefaultSubjectFactory】的createSubject方法创建Subject<br>7.接着取出SubjectContext一路收集来的数据来构建DelegatingSubject对象并返回。<br>8.当调用Subject的getSession方法的时候，如果Session不存在，则首先创建一个新的DefaultSessionContext实例并设置host值【可能是空】<br>9.将sessionContext对象作为参数调用securityManager的start方法来创建Session<br>10.从SessionContext中取出HttpServletRequest，并调用HttpServletRequest的getSession方法来获取HttpSession，同时从SessionContext中取出host，使用这两个值作为构造函数的参数实例化HttpServletSession类。<br>11.到此，Session的创建过程结束，此时的HttpServletSession纯粹只是HttpSession的代理一样。 </p>
+        <h1 id="shiro"><a href="#shiro" class="headerlink" title="shiro"></a>shiro</h1><p>  shiro 本质上是一个过滤器 filter。<br>  securityManager 是 shiro 的核心。大事小事都交由它。他是一个接口，有若干类层层 <strong> 继承 </strong>。<br>  securityManager 内部有验证器 authenticator，授权器 authenorizer，会话管理器 SessionManager 进行具体的行为（策略模式）<br>  不同的 securityManager 实现了不同的功能，比如 AuthenticatingSecurityManager 负责登录认证功能。其有一个 Autheenticator 的验证器，Autheenticator 内有 AuthenticatingRealm，需要实现 doGetAuthenticationInfo（熟悉的朋友）。<br>  realm 是和数据库进行交互的部分，通常需要依赖注入使用 UserService 类的数据库接口。</p>
+<p>  shiro 结构：<br>  <a id="more"></a><br>  <img src="/img/shiro.jpg" alt="shiro 结构"></p>
+<h2 id="登录"><a href="#登录" class="headerlink" title="登录"></a>登录</h2><p>  直接从程序的入口开始探索。在控制层，用户登录的 api 中<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Subject subject = SecurityUtils.getSubject ();</span><br><span class="line">CustomToken token = <span class="keyword">new</span> CustomToken (mobile, password);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">            subject.login (token);</span><br><span class="line">            subject.getSession ().setTimeout (<span class="number">86400000</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>  调用了 subject.login ()。来到 SecurityUtils 查看 Subject 到底是和物</p>
+<h3 id="Subject-类"><a href="#Subject-类" class="headerlink" title="Subject 类"></a>Subject 类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">SecurityUtils</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Subject <span class="title">getSubject</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Subject subject = ThreadContext.getSubject ();</span><br><span class="line">        <span class="keyword">if</span> (subject == <span class="keyword">null</span>) &#123;</span><br><span class="line">            subject = (<span class="keyword">new</span> Subject.Builder ()).buildSubject ();</span><br><span class="line">            ThreadContext.bind (subject);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> subject;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  可以看到 subject 对象是在 ThreadContext 类中绑定的。ThreadContext 类中维持着一个 ThreadLocal 对象。利用泛型把 ThreadLocal 定义为 Map 类型，以字符串 “ThreadContext_subject_key” 为键放入 Subject。（额外说一下，这样目前的结构是，每个 Thread 内有个 ThreadLocalMap，这个 ThreadLocalMap 存放键为 resources 值为 Map&lt;Object,Object &gt; 类型，此 Map 中存放着键为 subject_key 值为 subject ()）</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadContext</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String SUBJECT_KEY = ThreadContext.class.getName () + <span class="string">"_SUBJECT_KEY"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;Map&lt;Object, Object&gt;&gt; resources = <span class="keyword">new</span> InheritableThreadLocalMap&lt;Map&lt;Object, Object&gt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Subject <span class="title">getSubject</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> (Subject) get (SUBJECT_KEY);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">get</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (log.isTraceEnabled ()) &#123;</span><br><span class="line">            String msg = <span class="string">"get () - in thread ["</span> + Thread.currentThread ().getName () + <span class="string">"]"</span>;</span><br><span class="line">            log.trace (msg);</span><br><span class="line">        &#125;</span><br><span class="line">        Object value = getValue (key);</span><br><span class="line">        <span class="keyword">if</span> ((value != <span class="keyword">null</span>) &amp;&amp; log.isTraceEnabled ()) &#123;</span><br><span class="line">            String msg = <span class="string">"Retrieved value of type ["</span> + value.getClass ().getName () + <span class="string">"] for key ["</span> +</span><br><span class="line">                    key + <span class="string">"]"</span> + <span class="string">"bound to thread ["</span> + Thread.currentThread ().getName () + <span class="string">"]"</span>;</span><br><span class="line">            log.trace (msg);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">   &#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Object <span class="title">getValue</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">        Map&lt;Object, Object&gt; perThreadResources = resources.get ();</span><br><span class="line">        <span class="keyword">return</span> perThreadResources != <span class="keyword">null</span> ? perThreadResources.get (key) : <span class="keyword">null</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>   Subject 的创建是委托给 SecurityManager 的。最底层是创建一个 SubjectContext 对象，包含着 sessionid，host，AUTHENTICATED 等相关信息。subject.login () 中还是把 token 交给 securityManager 验证，成功后获取 session。</p>
+<h3 id="AuthenticatingSecurityManager"><a href="#AuthenticatingSecurityManager" class="headerlink" title="AuthenticatingSecurityManager"></a>AuthenticatingSecurityManager</h3><pre><code>AuthenticatingSecurityManager 是 SecurityManager 的子类，他有一个验证器 authenticator 的引用，authenticator 有一个 realm 的引用。SecurityManager 的 login () 内调用的就是 authenticator.authenticate (token)。authenticator.authenticate (token) 调用 realm.getAuthenticationInfo (token)。在这里面调用了 this.doGetAuthenticationInfo (token)，也就是使用 shiro 要自定义编写的认证部分。
+</code></pre><h2 id="登录状态的验证"><a href="#登录状态的验证" class="headerlink" title="登录状态的验证"></a>登录状态的验证</h2><p>  在 ShiroConfig 中会有比如  <code>filterChainDefinitionMap.put (&quot;/**&quot;,&quot;authc&quot;)</code>  需要登录状态访问。  在配置文件中给 authc 配上对应的过滤器 (继承 AuthenticationFilter) 并且实现 isAccessAllowed () 进行验证。简单的比如判断传来的 subject 是否存在 session 就行</p>
+<p>  授权认证流程一样。在配置文件中为 perms 权限设置 PermsAuthorizationFilter 过滤器。authenorizingtionsecuritymanager，authenorizer，authenorizingRealm 的关系和登录的一样。自定义的 Realm 一般是 authenorizingRealm</p>
+<h2 id="HTTP-请求处理过程"><a href="#HTTP-请求处理过程" class="headerlink" title="HTTP 请求处理过程"></a>HTTP 请求处理过程</h2><ol>
+<li>每个 http 请求都被 ShoriFilter 拦截进行处理</li>
+<li>将 SecurityManager 对象和包装后的 Request 和 Response 作为构造参数创建 WebSubject.Builder 实例，并调用 buildWebSubject 方法创建 Subject</li>
+<li>在构造方法中创新新的 SubjectContext 实例，并将 SecurityManager 保存到 SubjectContext 实例中</li>
+<li>将 Request 和 Response 也添加到 SubjectContext 中保存</li>
+<li>将 subjectContext 作为参数，调用 SecurityManager 的 createSubject 方法创建 Subject 对象</li>
+<li>将 SubjectContext 作为参数，调用 SubjectFactory【DefaultSubjectFactory】的 createSubject 方法创建 Subject</li>
+<li>接着取出 SubjectContext 一路收集来的数据来构建 DelegatingSubject 对象并返回。</li>
+<li>当调用 Subject 的 getSession 方法的时候，如果 Session 不存在，则首先创建一个新的 DefaultSessionContext 实例并设置 host 值【可能是空】</li>
+<li>将 sessionContext 对象作为参数调用 securityManager 的 start 方法来创建 Session</li>
+<li>从 SessionContext 中取出 HttpServletRequest，并调用 HttpServletRequest 的 getSession 方法来获取 HttpSession，同时从 SessionContext 中取出 host，使用这两个值作为构造函数的参数实例化 HttpServletSession 类。</li>
+<li>到此，Session 的创建过程结束，此时的 HttpServletSession 纯粹只是 HttpSession 的代理一样。 </li>
+</ol>
 
       
       
@@ -285,7 +297,7 @@
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          HashMap、ConcurrentHashMap的原理与区别
+          HashMap、ConcurrentHashMap 的原理与区别
         
       </div>
     </a>
@@ -319,7 +331,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#shiro"><span class="toc-number">1.</span> <span class="toc-text">shiro</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#登录"><span class="toc-number">1.1.</span> <span class="toc-text">登录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Subject类"><span class="toc-number">1.1.1.</span> <span class="toc-text">Subject类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AuthenticatingSecurityManager"><span class="toc-number">1.1.2.</span> <span class="toc-text">AuthenticatingSecurityManager</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#登录状态的验证"><span class="toc-number">1.2.</span> <span class="toc-text">登录状态的验证</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP请求处理过程"><span class="toc-number">1.3.</span> <span class="toc-text">HTTP请求处理过程</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#shiro"><span class="toc-number">1.</span> <span class="toc-text">shiro</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#登录"><span class="toc-number">1.1.</span> <span class="toc-text">登录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Subject-类"><span class="toc-number">1.1.1.</span> <span class="toc-text">Subject 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AuthenticatingSecurityManager"><span class="toc-number">1.1.2.</span> <span class="toc-text">AuthenticatingSecurityManager</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#登录状态的验证"><span class="toc-number">1.2.</span> <span class="toc-text">登录状态的验证</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-请求处理过程"><span class="toc-number">1.3.</span> <span class="toc-text">HTTP 请求处理过程</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -461,15 +473,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -481,15 +489,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -497,15 +505,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>

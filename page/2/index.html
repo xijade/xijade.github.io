@@ -159,7 +159,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/18/mybatis使用和常见问题/">mybatis使用和常见问题</a>
+      <a class="article-title" href="/2019/06/18/mybatis使用和常见问题/">mybatis 使用和常见问题</a>
     </h1>
   
 
@@ -177,12 +177,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>  基本的CRUD不详细说，以注解方式说明一些中高级用法</p>
+        <h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>  基本的 CRUD 不详细说，以注解方式说明一些中高级用法</p>
 <h2 id="对应关系"><a href="#对应关系" class="headerlink" title="对应关系"></a>对应关系</h2><p>  几个注解介绍</p>
 <ul>
-<li>@Results配合@Select使用，@Result将读取出来的每行数据根据字段映射到Bean的属性上。@Results可以设置Id，其他查询同类型资源时可以直接使用@ResultMap(“@Results的id”)，而不用一模一样抄一遍@Results</li>
-<li>@Many所在的@Result字段说明：此property要靠一对多查询得到一个列表，##column为参数，##一对多的子查询也必须要求一个参数</li>
-<li>@One所在的@Result字段说明:  此property要靠子查询得到一个类，##column为参数，##子查询也必须要求一个参数<br>以Category和Product为例，一个Category对应多个Product。
+<li>@Results 配合 @Select 使用，@Result 将读取出来的每行数据根据字段映射到 Bean 的属性上。@Results 可以设置 Id，其他查询同类型资源时可以直接使用 @ResultMap (“@Results 的 id”)，而不用一模一样抄一遍 @Results</li>
+<li>@Many 所在的 @Result 字段说明：此 property 要靠一对多查询得到一个列表，##column 为参数，## 一对多的子查询也必须要求一个参数</li>
+<li>@One 所在的 @Result 字段说明：此 property 要靠子查询得到一个类，##column 为参数，## 子查询也必须要求一个参数<br>以 Category 和 Product 为例，一个 Category 对应多个 Product。
         
           <a class="article-more-a" href="/2019/06/18/mybatis使用和常见问题/#more">more >></a>
         
@@ -265,7 +265,7 @@
       
         <p>并发编程分为三个核心</p>
 <ul>
-<li>分工，以什么样的方式去拆分任务，比如说生产者-消费者模式。</li>
+<li>分工，以什么样的方式去拆分任务，比如说生产者 - 消费者模式。</li>
 <li>同步，任务间的依赖如何相互通知，或者说任务之间如何相互协作。</li>
 <li><p>互斥，如何保证共享变量的安全性。比如各种锁<br><img src="/img/bingfa.png" alt="并发核心"></p>
         
@@ -330,7 +330,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/20/同步器框架AQS/">同步器框架AQS</a>
+      <a class="article-title" href="/2019/04/20/同步器框架AQS/">同步器框架 AQS</a>
     </h1>
   
 
@@ -348,7 +348,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="AQS简介"><a href="#AQS简介" class="headerlink" title="AQS简介"></a>AQS简介</h1><p>  AQS 即 AbstractQueuedSynchronizer 队列同步器，是 java 并发包一个基础部件。在 java.util.concurrent 包中，大部分的并发类都是基于 AQS 来实现的。<br>  在业务逻辑中将同步变量和同步器绑定，而不是在同步器里绑定同步变量。比如，先初始化一个同步器，业务要操作同步变量前tryacpuire。<br><img src="/img/aqs.png" alt="以AQS为核心的类"><br>
+        <h1 id="AQS-简介"><a href="#AQS-简介" class="headerlink" title="AQS 简介"></a>AQS 简介</h1><p>  AQS 即 AbstractQueuedSynchronizer 队列同步器，是 java 并发包一个基础部件。在 java.util.concurrent 包中，大部分的并发类都是基于 AQS 来实现的。<br>  在业务逻辑中将同步变量和同步器绑定，而不是在同步器里绑定同步变量。比如，先初始化一个同步器，业务要操作同步变量前 tryacpuire。<br><img src="/img/aqs.png" alt="以 AQS 为核心的类"><br>
         
           <a class="article-more-a" href="/2019/04/20/同步器框架AQS/#more">more >></a>
         
@@ -492,7 +492,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/31/python闭包与延迟绑定/">python闭包与延迟绑定</a>
+      <a class="article-title" href="/2018/10/31/python闭包与延迟绑定/">python 闭包与延迟绑定</a>
     </h1>
   
 
@@ -511,9 +511,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h1><p>闭包就是能够读取其他函数内部变量的函数。<br>按照常理，执行完一个函数后，其内部产生的栈内存会被释放。但出现下面的情况：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">outer</span><span class="params">( a )</span>:</span></span><br><span class="line"> b = <span class="number">10</span></span><br><span class="line">     <span class="comment"># inner是内函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">()</span>:</span></span><br><span class="line">         <span class="comment">#在内函数中 用到了外函数的临时变量</span></span><br><span class="line">        print(a+b)</span><br><span class="line">       <span class="comment"># 外函数的返回值是内函数的引用</span></span><br><span class="line">    <span class="keyword">return</span> inner</span><br></pre></td></tr></table></figure>
-<p> tip：栈内存只是用来记录变量值的，运算部分在代码区，都是机器命令。函数首先是存放在外存文件中的,比如.dll .lib .so .a .exe .out等.在函数执行的时候,才会被OS以只读的方式加载到内存</p>
-<p>  在一个外函数中定义了一个内函数，内函数里运用了外函数的临时变量，并且外函数的返回值是内函数的引用。这样就构成了一个闭包。<br>每次调用一次外函数就生成了一个内函数，多次调用outer()则生成多个inner(),每个inner()尽管内容一样，但都是不同的函数。<br>内函数不能直接修改临时变量——参考全局域和局部域的关系，虽然定义内函数过程中，会指向这个临时变量，但实际内函数执行时，会拷贝这个临时变量放入内函数的栈中。可以把变量放进列表里以引用形式去修改。<br>内函数是真正干活的函数，他们有个公用的隐式全局变量（见下第一个棋盘列子）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">outer</span><span class="params">( a )</span>:</span></span><br><span class="line"> b = <span class="number">10</span></span><br><span class="line">     <span class="comment"># inner 是内函数 </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">()</span>:</span></span><br><span class="line">         <span class="comment"># 在内函数中 用到了外函数的临时变量 </span></span><br><span class="line">        print (a+b)</span><br><span class="line">       <span class="comment"># 外函数的返回值是内函数的引用 </span></span><br><span class="line">    <span class="keyword">return</span> inner</span><br></pre></td></tr></table></figure>
+<p> tip：栈内存只是用来记录变量值的，运算部分在代码区，都是机器命令。函数首先是存放在外存文件中的，比如.dll .lib .so .a .exe .out 等。在函数执行的时候，才会被 OS 以只读的方式加载到内存</p>
+<p>  在一个外函数中定义了一个内函数，内函数里运用了外函数的临时变量，并且外函数的返回值是内函数的引用。这样就构成了一个闭包。<br>每次调用一次外函数就生成了一个内函数，多次调用 outer () 则生成多个 inner (), 每个 inner () 尽管内容一样，但都是不同的函数。<br>内函数不能直接修改临时变量 —— 参考全局域和局部域的关系，虽然定义内函数过程中，会指向这个临时变量，但实际内函数执行时，会拷贝这个临时变量放入内函数的栈中。可以把变量放进列表里以引用形式去修改。<br>内函数是真正干活的函数，他们有个公用的隐式全局变量（见下第一个棋盘列子）。</p>
         
           <a class="article-more-a" href="/2018/10/31/python闭包与延迟绑定/#more">more >></a>
         
@@ -594,7 +594,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="信息增益"><a href="#信息增益" class="headerlink" title="信息增益"></a>信息增益</h1><p>信息增益是用来表示某一种特征的不确定性的，熵越大，代表权重越大，作为树顶。公式为：$H = - \sum_{i=1}^n{p(x_i)·log_2(p(x_i))}$   。p(x_i)是特征x中，值为$x_i$的值占所有x的百分比。<br>如果特征A是连续的，在计算信息增益时，一般是将连续的特征进行离散化，然后在计算信息增益。<br>先假设特征都是离散值，按熵最大的特征分为若干类。得到的子类中再分别求熵最大的特征，一路迭代下去，直到某次分割后，某块的标签值都相同，或者已经使用过所有特征来进行分类了，则该分支停止。<br>
+        <h1 id="信息增益"><a href="#信息增益" class="headerlink" title="信息增益"></a>信息增益</h1><p>信息增益是用来表示某一种特征的不确定性的，熵越大，代表权重越大，作为树顶。公式为：$H = - \sum_{i=1}^n {p (x_i)・log_2 (p (x_i))}$   。p (x_i) 是特征 x 中，值为 $x_i$ 的值占所有 x 的百分比。<br>如果特征 A 是连续的，在计算信息增益时，一般是将连续的特征进行离散化，然后在计算信息增益。<br>先假设特征都是离散值，按熵最大的特征分为若干类。得到的子类中再分别求熵最大的特征，一路迭代下去，直到某次分割后，某块的标签值都相同，或者已经使用过所有特征来进行分类了，则该分支停止。<br>
         
           <a class="article-more-a" href="/2018/04/14/决策树/#more">more >></a>
         
@@ -675,7 +675,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="SVM简介"><a href="#SVM简介" class="headerlink" title="SVM简介"></a>SVM简介</h1><p>线性回归和逻辑递归不细说了，SVM是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/根号（a^2+b^）,得到$\frac{|\omega^Tx+x0|}{|\omega|}$<br>下一步先要找到各个点到超平面的距离之和最短（min）,再最大化虚线间的距离。所谓支持向量，指虚线上的两点<br><img src="/img/svm1.jpg" alt="示例"><br>
+        <h1 id="SVM-简介"><a href="#SVM-简介" class="headerlink" title="SVM 简介"></a>SVM 简介</h1><p>线性回归和逻辑递归不细说了，SVM 是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/ 根号（a^2+b^）, 得到 $\frac {|\omega^Tx+x0|}{|\omega|}$<br>下一步先要找到各个点到超平面的距离之和最短（min）, 再最大化虚线间的距离。所谓支持向量，指虚线上的两点<br><img src="/img/svm1.jpg" alt="示例"><br>
         
           <a class="article-more-a" href="/2018/04/10/支持向量机/#more">more >></a>
         
@@ -858,15 +858,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -878,15 +874,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -894,15 +890,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>

@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>mybatis使用和常见问题 | xijue&#39;s blog</title>
+  <title>mybatis 使用和常见问题 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="使用  基本的CRUD不详细说，以注解方式说明一些中高级用法 对应关系  几个注解介绍  @Results配合@Select使用，@Result将读取出来的每行数据根据字段映射到Bean的属性上。@Results可以设置Id，其他查询同类型资源时可以直接使用@ResultMap(“@Results的id”)，而不用一模一样抄一遍@Results @Many所在的@Result字段说明：此prope">
+  <meta name="description" content="使用  基本的 CRUD 不详细说，以注解方式说明一些中高级用法 对应关系  几个注解介绍  @Results 配合 @Select 使用，@Result 将读取出来的每行数据根据字段映射到 Bean 的属性上。@Results 可以设置 Id，其他查询同类型资源时可以直接使用 @ResultMap (“@Results 的 id”)，而不用一模一样抄一遍 @Results @Many 所在的 @">
 <meta name="keywords" content="数据库 mybaits">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mybatis使用和常见问题">
+<meta property="og:title" content="mybatis 使用和常见问题">
 <meta property="og:url" content="http://yoursite.com/2019/06/18/mybatis使用和常见问题/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="使用  基本的CRUD不详细说，以注解方式说明一些中高级用法 对应关系  几个注解介绍  @Results配合@Select使用，@Result将读取出来的每行数据根据字段映射到Bean的属性上。@Results可以设置Id，其他查询同类型资源时可以直接使用@ResultMap(“@Results的id”)，而不用一模一样抄一遍@Results @Many所在的@Result字段说明：此prope">
+<meta property="og:description" content="使用  基本的 CRUD 不详细说，以注解方式说明一些中高级用法 对应关系  几个注解介绍  @Results 配合 @Select 使用，@Result 将读取出来的每行数据根据字段映射到 Bean 的属性上。@Results 可以设置 Id，其他查询同类型资源时可以直接使用 @ResultMap (“@Results 的 id”)，而不用一模一样抄一遍 @Results @Many 所在的 @">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2020-02-28T07:51:22.054Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="mybatis使用和常见问题">
-<meta name="twitter:description" content="使用  基本的CRUD不详细说，以注解方式说明一些中高级用法 对应关系  几个注解介绍  @Results配合@Select使用，@Result将读取出来的每行数据根据字段映射到Bean的属性上。@Results可以设置Id，其他查询同类型资源时可以直接使用@ResultMap(“@Results的id”)，而不用一模一样抄一遍@Results @Many所在的@Result字段说明：此prope">
+<meta name="twitter:title" content="mybatis 使用和常见问题">
+<meta name="twitter:description" content="使用  基本的 CRUD 不详细说，以注解方式说明一些中高级用法 对应关系  几个注解介绍  @Results 配合 @Select 使用，@Result 将读取出来的每行数据根据字段映射到 Bean 的属性上。@Results 可以设置 Id，其他查询同类型资源时可以直接使用 @ResultMap (“@Results 的 id”)，而不用一模一样抄一遍 @Results @Many 所在的 @">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -162,7 +162,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      mybatis使用和常见问题
+      mybatis 使用和常见问题
     </h1>
   
 
@@ -184,33 +184,33 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>  基本的CRUD不详细说，以注解方式说明一些中高级用法</p>
+        <h1 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h1><p>  基本的 CRUD 不详细说，以注解方式说明一些中高级用法</p>
 <h2 id="对应关系"><a href="#对应关系" class="headerlink" title="对应关系"></a>对应关系</h2><p>  几个注解介绍</p>
 <ul>
-<li>@Results配合@Select使用，@Result将读取出来的每行数据根据字段映射到Bean的属性上。@Results可以设置Id，其他查询同类型资源时可以直接使用@ResultMap(“@Results的id”)，而不用一模一样抄一遍@Results</li>
-<li>@Many所在的@Result字段说明：此property要靠一对多查询得到一个列表，##column为参数，##一对多的子查询也必须要求一个参数</li>
-<li>@One所在的@Result字段说明:  此property要靠子查询得到一个类，##column为参数，##子查询也必须要求一个参数<br>以Category和Product为例，一个Category对应多个Product。<a id="more"></a>
-<h3 id="一对多"><a href="#一对多" class="headerlink" title="一对多"></a>一对多</h3>一个Category有多个Product，子查询为根据Category的id取出Product。在Category的Bean中添加一个List<product>类型的变量，将同一个Category的Product取出后存放在这个List中<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//CategoryMapper</span></span><br><span class="line">    <span class="meta">@Select</span>(<span class="string">" select * from category_ "</span>)</span><br><span class="line">    <span class="meta">@Results</span>(&#123; </span><br><span class="line">                <span class="meta">@Result</span>(property = <span class="string">"id"</span>, column = <span class="string">"id"</span>),</span><br><span class="line">                <span class="meta">@Result</span>(property = <span class="string">"products"</span>, javaType = List.class, column = <span class="string">"id"</span>, many = <span class="meta">@Many</span>(select = <span class="string">"xx.xxx.xxx.ProductMapper.listByCategory"</span>) )</span><br><span class="line">            &#125;)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Category&gt; <span class="title">list</span><span class="params">()</span></span>;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="comment">//ProductMapper	</span></span><br><span class="line">	<span class="meta">@Select</span>(<span class="string">" select * from product_ where cid = #&#123;cid&#125;"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Product&gt; <span class="title">listByCategory</span><span class="params">(<span class="keyword">int</span> cid)</span></span>;</span><br></pre></td></tr></table></figure>
+<li>@Results 配合 @Select 使用，@Result 将读取出来的每行数据根据字段映射到 Bean 的属性上。@Results 可以设置 Id，其他查询同类型资源时可以直接使用 @ResultMap (“@Results 的 id”)，而不用一模一样抄一遍 @Results</li>
+<li>@Many 所在的 @Result 字段说明：此 property 要靠一对多查询得到一个列表，##column 为参数，## 一对多的子查询也必须要求一个参数</li>
+<li>@One 所在的 @Result 字段说明：此 property 要靠子查询得到一个类，##column 为参数，## 子查询也必须要求一个参数<br>以 Category 和 Product 为例，一个 Category 对应多个 Product。<a id="more"></a>
+<h3 id="一对多"><a href="#一对多" class="headerlink" title="一对多"></a>一对多</h3>一个 Category 有多个 Product，子查询为根据 Category 的 id 取出 Product。在 Category 的 Bean 中添加一个 List<product> 类型的变量，将同一个 Category 的 Product 取出后存放在这个 List 中<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//CategoryMapper</span></span><br><span class="line">    <span class="meta">@Select</span>(<span class="string">"select * from category_"</span>)</span><br><span class="line">    <span class="meta">@Results</span>(&#123; </span><br><span class="line">                <span class="meta">@Result</span>(property = <span class="string">"id"</span>, column = <span class="string">"id"</span>),</span><br><span class="line">                <span class="meta">@Result</span>(property = <span class="string">"products"</span>, javaType = List.class, column = <span class="string">"id"</span>, many = <span class="meta">@Many</span>(select = <span class="string">"xx.xxx.xxx.ProductMapper.listByCategory"</span>) )</span><br><span class="line">            &#125;)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Category&gt; <span class="title">list</span><span class="params">()</span></span>;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="comment">//ProductMapper	</span></span><br><span class="line">	<span class="meta">@Select</span>(<span class="string">"select * from product_ where cid = #&#123;cid&#125;"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Product&gt; <span class="title">listByCategory</span><span class="params">(<span class="keyword">int</span> cid)</span></span>;</span><br></pre></td></tr></table></figure>
 </product></li>
 </ul>
-<h3 id="多对一"><a href="#多对一" class="headerlink" title="多对一"></a>多对一</h3><p>  多个Product会有同一个Category，子查询等于根据Product的id查询对应的Category。在Product的Bean添加一个Category变量<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ProductMapper</span></span><br><span class="line">    <span class="meta">@Select</span>(<span class="string">" select * from product_ "</span>)</span><br><span class="line">    <span class="meta">@Results</span>(&#123; </span><br><span class="line">        <span class="meta">@Result</span>(property=<span class="string">"category"</span>,column=<span class="string">"cid"</span>,one=<span class="meta">@One</span>(select=<span class="string">"xx.xxx.mapper.CategoryMapper.get"</span>)) </span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Product&gt; <span class="title">list</span><span class="params">()</span></span>;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="comment">//CategoryMapper</span></span><br><span class="line">   <span class="meta">@Select</span>(<span class="string">" select * from category_ where id = #&#123;id&#125;"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Category <span class="title">get</span><span class="params">(<span class="keyword">int</span> id)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<h3 id="多对多"><a href="#多对多" class="headerlink" title="多对多"></a>多对多</h3><p>   多对多问题一般是可拆分的，经过多次子查询的。比如订单和订单项是一对多的，订单项和产品是多对一的，因此订单和产品是多对多的。<br>   List<order> list()查询所有订单，</order></p>
+<h3 id="多对一"><a href="#多对一" class="headerlink" title="多对一"></a>多对一</h3><p>  多个 Product 会有同一个 Category，子查询等于根据 Product 的 id 查询对应的 Category。在 Product 的 Bean 添加一个 Category 变量<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ProductMapper</span></span><br><span class="line">    <span class="meta">@Select</span>(<span class="string">"select * from product_"</span>)</span><br><span class="line">    <span class="meta">@Results</span>(&#123; </span><br><span class="line">        <span class="meta">@Result</span>(property=<span class="string">"category"</span>,column=<span class="string">"cid"</span>,one=<span class="meta">@One</span>(select=<span class="string">"xx.xxx.mapper.CategoryMapper.get"</span>)) </span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Product&gt; <span class="title">list</span><span class="params">()</span></span>;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"><span class="comment">//CategoryMapper</span></span><br><span class="line">   <span class="meta">@Select</span>(<span class="string">"select * from category_ where id = #&#123;id&#125;"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Category <span class="title">get</span><span class="params">(<span class="keyword">int</span> id)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<h3 id="多对多"><a href="#多对多" class="headerlink" title="多对多"></a>多对多</h3><p>   多对多问题一般是可拆分的，经过多次子查询的。比如订单和订单项是一对多的，订单项和产品是多对一的，因此订单和产品是多对多的。<br>   List<order> list () 查询所有订单，</order></p>
 <ol>
-<li>先使用@Many一对多查询，<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Result</span>(property = <span class="string">"orderItems"</span>, javaType = List.class, column = <span class="string">"id"</span>, </span><br><span class="line">       many = <span class="meta">@Many</span>(select = <span class="string">"xx.xxx.mapper.OrderItemMapper.listByOrder"</span>))</span><br></pre></td></tr></table></figure>
+<li>先使用 @Many 一对多查询，<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Result</span>(property = <span class="string">"orderItems"</span>, javaType = List.class, column = <span class="string">"id"</span>, </span><br><span class="line">       many = <span class="meta">@Many</span>(select = <span class="string">"xx.xxx.mapper.OrderItemMapper.listByOrder"</span>))</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<p>为property = “orderItems”属性填充订单项的集合</p>
+<p>为 property = “orderItems” 属性填充订单项的集合</p>
 <ol start="2">
-<li>在OrderItemMapper.listByOrder中，使用@One为多对一查询每个orderItem对应的product<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Result</span>(property=<span class="string">"product"</span>,column=<span class="string">"pid"</span>,one=<span class="meta">@One</span>(select=<span class="string">"xx.xxxxx.mapper.ProductMapper.get"</span>))</span><br></pre></td></tr></table></figure>
+<li>在 OrderItemMapper.listByOrder 中，使用 @One 为多对一查询每个 orderItem 对应的 product<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Result</span>(property=<span class="string">"product"</span>,column=<span class="string">"pid"</span>,one=<span class="meta">@One</span>(select=<span class="string">"xx.xxxxx.mapper.ProductMapper.get"</span>))</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<h2 id="动态SQL"><a href="#动态SQL" class="headerlink" title="动态SQL"></a>动态SQL</h2><pre><code>构建SQL类，加上各种条件，最后.toString()转化为sql语句，各种关键字作为函数，以一个复杂的动态SQL为例
-</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> String <span class="title">selectPersonSql</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> SQL() &#123;&#123;</span><br><span class="line">    SELECT(<span class="string">"P.ID, P.USERNAME, P.PASSWORD, P.FULL_NAME"</span>);</span><br><span class="line">    SELECT(<span class="string">"P.LAST_NAME, P.CREATED_ON, P.UPDATED_ON"</span>);</span><br><span class="line">    FROM(<span class="string">"PERSON P"</span>);</span><br><span class="line">    FROM(<span class="string">"ACCOUNT A"</span>);</span><br><span class="line">    INNER_JOIN(<span class="string">"DEPARTMENT D on D.ID = P.DEPARTMENT_ID"</span>);</span><br><span class="line">    INNER_JOIN(<span class="string">"COMPANY C on D.COMPANY_ID = C.ID"</span>);</span><br><span class="line">    WHERE(<span class="string">"P.ID = A.ID"</span>);</span><br><span class="line">    WHERE(<span class="string">"P.FIRST_NAME like ?"</span>);</span><br><span class="line">    OR();</span><br><span class="line">    WHERE(<span class="string">"P.LAST_NAME like ?"</span>);</span><br><span class="line">    GROUP_BY(<span class="string">"P.ID"</span>);</span><br><span class="line">    HAVING(<span class="string">"P.LAST_NAME like ?"</span>);</span><br><span class="line">    OR();</span><br><span class="line">    HAVING(<span class="string">"P.FIRST_NAME like ?"</span>);</span><br><span class="line">    ORDER_BY(<span class="string">"P.ID"</span>);</span><br><span class="line">    ORDER_BY(<span class="string">"P.FULL_NAME"</span>);</span><br><span class="line">  &#125;&#125;.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="延迟加载"><a href="#延迟加载" class="headerlink" title="延迟加载"></a>延迟加载</h2><p>  延迟加载，前面获取所有Catgory时,会自动把Category的Products列表查询出来。<br>  使用延迟加载，只有<strong> List<product> ps = c.getProducts() </product></strong>需要去取出产品时才会去查询产品</p>
-<h1 id="遇见的问题"><a href="#遇见的问题" class="headerlink" title="遇见的问题"></a>遇见的问题</h1><h2 id="1-在给Mapper传参的时候，Mapper需要两个Integer，明明传入但sql无法使用"><a href="#1-在给Mapper传参的时候，Mapper需要两个Integer，明明传入但sql无法使用" class="headerlink" title="1 在给Mapper传参的时候，Mapper需要两个Integer，明明传入但sql无法使用"></a>1 在给Mapper传参的时候，Mapper需要两个Integer，明明传入但sql无法使用</h2><ul>
-<li>传递过来是单参数，且没有以@Param注解进行命名，则直接将单参数作为真实的参数调用SqlSession的对应方法</li>
-<li>或者使用javaBean方式</li>
-<li>使用多参数时，实际上使用一个map的形式传入，以参数的index为键将参数传入map。此外用@Param(“key”)可以在map中以”key”为键名存入map，如果不用此注解，就无法在使用#{key},只能#{argn} (新版已经停用，可以#{key}，却无法#{argn}，建议@Param，保证不会出错)</li>
+<h2 id="动态-SQL"><a href="#动态-SQL" class="headerlink" title="动态 SQL"></a>动态 SQL</h2><pre><code>构建 SQL 类，加上各种条件，最后.toString () 转化为 sql 语句，各种关键字作为函数，以一个复杂的动态 SQL 为例
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> String <span class="title">selectPersonSql</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> SQL () &#123;&#123;</span><br><span class="line">    SELECT (<span class="string">"P.ID, P.USERNAME, P.PASSWORD, P.FULL_NAME"</span>);</span><br><span class="line">    SELECT (<span class="string">"P.LAST_NAME, P.CREATED_ON, P.UPDATED_ON"</span>);</span><br><span class="line">    FROM (<span class="string">"PERSON P"</span>);</span><br><span class="line">    FROM (<span class="string">"ACCOUNT A"</span>);</span><br><span class="line">    INNER_JOIN (<span class="string">"DEPARTMENT D on D.ID = P.DEPARTMENT_ID"</span>);</span><br><span class="line">    INNER_JOIN (<span class="string">"COMPANY C on D.COMPANY_ID = C.ID"</span>);</span><br><span class="line">    WHERE (<span class="string">"P.ID = A.ID"</span>);</span><br><span class="line">    WHERE (<span class="string">"P.FIRST_NAME like ?"</span>);</span><br><span class="line">    OR ();</span><br><span class="line">    WHERE (<span class="string">"P.LAST_NAME like ?"</span>);</span><br><span class="line">    GROUP_BY (<span class="string">"P.ID"</span>);</span><br><span class="line">    HAVING (<span class="string">"P.LAST_NAME like ?"</span>);</span><br><span class="line">    OR ();</span><br><span class="line">    HAVING (<span class="string">"P.FIRST_NAME like ?"</span>);</span><br><span class="line">    ORDER_BY (<span class="string">"P.ID"</span>);</span><br><span class="line">    ORDER_BY (<span class="string">"P.FULL_NAME"</span>);</span><br><span class="line">  &#125;&#125;.toString ();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="延迟加载"><a href="#延迟加载" class="headerlink" title="延迟加载"></a>延迟加载</h2><p>  延迟加载，前面获取所有 Catgory 时，会自动把 Category 的 Products 列表查询出来。<br>  使用延迟加载，只有 <strong> List<product> ps = c.getProducts () </product></strong> 需要去取出产品时才会去查询产品</p>
+<h1 id="遇见的问题"><a href="#遇见的问题" class="headerlink" title="遇见的问题"></a>遇见的问题</h1><h2 id="1-在给-Mapper-传参的时候，Mapper-需要两个-Integer，明明传入但-sql-无法使用"><a href="#1-在给-Mapper-传参的时候，Mapper-需要两个-Integer，明明传入但-sql-无法使用" class="headerlink" title="1 在给 Mapper 传参的时候，Mapper 需要两个 Integer，明明传入但 sql 无法使用"></a>1 在给 Mapper 传参的时候，Mapper 需要两个 Integer，明明传入但 sql 无法使用</h2><ul>
+<li>传递过来是单参数，且没有以 @Param 注解进行命名，则直接将单参数作为真实的参数调用 SqlSession 的对应方法</li>
+<li>或者使用 javaBean 方式</li>
+<li>使用多参数时，实际上使用一个 map 的形式传入，以参数的 index 为键将参数传入 map。此外用 @Param (“key”) 可以在 map 中以 “key” 为键名存入 map，如果不用此注解，就无法在使用 #{key}, 只能 #{argn} (新版已经停用，可以 #{key}，却无法 #{argn}，建议 @Param，保证不会出错)</li>
 </ul>
 
       
@@ -333,7 +333,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#使用"><span class="toc-number">1.</span> <span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#对应关系"><span class="toc-number">1.1.</span> <span class="toc-text">对应关系</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一对多"><span class="toc-number">1.1.1.</span> <span class="toc-text">一对多</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多对一"><span class="toc-number">1.1.2.</span> <span class="toc-text">多对一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多对多"><span class="toc-number">1.1.3.</span> <span class="toc-text">多对多</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#动态SQL"><span class="toc-number">1.2.</span> <span class="toc-text">动态SQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#延迟加载"><span class="toc-number">1.3.</span> <span class="toc-text">延迟加载</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#遇见的问题"><span class="toc-number">2.</span> <span class="toc-text">遇见的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-在给Mapper传参的时候，Mapper需要两个Integer，明明传入但sql无法使用"><span class="toc-number">2.1.</span> <span class="toc-text">1 在给Mapper传参的时候，Mapper需要两个Integer，明明传入但sql无法使用</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#使用"><span class="toc-number">1.</span> <span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#对应关系"><span class="toc-number">1.1.</span> <span class="toc-text">对应关系</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#一对多"><span class="toc-number">1.1.1.</span> <span class="toc-text">一对多</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多对一"><span class="toc-number">1.1.2.</span> <span class="toc-text">多对一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多对多"><span class="toc-number">1.1.3.</span> <span class="toc-text">多对多</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#动态-SQL"><span class="toc-number">1.2.</span> <span class="toc-text">动态 SQL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#延迟加载"><span class="toc-number">1.3.</span> <span class="toc-text">延迟加载</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#遇见的问题"><span class="toc-number">2.</span> <span class="toc-text">遇见的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-在给-Mapper-传参的时候，Mapper-需要两个-Integer，明明传入但-sql-无法使用"><span class="toc-number">2.1.</span> <span class="toc-text">1 在给 Mapper 传参的时候，Mapper 需要两个 Integer，明明传入但 sql 无法使用</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -475,15 +475,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -495,15 +491,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -511,15 +507,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>

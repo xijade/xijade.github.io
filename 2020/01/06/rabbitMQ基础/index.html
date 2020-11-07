@@ -6,21 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>rabbitMQ基础 | xijue&#39;s blog</title>
+  <title>rabbitMQ 基础 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="rabbit结构    消费者是直接从Queue取出数据的，但生产者并非直接把数据传给Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。 exchange(交换机种类) direct(默认)：比较Message的routing key和Queue的binding key，完全匹配时，Message才会发送到该Queue。即一对一 fanout：忽略key对比，发送Messag">
+  <meta name="description" content="rabbit 结构    消费者是直接从 Queue 取出数据的，但生产者并非直接把数据传给 Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。 exchange (交换机种类) direct (默认)：比较 Message 的 routing key 和 Queue 的 binding key，完全匹配时，Message 才会发送到该 Queue。即一对一 fanout：忽">
 <meta name="keywords" content="消息队列">
 <meta property="og:type" content="article">
-<meta property="og:title" content="rabbitMQ基础">
+<meta property="og:title" content="rabbitMQ 基础">
 <meta property="og:url" content="http://yoursite.com/2020/01/06/rabbitMQ基础/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="rabbit结构    消费者是直接从Queue取出数据的，但生产者并非直接把数据传给Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。 exchange(交换机种类) direct(默认)：比较Message的routing key和Queue的binding key，完全匹配时，Message才会发送到该Queue。即一对一 fanout：忽略key对比，发送Messag">
+<meta property="og:description" content="rabbit 结构    消费者是直接从 Queue 取出数据的，但生产者并非直接把数据传给 Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。 exchange (交换机种类) direct (默认)：比较 Message 的 routing key 和 Queue 的 binding key，完全匹配时，Message 才会发送到该 Queue。即一对一 fanout：忽">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/rabbit.png">
 <meta property="og:updated_time" content="2020-01-07T02:46:54.555Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="rabbitMQ基础">
-<meta name="twitter:description" content="rabbit结构    消费者是直接从Queue取出数据的，但生产者并非直接把数据传给Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。 exchange(交换机种类) direct(默认)：比较Message的routing key和Queue的binding key，完全匹配时，Message才会发送到该Queue。即一对一 fanout：忽略key对比，发送Messag">
+<meta name="twitter:title" content="rabbitMQ 基础">
+<meta name="twitter:description" content="rabbit 结构    消费者是直接从 Queue 取出数据的，但生产者并非直接把数据传给 Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。 exchange (交换机种类) direct (默认)：比较 Message 的 routing key 和 Queue 的 binding key，完全匹配时，Message 才会发送到该 Queue。即一对一 fanout：忽">
 <meta name="twitter:image" content="http://yoursite.com/img/rabbit.png">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
@@ -164,7 +164,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      rabbitMQ基础
+      rabbitMQ 基础
     </h1>
   
 
@@ -186,20 +186,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="rabbit结构"><a href="#rabbit结构" class="headerlink" title="rabbit结构"></a>rabbit结构</h1><p><img src="/img/rabbit.png" alt="rabbit结构"></p>
-<p>   消费者是直接从Queue取出数据的，但生产者并非直接把数据传给Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。</p>
-<h3 id="exchange-交换机种类"><a href="#exchange-交换机种类" class="headerlink" title="exchange(交换机种类)"></a>exchange(交换机种类)</h3><ul>
-<li>direct(默认)：比较Message的routing key和Queue的binding key，完全匹配时，Message才会发送到该Queue。即一对一</li>
-<li>fanout：忽略key对比，发送Message到Exchange下游绑定的所有Queue。即一对所有</li>
-<li>topic：*匹配单个词组，#匹配0或多个词组。每个词组用.分开。即一对若干</li>
+        <h1 id="rabbit-结构"><a href="#rabbit-结构" class="headerlink" title="rabbit 结构"></a>rabbit 结构</h1><p><img src="/img/rabbit.png" alt="rabbit 结构"></p>
+<p>   消费者是直接从 Queue 取出数据的，但生产者并非直接把数据传给 Queue，而是传给交换机。交换机根据不同的策略将消息分配给不同的队列。</p>
+<h3 id="exchange-交换机种类"><a href="#exchange-交换机种类" class="headerlink" title="exchange (交换机种类)"></a>exchange (交换机种类)</h3><ul>
+<li>direct (默认)：比较 Message 的 routing key 和 Queue 的 binding key，完全匹配时，Message 才会发送到该 Queue。即一对一</li>
+<li>fanout：忽略 key 对比，发送 Message 到 Exchange 下游绑定的所有 Queue。即一对所有</li>
+<li>topic：* 匹配单个词组，# 匹配 0 或多个词组。每个词组用。分开。即一对若干</li>
 <li>header 效果差几乎不实用</li>
 </ul>
-<h3 id="消息的确认"><a href="#消息的确认" class="headerlink" title="消息的确认"></a>消息的确认</h3><p>  消费者通过AMQP的basic.ack命令显式地向RabbitMQ发送一个确认，当然，默认的auto_ack为true会自动进行确认，只有确认了才会rabbit才会从队列中将该消息删除。如果消费者接收到信息未发送确认信息就断开连接，则会发送给下一个订阅的消费者。如果因为bug导致没有ack但是连接又不中断，rabbit会认为这个消费者没有准备好接收下一条消息，将不会给该消费者发送更多的消息。利用这一点，可以防止rabbit持续不断的消息涌向你的应用而导致过载。</p>
-<p>  使用AMQP的basic.reject命令：如果把reject命令的requeue设置为true的话，RabbitMQ会将消息重新发送给下一个订阅者。如果设置为false的话，RabbitMQ会立即把消息从队列中移除，而不会把它发送给新的消费者。</p>
-<h1 id="持久化-durable"><a href="#持久化-durable" class="headerlink" title="持久化(durable)"></a>持久化(durable)</h1><p>  非持久化的队列在rabbit重启后就会消失。需要持久化只需要几个配置参数而已。在队列声明中设置durable参数<br>  需要注意的是durable=True只是持久化了队列，但消息重启后会消失。再发送消息时添加 properties=pika.BasicProperties(delivery_mode=2) 参数设置消息持久化</p>
+<h3 id="消息的确认"><a href="#消息的确认" class="headerlink" title="消息的确认"></a>消息的确认</h3><p>  消费者通过 AMQP 的 basic.ack 命令显式地向 RabbitMQ 发送一个确认，当然，默认的 auto_ack 为 true 会自动进行确认，只有确认了才会 rabbit 才会从队列中将该消息删除。如果消费者接收到信息未发送确认信息就断开连接，则会发送给下一个订阅的消费者。如果因为 bug 导致没有 ack 但是连接又不中断，rabbit 会认为这个消费者没有准备好接收下一条消息，将不会给该消费者发送更多的消息。利用这一点，可以防止 rabbit 持续不断的消息涌向你的应用而导致过载。</p>
+<p>  使用 AMQP 的 basic.reject 命令：如果把 reject 命令的 requeue 设置为 true 的话，RabbitMQ 会将消息重新发送给下一个订阅者。如果设置为 false 的话，RabbitMQ 会立即把消息从队列中移除，而不会把它发送给新的消费者。</p>
+<h1 id="持久化-durable"><a href="#持久化-durable" class="headerlink" title="持久化 (durable)"></a>持久化 (durable)</h1><p>  非持久化的队列在 rabbit 重启后就会消失。需要持久化只需要几个配置参数而已。在队列声明中设置 durable 参数<br>  需要注意的是 durable=True 只是持久化了队列，但消息重启后会消失。再发送消息时添加 properties=pika.BasicProperties (delivery_mode=2) 参数设置消息持久化</p>
 <h1 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h1><p>  分为普通模式和镜像模式。</p>
 <ul>
-<li>普通模式，当用户请求Node1但数据在Node2时，RabbitMQ会临时在Node1、Node2间进行消息传输。</li>
+<li>普通模式，当用户请求 Node1 但数据在 Node2 时，RabbitMQ 会临时在 Node1、Node2 间进行消息传输。</li>
 <li>镜像模式中消息实体会主动在镜像节点间同步，而不是在客户端取数据时临时拉取。该模式带来的副作用也很明显，除了降低系统性能外，如果镜像队列数量过多，加之大量的消息进入，集群内部的网络带宽将会被这种同步通讯大大消耗掉。所以在对可靠性要求较高的场合中适用。</li>
 </ul>
 
@@ -289,14 +289,14 @@
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Netty的服务端启动和接受连接
+          Netty 的服务端启动和接受连接
         
       </div>
     </a>
   
   
     <a href="/2019/12/23/初识springcloud/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">初识springcloud</div>
+      <div class="article-nav-title">初识 springcloud</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -323,7 +323,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#rabbit结构"><span class="toc-number">1.</span> <span class="toc-text">rabbit结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#exchange-交换机种类"><span class="toc-number">1.0.1.</span> <span class="toc-text">exchange(交换机种类)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#消息的确认"><span class="toc-number">1.0.2.</span> <span class="toc-text">消息的确认</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#持久化-durable"><span class="toc-number">2.</span> <span class="toc-text">持久化(durable)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#集群"><span class="toc-number">3.</span> <span class="toc-text">集群</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#rabbit-结构"><span class="toc-number">1.</span> <span class="toc-text">rabbit 结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#exchange-交换机种类"><span class="toc-number">1.0.1.</span> <span class="toc-text">exchange (交换机种类)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#消息的确认"><span class="toc-number">1.0.2.</span> <span class="toc-text">消息的确认</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#持久化-durable"><span class="toc-number">2.</span> <span class="toc-text">持久化 (durable)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#集群"><span class="toc-number">3.</span> <span class="toc-text">集群</span></a></li></ol>
                     </div>
                 </span>
             </div>
@@ -465,15 +465,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -485,15 +481,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -501,15 +497,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>

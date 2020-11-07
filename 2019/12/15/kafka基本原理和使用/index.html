@@ -6,21 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>kafka基本原理和使用 | xijue&#39;s blog</title>
+  <title>kafka 基本原理和使用 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="kafka的使用kafka的结构组成以及特性   kafka可以为每一个应用场景设置一个Topic，创建topic时可以指定replicationfactor(副本数量，此topic用到几台机器，不能大于Broker数量),以及partitions分区数量，一个topic的不同序号分区用来存放不同的内容。partitions分区分为两个类型————leader和follow。在整个集群的所有机器中">
+  <meta name="description" content="kafka 的使用kafka 的结构组成以及特性   kafka 可以为每一个应用场景设置一个 Topic，创建 topic 时可以指定 replicationfactor (副本数量，此 topic 用到几台机器，不能大于 Broker 数量), 以及 partitions 分区数量，一个 topic 的不同序号分区用来存放不同的内容。partitions 分区分为两个类型 ————leader">
 <meta name="keywords" content="kafka 消息队列 分布式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="kafka基本原理和使用">
+<meta property="og:title" content="kafka 基本原理和使用">
 <meta property="og:url" content="http://yoursite.com/2019/12/15/kafka基本原理和使用/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="kafka的使用kafka的结构组成以及特性   kafka可以为每一个应用场景设置一个Topic，创建topic时可以指定replicationfactor(副本数量，此topic用到几台机器，不能大于Broker数量),以及partitions分区数量，一个topic的不同序号分区用来存放不同的内容。partitions分区分为两个类型————leader和follow。在整个集群的所有机器中">
+<meta property="og:description" content="kafka 的使用kafka 的结构组成以及特性   kafka 可以为每一个应用场景设置一个 Topic，创建 topic 时可以指定 replicationfactor (副本数量，此 topic 用到几台机器，不能大于 Broker 数量), 以及 partitions 分区数量，一个 topic 的不同序号分区用来存放不同的内容。partitions 分区分为两个类型 ————leader">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/kafka.png">
 <meta property="og:updated_time" content="2019-12-19T06:40:27.465Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="kafka基本原理和使用">
-<meta name="twitter:description" content="kafka的使用kafka的结构组成以及特性   kafka可以为每一个应用场景设置一个Topic，创建topic时可以指定replicationfactor(副本数量，此topic用到几台机器，不能大于Broker数量),以及partitions分区数量，一个topic的不同序号分区用来存放不同的内容。partitions分区分为两个类型————leader和follow。在整个集群的所有机器中">
+<meta name="twitter:title" content="kafka 基本原理和使用">
+<meta name="twitter:description" content="kafka 的使用kafka 的结构组成以及特性   kafka 可以为每一个应用场景设置一个 Topic，创建 topic 时可以指定 replicationfactor (副本数量，此 topic 用到几台机器，不能大于 Broker 数量), 以及 partitions 分区数量，一个 topic 的不同序号分区用来存放不同的内容。partitions 分区分为两个类型 ————leader">
 <meta name="twitter:image" content="http://yoursite.com/img/kafka.png">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
@@ -164,7 +164,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      kafka基本原理和使用
+      kafka 基本原理和使用
     </h1>
   
 
@@ -186,14 +186,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="kafka的使用"><a href="#kafka的使用" class="headerlink" title="kafka的使用"></a>kafka的使用</h1><h1 id="kafka的结构组成以及特性"><a href="#kafka的结构组成以及特性" class="headerlink" title="kafka的结构组成以及特性"></a>kafka的结构组成以及特性</h1><p>   kafka可以为每一个应用场景设置一个Topic，创建topic时可以指定replicationfactor(副本数量，此topic用到几台机器，不能大于Broker数量),以及partitions分区数量，一个topic的不同序号分区用来存放不同的内容。partitions分区分为两个类型————leader和follow。在整个集群的所有机器中，一个序号的leader分区只有一个，该序号的其他分区都是副本</p>
-<p>   <img src="/img/kafka.png" alt="kafka结构"><br>   假设一共有3个Broker，一个topic有2个partitions。<strong><em>生产者和消费者直接进行读写操作的分区都是leader类型</em></strong>，follow类型只有备份功能。leader类型的分区分布在多个的Broker上。</p>
-<p>   ack参数为all时，leader将消息写入本地文件后，follow主动去push，完成后follow发送ack进行确认。leader在收到所有副本的ack向product发送ack。</p>
-<p>   若干个 Broker 组成一个集群（Cluster），其中集群内某个 Broker 会成为集群控制器（Cluster Controller），它负责管理集群，包括分配分区到 Broker、监控 Broker 故障等。如果一个broker挂了，某个序号的leader分区在该broker中，则会将另一个broker中的follow分区升级为leader</p>
-<p>   kafka由zookpeer调度，所以依赖于zookpeer服务。</p>
+        <h1 id="kafka-的使用"><a href="#kafka-的使用" class="headerlink" title="kafka 的使用"></a>kafka 的使用</h1><h1 id="kafka-的结构组成以及特性"><a href="#kafka-的结构组成以及特性" class="headerlink" title="kafka 的结构组成以及特性"></a>kafka 的结构组成以及特性</h1><p>   kafka 可以为每一个应用场景设置一个 Topic，创建 topic 时可以指定 replicationfactor (副本数量，此 topic 用到几台机器，不能大于 Broker 数量), 以及 partitions 分区数量，一个 topic 的不同序号分区用来存放不同的内容。partitions 分区分为两个类型 ————leader 和 follow。在整个集群的所有机器中，一个序号的 leader 分区只有一个，该序号的其他分区都是副本</p>
+<p>   <img src="/img/kafka.png" alt="kafka 结构"><br>   假设一共有 3 个 Broker，一个 topic 有 2 个 partitions。<strong><em> 生产者和消费者直接进行读写操作的分区都是 leader 类型 </em></strong>，follow 类型只有备份功能。leader 类型的分区分布在多个的 Broker 上。</p>
+<p>   ack 参数为 all 时，leader 将消息写入本地文件后，follow 主动去 push，完成后 follow 发送 ack 进行确认。leader 在收到所有副本的 ack 向 product 发送 ack。</p>
+<p>   若干个 Broker 组成一个集群（Cluster），其中集群内某个 Broker 会成为集群控制器（Cluster Controller），它负责管理集群，包括分配分区到 Broker、监控 Broker 故障等。如果一个 broker 挂了，某个序号的 leader 分区在该 broker 中，则会将另一个 broker 中的 follow 分区升级为 leader</p>
+<p>   kafka 由 zookpeer 调度，所以依赖于 zookpeer 服务。</p>
 <h2 id="一些概念"><a href="#一些概念" class="headerlink" title="一些概念"></a>一些概念</h2><ul>
-<li>消费者组：同一个消费组中的若干消费者不能同时访问同一个topic的同一个分区（如果只有三个partition，而消费者组有4个消费者，那么一个消费者会空闲）</li>
-<li>持久化：Kafka会将partition以消息日志的方式(落磁盘)存储起来，通过 顺序访问IO和缓存(等到一定的量或时间)才真正把数据写到磁盘上，来提高速度。</li>
+<li>消费者组：同一个消费组中的若干消费者不能同时访问同一个 topic 的同一个分区（如果只有三个 partition，而消费者组有 4 个消费者，那么一个消费者会空闲）</li>
+<li>持久化：Kafka 会将 partition 以消息日志的方式 (落磁盘) 存储起来，通过 顺序访问 IO 和缓存 (等到一定的量或时间) 才真正把数据写到磁盘上，来提高速度。</li>
 </ul>
 
       
@@ -282,14 +282,14 @@
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          初识springcloud
+          初识 springcloud
         
       </div>
     </a>
   
   
     <a href="/2019/12/06/mysql索引与引擎/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">mysql索引与引擎</div>
+      <div class="article-nav-title">mysql 索引与引擎</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -316,7 +316,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#kafka的使用"><span class="toc-number">1.</span> <span class="toc-text">kafka的使用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#kafka的结构组成以及特性"><span class="toc-number">2.</span> <span class="toc-text">kafka的结构组成以及特性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一些概念"><span class="toc-number">2.1.</span> <span class="toc-text">一些概念</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#kafka-的使用"><span class="toc-number">1.</span> <span class="toc-text">kafka 的使用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#kafka-的结构组成以及特性"><span class="toc-number">2.</span> <span class="toc-text">kafka 的结构组成以及特性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一些概念"><span class="toc-number">2.1.</span> <span class="toc-text">一些概念</span></a></li></ol></li></ol>
                     </div>
                 </span>
             </div>
@@ -458,15 +458,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -478,15 +474,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -494,15 +490,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>
