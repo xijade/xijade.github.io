@@ -152,19 +152,135 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Netty之二——NioEventLoop的run方法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Netty系列三之Pipeline" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/11/08/Netty之二——NioEventLoop的run方法/">NioEventLoop 的 run 方法</a>
+      <a class="article-title" href="/2020/11/08/Netty系列三之Pipeline/">Netty 系列三之 Pipeline</a>
     </h1>
   
 
         
-        <a href="/2020/11/08/Netty之二——NioEventLoop的run方法/" class="archive-article-date">
+        <a href="/2020/11/08/Netty系列三之Pipeline/" class="archive-article-date">
+  	<time datetime="2020-11-08T11:02:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-08</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Netty-之-PilpeLine"><a href="#Netty-之-PilpeLine" class="headerlink" title="Netty 之 PilpeLine"></a>Netty 之 PilpeLine</h1><p>前面已经提到过多次 pipeline，它是流水线的意思。即 Channel 被轮询到后，会使用它对应的 pipeline 处理。在 channel 创建的同时就会创建其对应的 pipeline。本文主要介绍从 ChannelPipeline 来了解 channel 的结构</p>
+<h2 id="ChannelHandlerContext"><a href="#ChannelHandlerContext" class="headerlink" title="ChannelHandlerContext"></a>ChannelHandlerContext</h2><p>pipleline.addLast () 的参数是 ChannelHandler，但实际上 pipeline 内部使用一个 ChannelHandlerContext (后面都成为 ctx) 的双向链表来维护。会先将 handler 封装成 ctx 后再加入到链表:</p>
+<p><code>newCtx = this.newContext (group, this.filterName (name, handler), handler);</code></p>
+<p>注意添加 Channelhandler 时可以指定一个 EventExecutorGroup，如果 Handler 中有大量耗时的业务操作阻塞了，Nio 的 reactor 线程也会阻塞无法处理 IO 了。因此业务的 Handler 在 addLast 时往往会指定一个专门的业务线程池。</p>
+<p>再进行 invokeChannelXXX 都会进行判断：该 ctx 有没有指定业务线程池，如果有把这些操作提交到业务线程池中执行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">invokeChannelXXX</span><span class="params">(<span class="keyword">final</span> AbstractChannelHandlerContext next)</span> </span>&#123;</span><br><span class="line">        EventExecutor executor = next.executor ();</span><br><span class="line">        <span class="keyword">if</span> (executor.inEventLoop ()) &#123;</span><br><span class="line">            next.invokeChannelXXX);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            executor.execute (<span class="keyword">new</span> Runnable () &#123;</span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    next.invokeXXX ();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Head-和-Tail"><a href="#Head-和-Tail" class="headerlink" title="Head 和 Tail"></a>Head 和 Tail</h2><p>Netty 中的 ctx 链表的首尾项是固定的，随着 pipeline 创建时同时生成。addFirst 只是加 ctx 到 Head 的后一项，addLast 是加 ctx 到 Tail 的前一项。</p>
+<ol>
+<li>pipeline 有一系列 fireXXX 开头方法，意思调用整个流水线上所有 ctx 的 XXX 方法。</li>
+<li>ctx 也有 fireXXX 开头方法，意思是调用下一个 ctx 的 XXX 方法</li>
+</ol>
+<p>它们两个其实都是调用 <strong> 静态 </strong> 的 invokeChannelRead 方法，前者以 head 为参数，后者以自己为参数。以 pipeline.fireChannelRead 为例。</p>
+<h3 id="入站扩散举例"><a href="#入站扩散举例" class="headerlink" title="入站扩散举例"></a>入站扩散举例</h3><p>首先调用  <strong> 静态 </strong> 的 invokeChannelRead 方法作为调用链的起点，传入 Head 作为参数，调用 head 的 invokeChannelRead:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">invokeChannelRead</span><span class="params">(Object msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.invokeHandler ()) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                ((ChannelInboundHandler)<span class="keyword">this</span>.handler ()).channelRead (<span class="keyword">this</span>, msg);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Throwable var3) &#123;</span><br><span class="line">                <span class="keyword">this</span>.notifyHandlerException (var3);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.fireChannelRead (msg);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>等到 ctx 的 channelRead 处理完后，会调用 ctx 的 fireChannelRead，它会找链表中下一个入站 ctx，开始重复上面的操作：将该 ctx 传入  <strong> 静态 </strong> 的 invokeChannelRead 方法中</p>
+<p><code>invokeChannelRead (this.findContextInbound (), msg);</code></p>
+<p>解码等辅助作用的 ctx 的 channelRead 函数中需要 fireChannelRead，不然调用到自己就停了。而处理业务的最后一个 Handler 不需要这一步，以常见的 SimpleChannelInboundHandler 为例，它处理完数据后就进行资源释放</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">channelRead</span><span class="params">(ChannelHandlerContext ctx, Object msg)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> release = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.acceptInboundMessage (msg)) &#123;</span><br><span class="line">                <span class="keyword">this</span>.channelRead0 (ctx, msg);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                release = <span class="keyword">false</span>;</span><br><span class="line">                ctx.fireChannelRead (msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.autoRelease &amp;&amp; release) &#123;</span><br><span class="line">                ReferenceCountUtil.release (msg);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>如果最后回来到 tail 的 channelRead 方法，说明前面的调用链出问题了，进行日志打印资源释放:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onUnhandledInboundMessage</span><span class="params">(Object msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            logger.debug (<span class="string">"Discarded inbound message &#123;&#125; that reached at the tail of the pipeline. Please check your pipeline configuration."</span>, msg);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            ReferenceCountUtil.release (msg);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="出站扩散举例"><a href="#出站扩散举例" class="headerlink" title="出站扩散举例"></a>出站扩散举例</h3><p>出站以 writeAndFlush 返回举例，pipeline.writeAndFlush (msg) 会调用 tail.writeAndFlush (msg)。这个操作是异步的，毕竟通常是在 channelRead 中去调用 ctx.writeAndFlush。简单化一点，只以 ctx.write 为例。</p>
+<p>ctx 的 write 默认实现都是调用下一个出站 Handler 的 invokeWrite 方法，里面又调用了自己的 write。可以理解为递归调用下一个 ctx 的 write。这样就会一直到 Head，Head 重写了 write 方法，调用了 unsafe.write ()</p>
+<h3 id="异常捕获"><a href="#异常捕获" class="headerlink" title="异常捕获"></a>异常捕获</h3><p>上面也看到了，实际上并不是直接递归用。而是进行了封装。</p>
+<p>ctx.fireChannelRead 并不是直接递归用 ChannelRead，而是包装了一步 invokeChannelRead：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">invokeChannelRead</span><span class="params">(Object msg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ((ChannelInboundHandler) handler ()).channelRead (<span class="keyword">this</span>, msg);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        notifyHandlerException (t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>如果抛出异常，则会调用 notifyHandlerException</li>
+<li>notifyHandlerException 会调用 invokeExceptionCaught</li>
+<li>invokeExceptionCaught 则会调用 exceptionCaught</li>
+<li>exceptionCaught 的默认实现是 ctx.fireExceptionCaught，又一路走流水线下去了</li>
+</ol>
+<p>需要注意的是，出站操作中发生的异常也是这么走的，那么就说明出站时找的下一个 ctx 同样是 next，而不是反方向 prev。这也就是为什么只要 ExceptionHandler 放在最后，出站和入站的异常都能被捕获的原因。</p>
+<h2 id="CTX-递归调用总结"><a href="#CTX-递归调用总结" class="headerlink" title="CTX 递归调用总结"></a>CTX 递归调用总结</h2><ol>
+<li>pipeline.fireXXX 根据操作是入站或者出站，找到 Head 或者 Tail，调用他们的 ctx.invokeXXX ()</li>
+<li>invokeXXX 中调用 XXX</li>
+<li>XXX 的默认实现又是调用 ctx.firxXXX 。</li>
+<li>ctx.fireXXX 中，找到下一个 ctx2，调用 ctx2.invokeXXX</li>
+</ol>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">java netty</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/11/08/Netty系列三之Pipeline/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Netty系列二之NioEventLoop的run方法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/11/08/Netty系列二之NioEventLoop的run方法/">Netty 系列二之 NioEventLoop 的 run 方法</a>
+    </h1>
+  
+
+        
+        <a href="/2020/11/08/Netty系列二之NioEventLoop的run方法/" class="archive-article-date">
   	<time datetime="2020-11-08T02:10:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-08</time>
 </a>
         
@@ -184,7 +300,7 @@
 <li>runAllTasks 运行所有普通任务和定时任务</li>
 </ol>
         
-          <a class="article-more-a" href="/2020/11/08/Netty之二——NioEventLoop的run方法/#more">more >></a>
+          <a class="article-more-a" href="/2020/11/08/Netty系列二之NioEventLoop的run方法/#more">more >></a>
         
       
       
@@ -208,7 +324,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/11/08/Netty之二——NioEventLoop的run方法/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/11/08/Netty系列二之NioEventLoop的run方法/">展开全文 >></a>
         </p>
       
 
@@ -238,86 +354,19 @@
 
 
   
-    <article id="post-Netty之Pipeline" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Netty系列一之服务端启动" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/11/07/Netty之Pipeline/">Netty 之 Pipeline</a>
+      <a class="article-title" href="/2020/11/07/Netty系列一之服务端启动/">Netty 系列一之服务端启动和接受连接</a>
     </h1>
   
 
         
-        <a href="/2020/11/07/Netty之Pipeline/" class="archive-article-date">
-  	<time datetime="2020-11-07T11:02:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-07</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/11/07/Netty之Pipeline/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Netty之一——服务端启动" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/11/07/Netty之一——服务端启动/">Netty 的服务端启动和接受连接</a>
-    </h1>
-  
-
-        
-        <a href="/2020/11/07/Netty之一——服务端启动/" class="archive-article-date">
+        <a href="/2020/11/07/Netty系列一之服务端启动/" class="archive-article-date">
   	<time datetime="2020-11-07T02:10:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-07</time>
 </a>
         
@@ -337,7 +386,7 @@
 <h3 id="设置-channel-工厂"><a href="#设置-channel-工厂" class="headerlink" title="设置 channel 工厂"></a>设置 channel 工厂</h3><p>​        将 BootStrap 的成员变量 channelFactory 设置为 ReflectiveChannelFactory\&lt;NioServerSocketChannel>，看名字也知道，这个工厂是通过反射的方式创建 Channel 的：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">newChannel</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> (Channel)<span class="keyword">this</span>.clazz.newInstance (); &#125;</span><br></pre></td></tr></table></figure>
         
-          <a class="article-more-a" href="/2020/11/07/Netty之一——服务端启动/#more">more >></a>
+          <a class="article-more-a" href="/2020/11/07/Netty系列一之服务端启动/#more">more >></a>
         
       
       
@@ -361,7 +410,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/11/07/Netty之一——服务端启动/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/11/07/Netty系列一之服务端启动/">展开全文 >></a>
         </p>
       
 
@@ -1138,15 +1187,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1154,7 +1195,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">java spring</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1167,10 +1220,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">ml</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>
