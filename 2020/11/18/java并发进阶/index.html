@@ -8,19 +8,19 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>java 并发进阶 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="并发机制的底层原理volatile说实话 volatile 的原理比较底层，要完全弄清需要一些复习计组的知识。有 volatile 的变量在写操作时会发生以下两件事：  将当前缓存行中的数据写回到内存 写回操作使其他 CPU 里缓存了该内存地址的数据无效  这些主要通过 Lock 前缀汇编指令体现，具体做和硬件相关，也不深入。具体可了解缓存一致性协议 synchronziedsynchronzie">
+  <meta name="description" content="并发机制的底层原理volatile说实话 volatile 的原理比较底层，要完全弄清需要一些复习计组的知识。有 volatile 的变量在写操作时会发生以下两件事：  将当前缓存行中的数据写回到内存 写回操作使其他 CPU 里缓存了该内存地址的数据无效  这些主要通过 Lock 前缀汇编指令体现，具体做和硬件相关，也不深入。具体可了解缓存一致性协议">
 <meta name="keywords" content="java  并发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java 并发进阶">
 <meta property="og:url" content="http://yoursite.com/2020/11/18/java并发进阶/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="并发机制的底层原理volatile说实话 volatile 的原理比较底层，要完全弄清需要一些复习计组的知识。有 volatile 的变量在写操作时会发生以下两件事：  将当前缓存行中的数据写回到内存 写回操作使其他 CPU 里缓存了该内存地址的数据无效  这些主要通过 Lock 前缀汇编指令体现，具体做和硬件相关，也不深入。具体可了解缓存一致性协议 synchronziedsynchronzie">
+<meta property="og:description" content="并发机制的底层原理volatile说实话 volatile 的原理比较底层，要完全弄清需要一些复习计组的知识。有 volatile 的变量在写操作时会发生以下两件事：  将当前缓存行中的数据写回到内存 写回操作使其他 CPU 里缓存了该内存地址的数据无效  这些主要通过 Lock 前缀汇编指令体现，具体做和硬件相关，也不深入。具体可了解缓存一致性协议">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/mark.png">
-<meta property="og:updated_time" content="2020-11-08T16:56:24.754Z">
+<meta property="og:updated_time" content="2020-11-08T16:58:20.136Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java 并发进阶">
-<meta name="twitter:description" content="并发机制的底层原理volatile说实话 volatile 的原理比较底层，要完全弄清需要一些复习计组的知识。有 volatile 的变量在写操作时会发生以下两件事：  将当前缓存行中的数据写回到内存 写回操作使其他 CPU 里缓存了该内存地址的数据无效  这些主要通过 Lock 前缀汇编指令体现，具体做和硬件相关，也不深入。具体可了解缓存一致性协议 synchronziedsynchronzie">
+<meta name="twitter:description" content="并发机制的底层原理volatile说实话 volatile 的原理比较底层，要完全弄清需要一些复习计组的知识。有 volatile 的变量在写操作时会发生以下两件事：  将当前缓存行中的数据写回到内存 写回操作使其他 CPU 里缓存了该内存地址的数据无效  这些主要通过 Lock 前缀汇编指令体现，具体做和硬件相关，也不深入。具体可了解缓存一致性协议">
 <meta name="twitter:image" content="http://yoursite.com/img/mark.png">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
@@ -192,6 +192,7 @@
 <li>写回操作使其他 CPU 里缓存了该内存地址的数据无效</li>
 </ol>
 <p>这些主要通过 Lock 前缀汇编指令体现，具体做和硬件相关，也不深入。具体可了解缓存一致性协议</p>
+<a id="more"></a>
 <h2 id="synchronzied"><a href="#synchronzied" class="headerlink" title="synchronzied"></a>synchronzied</h2><p>synchronzied 是最常见的重量级锁。</p>
 <p>JVM 中，java 对象由三部分构成：对象头、实例数据、填充数据。其中，对象头又有三部分构成：</p>
 <ol>
@@ -468,10 +469,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">java  并发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
              
@@ -480,7 +477,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
+                <a href="javascript:void(0)" class="js-tag color4">java  并发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -488,11 +485,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -509,10 +514,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>

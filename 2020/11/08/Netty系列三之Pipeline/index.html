@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="xijue&#39;s blog">
 <meta property="og:description" content="Netty 之 PilpeLine前面已经提到过多次 pipeline，它是流水线的意思。即 Channel 被轮询到后，会使用它对应的 pipeline 处理。在 channel 创建的同时就会创建其对应的 pipeline。本文主要介绍从 ChannelPipeline 来了解 channel 的结构 ChannelHandlerContextpipleline.addLast () 的参数是">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-11-08T08:44:24.134Z">
+<meta property="og:updated_time" content="2020-11-08T16:58:10.732Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Netty 系列三之 Pipeline">
 <meta name="twitter:description" content="Netty 之 PilpeLine前面已经提到过多次 pipeline，它是流水线的意思。即 Channel 被轮询到后，会使用它对应的 pipeline 处理。在 channel 创建的同时就会创建其对应的 pipeline。本文主要介绍从 ChannelPipeline 来了解 channel 的结构 ChannelHandlerContextpipleline.addLast () 的参数是">
@@ -189,6 +189,7 @@
 <p><code>newCtx = this.newContext (group, this.filterName (name, handler), handler);</code></p>
 <p>注意添加 Channelhandler 时可以指定一个 EventExecutorGroup，如果 Handler 中有大量耗时的业务操作阻塞了，Nio 的 reactor 线程也会阻塞无法处理 IO 了。因此业务的 Handler 在 addLast 时往往会指定一个专门的业务线程池。</p>
 <p>再进行 invokeChannelXXX 都会进行判断：该 ctx 有没有指定业务线程池，如果有把这些操作提交到业务线程池中执行。</p>
+<a id="more"></a>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">invokeChannelXXX</span><span class="params">(<span class="keyword">final</span> AbstractChannelHandlerContext next)</span> </span>&#123;</span><br><span class="line">        EventExecutor executor = next.executor ();</span><br><span class="line">        <span class="keyword">if</span> (executor.inEventLoop ()) &#123;</span><br><span class="line">            next.invokeChannelXXX);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            executor.execute (<span class="keyword">new</span> Runnable () &#123;</span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    next.invokeXXX ();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <h2 id="Head-和-Tail"><a href="#Head-和-Tail" class="headerlink" title="Head 和 Tail"></a>Head 和 Tail</h2><p>Netty 中的 ctx 链表的首尾项是固定的，随着 pipeline 创建时同时生成。addFirst 只是加 ctx 到 Head 的后一项，addLast 是加 ctx 到 Tail 的前一项。</p>
 <ol>
@@ -489,10 +490,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">java  并发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
              
@@ -501,7 +498,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
+                <a href="javascript:void(0)" class="js-tag color4">java  并发</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -509,11 +506,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -530,10 +535,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>
