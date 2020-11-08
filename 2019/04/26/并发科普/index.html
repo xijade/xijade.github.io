@@ -6,25 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>mysql 索引与引擎 | xijue&#39;s blog</title>
+  <title>并发科普 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="引擎  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。  主要分析使用 MyIsam 和 InnoDB InnoDB  InnoDB 是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增">
-<meta name="keywords" content="mysql">
+  <meta name="description" content="并发编程分为三个核心  分工，以什么样的方式去拆分任务，比如说生产者 - 消费者模式。 同步，任务间的依赖如何相互通知，或者说任务之间如何相互协作。 互斥，如何保证共享变量的安全性。比如各种锁">
+<meta name="keywords" content="java 并发">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mysql 索引与引擎">
-<meta property="og:url" content="http://yoursite.com/2019/12/06/mysql索引与引擎/index.html">
+<meta property="og:title" content="并发科普">
+<meta property="og:url" content="http://yoursite.com/2019/04/26/并发科普/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
-<meta property="og:description" content="引擎  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。  主要分析使用 MyIsam 和 InnoDB InnoDB  InnoDB 是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增">
+<meta property="og:description" content="并发编程分为三个核心  分工，以什么样的方式去拆分任务，比如说生产者 - 消费者模式。 同步，任务间的依赖如何相互通知，或者说任务之间如何相互协作。 互斥，如何保证共享变量的安全性。比如各种锁">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/img/mysqlindex.PNG">
-<meta property="og:image" content="http://yoursite.com/img/btree.png">
-<meta property="og:image" content="http://yoursite.com/img/insert1.png">
-<meta property="og:image" content="http://yoursite.com/img/insert2.png">
-<meta property="og:updated_time" content="2020-02-28T07:50:04.079Z">
+<meta property="og:image" content="http://yoursite.com/img/bingfa.png">
+<meta property="og:updated_time" content="2020-11-08T16:07:13.157Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="mysql 索引与引擎">
-<meta name="twitter:description" content="引擎  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。  主要分析使用 MyIsam 和 InnoDB InnoDB  InnoDB 是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增">
-<meta name="twitter:image" content="http://yoursite.com/img/mysqlindex.PNG">
+<meta name="twitter:title" content="并发科普">
+<meta name="twitter:description" content="并发编程分为三个核心  分工，以什么样的方式去拆分任务，比如说生产者 - 消费者模式。 同步，任务间的依赖如何相互通知，或者说任务之间如何相互协作。 互斥，如何保证共享变量的安全性。比如各种锁">
+<meta name="twitter:image" content="http://yoursite.com/img/bingfa.png">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -160,20 +157,20 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-mysql索引与引擎" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-并发科普" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      mysql 索引与引擎
+      并发科普
     </h1>
   
 
         
-        <a href="/2019/12/06/mysql索引与引擎/" class="archive-article-date">
-  	<time datetime="2019-12-06T02:00:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-06</time>
+        <a href="/2019/04/26/并发科普/" class="archive-article-date">
+  	<time datetime="2019-04-26T03:07:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-26</time>
 </a>
         
 		
@@ -189,35 +186,103 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="引擎"><a href="#引擎" class="headerlink" title="引擎"></a>引擎</h1><p>  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。<br>  主要分析使用 MyIsam 和 InnoDB</p>
-<h2 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h2><p>  InnoDB 是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属性 auto_increment，可以从灾难中恢复（通过 bin-log 日志等）。它没有保存表的行数，当 SELECT COUNT (*) FROM TABLE 时需要扫描全表。由于锁的粒度更小，写操作不会锁定全表，所以在并发较高时，使用 Innodb 引擎会提升效率。但是使用行级锁也不是绝对的，如果在执行一个 SQL 语句时 MySQL 不能确定要扫描的范围，InnoDB 表同样会锁全表。</p>
-<h2 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h2><p>  它没有提供对数据库事务的支持，不能从灾难中恢复，也不支持行级锁和外键。修改时需要锁住整个表所以效率低，但查询速度很快。索引文件较小</p>
-<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>  索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行 INSERT、UPDATE 和 DELETE。因为更新表时，MySQL 不仅要保存数据，还要保存索引文件。<br><a id="more"></a></p>
-<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><h3 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h3><p>  联合索引有一个 <em> 最左前缀匹配原则 </em>。所以当我们创建一个联合索引的时候，如 (key1,key2,key3)，相当于创建了（key1）、(key1,key2) 和 (key1,key2,key3) 三个索引，这就是最左匹配原则。<br>  在检索数据时从联合索引的最左边开始匹配，因此应该将识别度高的字段放在左边。只查 key1 也会用到索引，但只查 key2 就没有索引了。</p>
-<h3 id="聚簇索引-与-非聚簇索引-辅助索引"><a href="#聚簇索引-与-非聚簇索引-辅助索引" class="headerlink" title="聚簇索引 与 非聚簇索引 (辅助索引)"></a>聚簇索引 与 非聚簇索引 (辅助索引)</h3><p>   使用的都是 B + 索引。不过不同的引擎有区别。<br>   InnoDB 中：<br>   聚簇索引：一个表有且只有一个聚簇索引，默认以主键作为索引。InnoDB 要求表必须有主键（MyISAM 可以没有），如果没有显式指定，则 MySQL 系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则 MySQL 自动为 InnoDB 表生成一个隐含字段作为主键，这个字段长度为 6 个字节，类型为长整形。<br>   聚簇索引中，叶子节点存放的数据直接是键值所对应的的数据。<br>   非聚簇索引：辅助索引则存放的数据是主键，找到主键值后再去聚簇索引中寻找完整的数据，此过程为 <em> 回表 </em><br>   MyISAM 的中，B + 索引的叶子节点存放的是键值所对应的数据的 <em> 地址 </em> , 主键索引与辅助索引的区别只是辅助索引允许 key 重复。</p>
-<p>   <img src="/img/mysqlindex.PNG" alt="InnoDB 和 MyISAM 的区别"></p>
-<h3 id="全文索引"><a href="#全文索引" class="headerlink" title="全文索引"></a>全文索引</h3><p>   类似 like 的模糊查询作用，但 like + % 在文本比较少时是合适的。全文索引在大量的数据面前，能比 like + % 快 N 倍，速度不是一个数量级，但是全文索引可能存在精度问题</p>
+        <p>并发编程分为三个核心</p>
 <ul>
-<li>MySQL 5.6 以前的版本，只有 MyISAM 存储引擎支持全文索引；</li>
-<li>MySQL 5.6 及以后的版本，MyISAM 和 InnoDB 存储引擎均支持全文索引；</li>
-<li>只有字段的数据类型为 char、varchar、text 及其系列才可以建全文索引。</li>
+<li>分工，以什么样的方式去拆分任务，比如说生产者 - 消费者模式。</li>
+<li>同步，任务间的依赖如何相互通知，或者说任务之间如何相互协作。</li>
+<li><p>互斥，如何保证共享变量的安全性。比如各种锁<br><img src="/img/bingfa.png" alt="并发核心"></p>
+<a id="more"></a>
+<h1 id="互斥"><a href="#互斥" class="headerlink" title="互斥"></a>互斥</h1><p>对各个锁的详细介绍 ： <a href="https://tech.meituan.com/2018/11/15/java-lock.html" target="_blank" rel="noopener">各种锁的原理和介绍</a></p>
+<h2 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h2><p> 乐观锁认为自己在使用数据时不会有别的线程修改数据，所以不会添加锁，只是在更新数据的时候去判断之前有没有别的线程更新了这个数据。如果这个数据没有被更新，当前线程将自己修改的数据成功写入。如果数据已经被其他线程更新，则根据不同的实现方式执行不同的操作（例如报错或者自动重试）。<br> 乐观锁在 Java 中是通过使用无锁编程来实现，最常采用的是 CAS 算法（还有自旋锁）<br> CAS 全称 Compare And Swap（比较与交换），是一种无锁算法。在不使用锁（没有线程被阻塞）的情况下实现多线程之间的变量同步。java.util.concurrent 包中的原子类就是通过 CAS 来实现了乐观锁。<br> CAS 有三个操作参数：内存地址，期望值，要修改的新值，当期望值和内存当中的值进行比较不相等的时候，表示内存中的值已经被别线程改动过，这时候失败返回，当相等的时候，将内存中的值改为新的值，并返回成功。<br> 说明代码（非源码，只是例子）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">increment</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">do</span>&#123;</span><br><span class="line">    <span class="keyword">int</span> k = i;</span><br><span class="line">	<span class="keyword">int</span> j = k + <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">  &#125;<span class="keyword">while</span>(compareAndSet (i,k,j))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>compareAndSet 比较 i 与 k 是否相同，相同才写入 j，不同则返回 false (一直循环，自旋思想)。compareAndSet 虽然有取值、比较、写入多个步骤，但它底层是 <strong> 一条硬件操作指令 </strong></p>
+<h3 id="CAS-缺点"><a href="#CAS-缺点" class="headerlink" title="CAS 缺点"></a>CAS 缺点</h3></li>
 </ul>
-<p>注意事项：</p>
 <ol>
-<li>全文索引有最小搜索长度和最大搜索长度，词语的长度必须在以上两个变量的区间内才能被搜索</li>
-<li>使用全文索引时，测试表里至少要有 4 条以上的记录，否则，会出现意想不到的结果。</li>
+<li>如果一个值原来是 A，变成了 B，又变成了 A，那么使用 CAS 进行检查时会发现它的值没有发生变化，但是实际上却变化了。ABA 问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么 A－B－A 就会变成 1A-2B－3A。<br> AtomicStampedReference 内的 compareAndSet 已解决此问题</li>
+<li>循环时间长开销大。自旋 CAS 如果长时间不成功，会给 CPU 带来非常大的执行开销。</li>
+<li>只能保证一个共享变量的原子操作。当对一个共享变量执行操作时，我们可以使用循环 CAS 的方式来保证原子操作，但是对多个共享变量操作时，循环 CAS 就无法保证操作的原子性，这个时候就可以用锁，或者有一个取巧的办法，就是把多个共享变量合并成一个共享变量来操作。比如有两个共享变量 i＝2,j=a，合并一下 ij=2a，然后用 CAS 来操作 ij。</li>
 </ol>
-<h3 id="哈希索引"><a href="#哈希索引" class="headerlink" title="哈希索引"></a>哈希索引</h3><p>  不需要类似 B + 树那样从根节点到叶子节点逐级查找，只需一次哈希算法即可立刻定位到相应的位置，速度非常快。<br>  但是是基于等值过滤的，哈希索引不支持范围查询，。哈希值还要经过散列，所以哈希值的大小不能确定 index 的先后。列如利用索引排序，like ‘xxx%’ (本质上也是范围查询)，哈希索引无用武之地。如果哈希碰撞几率大的话效率也不理想。</p>
-<h3 id="B-索引"><a href="#B-索引" class="headerlink" title="B + 索引"></a>B + 索引</h3><p>  是最常用的最为频繁使用的索引。一般来说，索引本身也很大，不可能全部存储在内存中，因此索引往往以索引文件的形式存储的磁盘上。因为普通的平衡二叉树对每个键值都去磁盘进行 IO，如果范围查找有 1000 个键值在范围中，就要去对磁盘进行 1000 次 IO。<br>  <strong> 局部性原理： 当一个数据被用到时，其附近的数据也通常会马上被使用。 </strong><br>  所以可以顺序向后读取一定长度的数据放入内存，这就是磁盘预读。<br>  B 树 (平衡多路搜索树) 的一个节点存放的不再是一个关键字，而是将关键字所在的一整个磁盘页读入到内存中。<br>  B + 树则是进一步的改进版，叶子节点中有一个指针指向一下个叶子节点，提高区间访问的性能，方便范围查询。且只有叶子节点存放数据，非叶子节点只存储键值信息。<br>  <img src="/img/btree.png" alt="B + 树"></p>
-<p>  树的一个非叶子节点的储存大小就是一个磁盘页 (16kb)，如果同时存放 key 值 (4b) 和 date (4b)，那一个节点能记录的项数 (2k) 就少。如果节点只记录 key 值，那么一个节点能记录的项数就增加 (4k)，有利于树的高度减小。<br>  mysql 的 InnoDB 存储引擎在设计时是将根节点常驻内存的。</p>
-<h4 id="B-树的插入："><a href="#B-树的插入：" class="headerlink" title="B + 树的插入："></a>B + 树的插入：</h4><p>  叶子节点超过限制后，左右两部分分裂。如下图，插入键值为 7 的元素<br>  <img src="/img/insert1.png" alt="插入步骤 1"><br>  假设一个叶子节点只能存放 4 个项，那么：<br>  <img src="/img/insert2.png" alt="插入步骤 2"></p>
-<h2 id="索引的优化"><a href="#索引的优化" class="headerlink" title="索引的优化"></a>索引的优化</h2><p>   下列讲的都是 mysql 自己优化的，不需要使用者手动操作</p>
-<h3 id="覆盖索引-covering-index"><a href="#覆盖索引-covering-index" class="headerlink" title="覆盖索引 (covering index)"></a>覆盖索引 (covering index)</h3><p>  一个查询语句的执行只用从索引中就能够取得，不必从数据表中读取。（① select 和 where 的字段被包含在一个索引里；② 如果 select 的是主键也可以，因为辅助索引的节点保存的值是主键）这样非主键索引不需要回表，减少一次 IO<br>  列如：(key1，key2) 为普通索引：<strong><em>select key2 from covering_index_sample where key1 = ‘keytest’</em></strong></p>
-<h3 id="索引下推-Index-Condition-Pushdown-ICP"><a href="#索引下推-Index-Condition-Pushdown-ICP" class="headerlink" title="索引下推 (Index Condition Pushdown, ICP)"></a>索引下推 (Index Condition Pushdown, ICP)</h3><p>   假设语句是 select * from tuser where name like ‘ 张 %’ and age=10 and ismale=1<br>   辅助索引是 (name,age)<br>   mysql 找到第一个姓张的后，不是马上回表检测 age 和 ismale。而是判断索引剩下的字段 age 是否等于 10，若不等于则直接找下一项，省去一次回表的 IO</p>
-<h3 id="查询优化器"><a href="#查询优化器" class="headerlink" title="查询优化器"></a>查询优化器</h3><p>   在一条单表查询语句真正执行之前，MySQL 的查询优化器会找出执行该语句所有可能使用的方案，对比之后找出成本最低的方案。这个成本最低的方案就是所谓的执行计划。 优化过程大致如下： 1、根据搜索条件，找出所有可能使用的索引 2、计算全表扫描的代价 3、计算使用不同索引执行查询的代价 4、对比各种执行方案的代价，找出成本最低的那一个</p>
-<h2 id="select-查询优化"><a href="#select-查询优化" class="headerlink" title="select 查询优化"></a>select 查询优化</h2><ul>
-<li>select /<em> 少用。业务上，可能只看 sql 语句不能知道该语句的功能；增加了字段后，所有 select </em> 的查询都会多查出一个字段。技术上，本来可以使用覆盖索引，但 select * 后不会使用了；占用缓冲池空间</li>
+<h2 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h2><p>  如果同步块过于简单，没有线程的阻塞和唤醒开销大，此时就很浪费资源。如果有多个处理器同时运行多个线程，第一个线程已经持有锁。此时第二个线程想去占有锁，让它 “稍等一下” 而不是切换线程。等待第一个线程处理完，这就是自旋。只有锁占用时间很短的简单操作才会获得好的效果。</p>
+<h2 id="原子类"><a href="#原子类" class="headerlink" title="原子类"></a>原子类</h2><h3 id="原子类整形"><a href="#原子类整形" class="headerlink" title="原子类整形"></a>原子类整形</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test2</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> AtomicInteger count = <span class="keyword">new</span> AtomicInteger ();</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">increment</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                  count.incrementAndGet ();</span><br><span class="line">        &#125;</span><br><span class="line">      <span class="comment">// 使用 AtomicInteger 之后，不需要加锁，也可以实现线程安全。</span></span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> count.get ();</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="原子类引用类型"><a href="#原子类引用类型" class="headerlink" title="原子类引用类型"></a>原子类引用类型</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import java.util.concurrent.atomic.AtomicReference;</span><br><span class="line">public class AtomicReferenceTest &#123;</span><br><span class="line">    public static void main (String [] args) &#123;</span><br><span class="line">        AtomicReference&lt;Person&gt; ar = new AtomicReference&lt;Person&gt;();</span><br><span class="line">        Person person = new Person (&quot;SnailClimb&quot;, 22);</span><br><span class="line">        ar.set (person);</span><br><span class="line">        Person updatePerson = new Person (&quot;Daisy&quot;, 20);</span><br><span class="line">        ar.compareAndSet (person, updatePerson);   //ar 的引用是否为 person，若是则更新为 updatePerson</span><br><span class="line"></span><br><span class="line">        System.out.println (ar.get ().getName ());</span><br><span class="line">        System.out.println (ar.get ().getAge ());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="分工"><a href="#分工" class="headerlink" title="分工"></a>分工</h1><h2 id="多线程设计模式"><a href="#多线程设计模式" class="headerlink" title="多线程设计模式"></a>多线程设计模式</h2><p>1.Single Threaded Execution Pattern [同一时刻只允许一个线程操作] ： 最基础的互斥 </p>
+<p>2.Guarded Suspension Pattern ：满足条件暂时 wait () 挂起</p>
+<p>3.Balking Pattern（有人在做了？哈哈，太好了，我就不过去了！） ：别的线程已经做过的事不需要重读再做。</p>
+<p>4.Producer-Consumer：生产者把产品 add 到 queue，消费者从 queue 中 poll 出来</p>
+<p>5.thread per message：线程池，给一个任务分配一个线程</p>
+<p>6.Worker Thread 模式（工作没来，就一直等，工作来了就干活）：线程池的核心线程</p>
+<ol start="7">
+<li>两阶段终止模式（Two-Phase Termination Patter）模式：优雅安全的关闭线程，让线程可以完成它本应完成的当前任务并可以附加一些收尾工作后再进行关闭，比如线程池 shutdown () 后会把未执行完毕的任务和阻塞队列的任务执行完毕后再关闭。一个线程善后完毕后修改中断信号为真；里面一个线程则是不停在判断中断信号来觉得是否关闭</li>
+</ol>
+<h2 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ThreadPoolExecutor (<span class="keyword">int</span> corePoolSize,  <span class="comment">// 核心线程数量，就算任务数量比核心线程数量少，也要创建这么多的线程 </span></span><br><span class="line">                              <span class="keyword">int</span> maximumPoolSize, <span class="comment">// 阻塞队列满时，能创建这么多线程（核心 + 临时）</span></span><br><span class="line">                              <span class="keyword">long</span> keepAliveTime,</span><br><span class="line">                              TimeUnit unit,</span><br><span class="line">                              BlockingQueue&lt;Runnable&gt; workQueue, </span><br><span class="line">                              ThreadFactory threadFactory,</span><br><span class="line">                              RejectedExecutionHandler handler)<span class="comment">// 饱和策略 </span></span><br></pre></td></tr></table></figure>
+<p>饱和策略：</p>
+<ul>
+<li>AbortPolicy： 直接拒绝所提交的任务，并抛出 RejectedExecutionException 异常；</li>
+<li>CallerRunsPolicy：只用调用者所在的线程来执行任务；</li>
+<li>DiscardPolicy：不处理直接丢弃掉任务；</li>
+<li>DiscardOldestPolicy：丢弃掉阻塞队列中存放时间最久的任务，执行当前任务<br>线程池从 0 到饱和的步骤：</li>
 </ul>
+<ol>
+<li>如果当前运行的线程少于 corePoolSize，则会创建新的线程来执行新的任务；</li>
+<li>如果运行的线程个数等于或者大于 corePoolSize，则会将提交的任务存放到阻塞队列 workQueue 中；</li>
+<li>如果当前 workQueue 队列已满的话，则会创建新的线程来执行任务；</li>
+<li>如果线程个数已经超过了 maximumPoolSize，则会使用饱和策略 RejectedExecutionHandler 来进行处理。</li>
+</ol>
+<h4 id="Executors-类"><a href="#Executors-类" class="headerlink" title="Executors 类"></a>Executors 类</h4><p>a、newFiexedThreadPool (int Threads)：创建固定数目线程的线程池。</p>
+<p>b、newCachedThreadPool ()：创建一个可缓存的线程池，调用 execute 将重用以前构造的线程（如果线程可用）。如果没有可用的线程，则创建一个新线程并添加到池中。终止并从缓存中移除那些已有 60 秒钟未被使用的线程。</p>
+<p>c、newSingleThreadExecutor () 创建一个单线程化的 Executor。</p>
+<p>d、newScheduledThreadPool (int corePoolSize) 创建一个支持定时及周期性的任务执行的线程池，多数情况下可用来替代 Timer 类</p>
+<h6 id="存在内存溢出缺陷"><a href="#存在内存溢出缺陷" class="headerlink" title="存在内存溢出缺陷"></a>存在内存溢出缺陷</h6><p>   比如 newFiexedThreadPool 使用的是 LinkedBlockingQueue，是一个用链表实现的无界阻塞队列。默认容量为 Integer.MAX_VALUE。因此阿里巴巴手册建议不使用 Executors 类，请求队列过大超过 int 最大值问题时，操作者对 ThreadPoolExecutor 更有数</p>
+<h2 id="Callable-与-future"><a href="#Callable-与-future" class="headerlink" title="Callable 与 future"></a>Callable 与 future</h2><p>  Callable 与 Runnable 类似，Callable 有返回的结果。实现了 future 接口会保存返回结果。FutureTask 包装器会把 Callable 同时实现 Runnable 和 Future 接口。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Callable&lt;Integer&gt; myComputation = ...;</span><br><span class="line">FutureTask&lt;Integer&gt; task = <span class="keyword">new</span> FutureTask&lt;Integer&gt;(myComputation);</span><br><span class="line">Thread t = <span class="keyword">new</span> Thread (task);</span><br><span class="line">t.start ();</span><br><span class="line">Integer result = task.get ();</span><br></pre></td></tr></table></figure></p>
+<h1 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h1><h2 id="volatile-关键字"><a href="#volatile-关键字" class="headerlink" title="volatile 关键字"></a>volatile 关键字</h2><p>  volatile 是一个类型修饰符。volatile 的作用是作为指令关键字，确保本条指令不会因编译器的优化而省略。（CAS 要不停自旋到没人修改过，volatile 直接改主内存）其特性：</p>
+<ul>
+<li>保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的。（实现可见性）</li>
+<li>禁止进行指令重排序。（实现有序性）</li>
+<li>volatile 只能保证对单次读 / 写的原子性。i++ 这种操作不能保证原子性。</li>
+</ul>
+<h3 id="volatile-可见性"><a href="#volatile-可见性" class="headerlink" title="volatile 可见性"></a>volatile 可见性</h3><p>  synchronized 忘掉本地内存的拷贝，每次进入同步块重新向主内存获取来实现内存可见性。<br>  volatile 变量的内存可见性是基于内存屏障（Memory Barrier）实现。内存屏障，又称内存栅栏，是一个 CPU 指令。在程序运行时，为了提高执行性能，编译器和处理器会对指令进行重排序，JMM 为了保证在不同的编译器和 CPU 上有相同的结果，通过插入特定类型的内存屏障来禁止特定类型的编译器重排序和处理器重排序。有 LoadLoad、StoreLoad、LoadStore、StoreStore 四种内存屏障。<br>指令实例：Load1；LoadLoad；Load2；  确保 Load1 的装载之前于 Load2 的装载</p>
+<h3 id="JMM-java-memory-model"><a href="#JMM-java-memory-model" class="headerlink" title="JMM (java memory model)"></a>JMM (java memory model)</h3><p>  共享变量存储在主内存 (Main Memory) 中，每个线程都有一个私有的本地内存（Local Memory），本地内存保存了被该线程使用到的主内存的副本拷贝，线程对变量的所有操作都必须在工作内存中进行，而不能直接读写主内存中的变量。在退出同步代码块，且释放了监视器的情况下，监视器负责将寄存器中的缓存，写入到主内存</p>
+<h3 id="缓存一致性协议"><a href="#缓存一致性协议" class="headerlink" title="缓存一致性协议"></a>缓存一致性协议</h3><p>  volatile 变量进行写操作，JVM 发送一条 Lock 前缀的指令将缓存写回内存。导致其他处理器的缓存失效，就会从内存中重读该变量数据，即可以获取当前最新值。</p>
+<h3 id="Happens-Before"><a href="#Happens-Before" class="headerlink" title="Happens-Before"></a>Happens-Before</h3><p>  重排需要遵循的规则。Happens-Before 向程序员提供跨线程的内存可见性保证。简称 HP</p>
+<ol>
+<li><strong><em>volatile 变量：对一个 volatile 域的写 hp 于任意后续对这个域的读。</em></strong> (这条看一下，其他的不用看也清楚)</li>
+<li>程序顺序：单线程中的每一个操作，hp 与该线程中的任意后序操作。</li>
+<li>传递性：hp 性质具有传递性。</li>
+<li>start ()：如果 A 线程 start () 一个 B 线程，那么 start () 操作 hp 于任意 B 线程中的操作。</li>
+<li>join ()：如果 A 线程执行 B.join () 且成功返回，那么线程 B 中的任意操作 hp 于 B.join () 成功返回。</li>
+<li>程序中断： 对线程 interrupt () 方法的调用 hp 于被检测到中断的时间。</li>
+<li>finalize：对象的构造 hp 于 finalize () 方法执行。</li>
+<li>监视器锁：对锁的解锁 hp 于之后对这个锁的加锁。</li>
+</ol>
+<h2 id="Semaphore-信号量"><a href="#Semaphore-信号量" class="headerlink" title="Semaphore 信号量"></a>Semaphore 信号量</h2><p>  信号量本质上是一个共享锁，用 AQS 中的状态变量维护资源数量，保证被线程访问的数量。如果超过了这个数量，请求就会被阻塞。这种性质可以用于构建一些资源池对象，比如数据库连接池。Semaphore 是 synchronized 的加强版，作用是控制线程的并发数量。</p>
+<ul>
+<li>new Semaphore (int)  同一时刻允许多少线程访问</li>
+<li>acquire () 获得锁</li>
+<li>release () 释放锁</li>
+</ul>
+<h2 id="CountDownLatch-倒计时门栓"><a href="#CountDownLatch-倒计时门栓" class="headerlink" title="CountDownLatch 倒计时门栓"></a>CountDownLatch 倒计时门栓</h2><p>  倒计时器，等待设置的计数变量为 0。它允许若干个线程一直等待，直到其他线程完成操作后继续执行</p>
+<ul>
+<li><strong>final CountDownLatch latch = new CountDownLatch (2); </strong>  设置计数值</li>
+<li>latch.countDown ();  分线程完成时调用使计数器减 1</li>
+<li>latch.await ();       挂起，等待计数器变为 0</li>
+</ul>
+<h2 id="CyclicBarrier-障栅"><a href="#CyclicBarrier-障栅" class="headerlink" title="CyclicBarrier 障栅"></a>CyclicBarrier 障栅</h2><p>  使线程达到阻塞在同一个同步点，当所有线程都被阻塞时才会继续允许。</p>
+<ul>
+<li>public CyclicBarrier (int parties, Runnable barrierAction)     拦截 parties 个线程。线程到达屏障时，优先执行 barrierAction，方便处理更复杂的业务场景。（barrierAction 可以没有）</li>
+<li>await () 告诉 CyclicBarrier 自己已达到同步点</li>
+</ul>
+<h2 id="Exchanger-交换器"><a href="#Exchanger-交换器" class="headerlink" title="Exchanger 交换器"></a>Exchanger 交换器</h2><p>  用于两个工作线程之间交换数据的封装工具类。</p>
+<ul>
+<li>data = exchanger.exchange (data); 等待另一个线程到达此交换点（除非当前线程被中断），然后将给定的对象传送给该线程，并接收该线程的对象。</li>
+</ul>
+<h2 id="线程安全的队列"><a href="#线程安全的队列" class="headerlink" title="线程安全的队列"></a>线程安全的队列</h2><h3 id="BlockingQueue"><a href="#BlockingQueue" class="headerlink" title="BlockingQueue"></a>BlockingQueue</h3><p>  对于空队列的移除和满队列的插入不同的响应</p>
+<ul>
+<li>阻塞：put，take</li>
+<li>抛出异常：add，remove，element</li>
+<li>返回 null 或者 false：poll，peek，offer</li>
+</ul>
+<h3 id="ConcurrentLinkedQueue"><a href="#ConcurrentLinkedQueue" class="headerlink" title="ConcurrentLinkedQueue"></a>ConcurrentLinkedQueue</h3><p>用链表实现的队列。这个链表对节点的操作使用了 CAS 算法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 更改 Node 中的数据域 item   </span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">casItem</span><span class="params">(E cmp, E val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> UNSAFE.compareAndSwapObject (<span class="keyword">this</span>, itemOffset, cmp, val);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 更改 Node 中的指针域 next</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lazySetNext</span><span class="params">(Node&lt;E&gt; val)</span> </span>&#123;</span><br><span class="line">    UNSAFE.putOrderedObject (<span class="keyword">this</span>, nextOffset, val);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 更改 Node 中的指针域 next</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">casNext</span><span class="params">(Node&lt;E&gt; cmp, Node&lt;E&gt; val)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> UNSAFE.compareAndSwapObject (<span class="keyword">this</span>, nextOffset, cmp, val);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
       
@@ -231,7 +296,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">java 并发</a>
         		</li>
       		
 		</ul>
@@ -287,7 +352,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/12/06/mysql索引与引擎/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/04/26/并发科普/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -301,18 +366,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/12/15/kafka基本原理和使用/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/06/18/mybatis使用和常见问题/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          kafka 基本原理和使用
+          mybatis 使用和常见问题
         
       </div>
     </a>
   
   
-    <a href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">HashMap、ConcurrentHashMap 的原理与区别</div>
+    <a href="/2019/04/20/同步器框架AQS/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">同步器框架 AQS</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -339,7 +404,7 @@
                 </span>
                 <span class="tooltip-content">
                     <div class="toc-article">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#引擎"><span class="toc-number">1.</span> <span class="toc-text">引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#InnoDB"><span class="toc-number">1.1.</span> <span class="toc-text">InnoDB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MyISAM"><span class="toc-number">1.2.</span> <span class="toc-text">MyISAM</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#索引"><span class="toc-number">2.</span> <span class="toc-text">索引</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#索引类型"><span class="toc-number">2.1.</span> <span class="toc-text">索引类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#联合索引"><span class="toc-number">2.1.1.</span> <span class="toc-text">联合索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#聚簇索引-与-非聚簇索引-辅助索引"><span class="toc-number">2.1.2.</span> <span class="toc-text">聚簇索引 与 非聚簇索引 (辅助索引)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全文索引"><span class="toc-number">2.1.3.</span> <span class="toc-text">全文索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#哈希索引"><span class="toc-number">2.1.4.</span> <span class="toc-text">哈希索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-索引"><span class="toc-number">2.1.5.</span> <span class="toc-text">B + 索引</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#B-树的插入："><span class="toc-number">2.1.5.1.</span> <span class="toc-text">B + 树的插入：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#索引的优化"><span class="toc-number">2.2.</span> <span class="toc-text">索引的优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#覆盖索引-covering-index"><span class="toc-number">2.2.1.</span> <span class="toc-text">覆盖索引 (covering index)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#索引下推-Index-Condition-Pushdown-ICP"><span class="toc-number">2.2.2.</span> <span class="toc-text">索引下推 (Index Condition Pushdown, ICP)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查询优化器"><span class="toc-number">2.2.3.</span> <span class="toc-text">查询优化器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#select-查询优化"><span class="toc-number">2.3.</span> <span class="toc-text">select 查询优化</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#互斥"><span class="toc-number">1.</span> <span class="toc-text">互斥</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#CAS"><span class="toc-number">1.1.</span> <span class="toc-text">CAS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CAS-缺点"><span class="toc-number">1.1.1.</span> <span class="toc-text">CAS 缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自旋锁"><span class="toc-number">1.2.</span> <span class="toc-text">自旋锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#原子类"><span class="toc-number">1.3.</span> <span class="toc-text">原子类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#原子类整形"><span class="toc-number">1.3.1.</span> <span class="toc-text">原子类整形</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原子类引用类型"><span class="toc-number">1.3.2.</span> <span class="toc-text">原子类引用类型</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#分工"><span class="toc-number">2.</span> <span class="toc-text">分工</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#多线程设计模式"><span class="toc-number">2.1.</span> <span class="toc-text">多线程设计模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程池"><span class="toc-number">2.2.</span> <span class="toc-text">线程池</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Executors-类"><span class="toc-number">2.2.0.1.</span> <span class="toc-text">Executors 类</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#存在内存溢出缺陷"><span class="toc-number">2.2.0.1.0.1.</span> <span class="toc-text">存在内存溢出缺陷</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Callable-与-future"><span class="toc-number">2.3.</span> <span class="toc-text">Callable 与 future</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#同步"><span class="toc-number">3.</span> <span class="toc-text">同步</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#volatile-关键字"><span class="toc-number">3.1.</span> <span class="toc-text">volatile 关键字</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#volatile-可见性"><span class="toc-number">3.1.1.</span> <span class="toc-text">volatile 可见性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JMM-java-memory-model"><span class="toc-number">3.1.2.</span> <span class="toc-text">JMM (java memory model)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缓存一致性协议"><span class="toc-number">3.1.3.</span> <span class="toc-text">缓存一致性协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Happens-Before"><span class="toc-number">3.1.4.</span> <span class="toc-text">Happens-Before</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Semaphore-信号量"><span class="toc-number">3.2.</span> <span class="toc-text">Semaphore 信号量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CountDownLatch-倒计时门栓"><span class="toc-number">3.3.</span> <span class="toc-text">CountDownLatch 倒计时门栓</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CyclicBarrier-障栅"><span class="toc-number">3.4.</span> <span class="toc-text">CyclicBarrier 障栅</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Exchanger-交换器"><span class="toc-number">3.5.</span> <span class="toc-text">Exchanger 交换器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程安全的队列"><span class="toc-number">3.6.</span> <span class="toc-text">线程安全的队列</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BlockingQueue"><span class="toc-number">3.6.1.</span> <span class="toc-text">BlockingQueue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ConcurrentLinkedQueue"><span class="toc-number">3.6.2.</span> <span class="toc-text">ConcurrentLinkedQueue</span></a></li></ol></li></ol></li></ol>
                     </div>
                 </span>
             </div>

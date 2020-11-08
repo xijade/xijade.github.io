@@ -152,6 +152,108 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-java并发进阶" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/11/18/java并发进阶/">java 并发进阶</a>
+    </h1>
+  
+
+        
+        <a href="/2020/11/18/java并发进阶/" class="archive-article-date">
+  	<time datetime="2020-11-18T15:47:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-18</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="并发机制的底层原理"><a href="#并发机制的底层原理" class="headerlink" title="并发机制的底层原理"></a>并发机制的底层原理</h1><h2 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h2><p>说实话 volatile 的原理比较底层，要完全弄清需要一些复习计组的知识。有 volatile 的变量在写操作时会发生以下两件事：</p>
+<ol>
+<li>将当前缓存行中的数据写回到内存</li>
+<li>写回操作使其他 CPU 里缓存了该内存地址的数据无效</li>
+</ol>
+<p>这些主要通过 Lock 前缀汇编指令体现，具体做和硬件相关，也不深入。具体可了解缓存一致性协议</p>
+<h2 id="synchronzied"><a href="#synchronzied" class="headerlink" title="synchronzied"></a>synchronzied</h2><p>synchronzied 是最常见的重量级锁。</p>
+<p>JVM 中，java 对象由三部分构成：对象头、实例数据、填充数据。其中，对象头又有三部分构成：</p>
+<ol>
+<li>标记字段 (Mark Word)</li>
+<li>类型指针 (指向该对象对应的类型)</li>
+<li>数组长度 (对象为数组才会有)</li>
+</ol>
+<p>其中，Mark Word 中存放了大量有意思的信息，包括和锁相关的内容。</p>
+<p><img src="/img/mark.png" alt="mark word 字段"></p>
+<p>锁有四个等级，会随着竞争的激烈程度升级。需要注意锁只能升级不能降级：</p>
+<ol>
+<li>无锁状态</li>
+<li>偏向锁</li>
+<li>轻量级锁</li>
+<li>重量级锁</li>
+</ol>
+<h3 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h3><p>很多时候需要多个线程操作同一个变量，需要加锁保证线程安全。然而虽然需要保证互斥，但是并没有竞争。比如我每周一要洗澡，你每周二洗澡，虽然洗澡的时候要锁住门独占资源，但其实并没有人竞争。</p>
+<p>如果你确定程序的所有锁通常属于竞争状态，可以用 JVM 参数关闭偏向锁。</p>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">java  并发</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/11/18/java并发进阶/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Netty系列三之Pipeline" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -961,93 +1063,6 @@
 
 
   
-    <article id="post-ThreadLoacl" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/16/ThreadLoacl/">ThreadLoacl</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/16/ThreadLoacl/" class="archive-article-date">
-  	<time datetime="2019-11-16T09:45:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-16</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>  最近接触权限访问方面问题，阅读看 shiro 的源码。对 Subject 类如何区分每个线程进一步了解，研究了下底层 ThreadLocal 是怎么工作的。</p>
-<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&lt;Thread,Object&gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。<br>  ThreadLocal<t>。后面跟着泛型，ThreadLocal 理解为一个变量，而不是一个容器</t></p>
-<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><ul>
-<li>set (obj)：向当前线程中存储数据</li>
-<li>get ()：获取当前线程中的数据</li>
-<li>remove ()：删除当前线程中的数据</li>
-</ul>
-        
-          <a class="article-more-a" href="/2019/11/16/ThreadLoacl/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/16/ThreadLoacl/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1175,23 +1190,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">java netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
+                <a href="javascript:void(0)" class="js-tag color4">java  并发</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+                <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1199,7 +1206,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1207,7 +1226,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1219,7 +1238,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>

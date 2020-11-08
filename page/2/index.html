@@ -152,6 +152,93 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ThreadLoacl" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/16/ThreadLoacl/">ThreadLoacl</a>
+    </h1>
+  
+
+        
+        <a href="/2019/11/16/ThreadLoacl/" class="archive-article-date">
+  	<time datetime="2019-11-16T09:45:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-16</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>  最近接触权限访问方面问题，阅读看 shiro 的源码。对 Subject 类如何区分每个线程进一步了解，研究了下底层 ThreadLocal 是怎么工作的。</p>
+<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><p>  每条线程都需要为各自设置一个同名的变量。最直接的思路是设置一个全局的 Map&lt;Thread,Object&gt; ，以自己所在的线程作为键。但如此需要花费额外的精力关注同步的问题。<br>  ThreadLocal<t>。后面跟着泛型，ThreadLocal 理解为一个变量，而不是一个容器</t></p>
+<h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><ul>
+<li>set (obj)：向当前线程中存储数据</li>
+<li>get ()：获取当前线程中的数据</li>
+<li>remove ()：删除当前线程中的数据</li>
+</ul>
+        
+          <a class="article-more-a" href="/2019/11/16/ThreadLoacl/#more">more >></a>
+        
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/11/16/ThreadLoacl/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-springIOC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -320,19 +407,19 @@
 
 
   
-    <article id="post-并发进阶" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-并发科普" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/26/并发进阶/">并发进阶</a>
+      <a class="article-title" href="/2019/04/26/并发科普/">并发科普</a>
     </h1>
   
 
         
-        <a href="/2019/04/26/并发进阶/" class="archive-article-date">
+        <a href="/2019/04/26/并发科普/" class="archive-article-date">
   	<time datetime="2019-04-26T03:07:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-26</time>
 </a>
         
@@ -351,7 +438,7 @@
 <li>同步，任务间的依赖如何相互通知，或者说任务之间如何相互协作。</li>
 <li><p>互斥，如何保证共享变量的安全性。比如各种锁<br><img src="/img/bingfa.png" alt="并发核心"></p>
         
-          <a class="article-more-a" href="/2019/04/26/并发进阶/#more">more >></a>
+          <a class="article-more-a" href="/2019/04/26/并发科普/#more">more >></a>
         
       
       
@@ -375,7 +462,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/26/并发进阶/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/04/26/并发科普/">展开全文 >></a>
         </p>
       
 
@@ -940,23 +1027,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">java netty</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
+                <a href="javascript:void(0)" class="js-tag color4">java  并发</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
+                <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -964,7 +1043,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">kafka 消息队列 分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -972,7 +1063,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -984,7 +1075,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ml</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
             
             <div class="clearfix"></div>
