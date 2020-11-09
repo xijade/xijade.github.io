@@ -18,7 +18,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/ioc1.png">
 <meta property="og:image" content="http://yoursite.com/img/bean.png">
-<meta property="og:updated_time" content="2019-12-04T08:12:11.722Z">
+<meta property="og:updated_time" content="2020-11-09T15:47:43.086Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springIOC">
 <meta name="twitter:description" content="SpringIOC 的容器主要有两种：BeanFactory 和 ApplicationContext。BeanFactory 是 spring 提供的基础 IOC 容器，AA 构建与 BB 之上，提供了额外的功能。 BeanFactory   因为本篇涉及基础的 IOC 部分，所以以 BeanFactory 为例">
@@ -204,7 +204,7 @@
 <li>&lt;porps&gt; &lt;prop key=”author”&gt;<a href="mailto:fujohnwang@gmail.com" target="_blank" rel="noopener">fujohnwang@gmail.com</a>&lt;/prop&gt;  简化版 map，值只能指定为字符串</li>
 <li>&lt;null&gt;</li>
 </ul>
-<p>工厂模式 (factory-method)：<br>  有些 bean 是通过工厂模式获得的而不能直接 new，要获得这种类的 bean 需要<br>  <strong><em>&lt;bean id=”bar” class=”…StaticBarInterfaceFactory” factory-method=”getInstance”/&gt; </em></strong></p>
+<p>工厂模式 (factory-method)：<br>  有些 bean 是通过工厂模式获得的而不能直接 new，要获得这种类的 bean 需要<br>  <strong>&lt;bean id=”bar” class=”…StaticBarInterfaceFactory” factory-method=”getInstance”/&gt; </strong></p>
 <p>  autowire<br>  默认为 no，常用为 byName，有一个依赖的实例对象名和一个 &amp; lt;bean&gt; 的 id 相同就会自动注入。ByType 的话如果有多个同样的类型的 bean，与 bytype 指明的相同则可能会出错</p>
 <p>lazy-init：<br>  ApplicationContext 在容器启动时默认实例化所有 singleton 的 bean。设置 lazy-init=”true” 可延迟初始化。但如果有一个非延迟初始化的 bean 依赖它，它也只能立即初始化</p>
 <p>scope：<br>  singleton：单例，与容器拥有相同的寿命<br>  prototype：多例，创建后不负责对象的消除<br>  此外还有 request，session，global session 等 scope，只适用于 web 程序</p>
@@ -510,15 +510,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -534,15 +530,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -550,15 +542,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">ml</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
             
             <div class="clearfix"></div>
