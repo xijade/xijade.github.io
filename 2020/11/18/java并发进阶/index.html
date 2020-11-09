@@ -17,7 +17,8 @@
 <meta property="og:description" content="并发机制的底层原理volatile说实话 volatile 的原理比较底层，要完全弄清需要一些复习计组的知识。有 volatile 的变量在写操作时会发生以下两件事：  将当前缓存行中的数据写回到内存 写回操作使其他 CPU 里缓存了该内存地址的数据无效  这些主要通过 Lock 前缀汇编指令体现，具体做和硬件相关，也不深入。具体可了解缓存一致性协议">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/img/mark.png">
-<meta property="og:updated_time" content="2020-11-09T15:44:08.513Z">
+<meta property="og:image" content="http://yoursite.com/img/locktype.png">
+<meta property="og:updated_time" content="2020-11-09T15:53:29.464Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java 并发进阶">
 <meta name="twitter:description" content="并发机制的底层原理volatile说实话 volatile 的原理比较底层，要完全弄清需要一些复习计组的知识。有 volatile 的变量在写操作时会发生以下两件事：  将当前缓存行中的数据写回到内存 写回操作使其他 CPU 里缓存了该内存地址的数据无效  这些主要通过 Lock 前缀汇编指令体现，具体做和硬件相关，也不深入。具体可了解缓存一致性协议">
@@ -219,6 +220,7 @@
 <p>如果你确定程序的所有锁通常属于竞争状态，可以用 JVM 参数关闭偏向锁。</p>
 <h3 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h3><p>线程的栈帧中会有一部分空间用来存储一个锁记录。尝试占有轻量级锁，就是尝试把对象头中 Mark Word 改为一个指向锁记录的指针。这个修改使用的是 CAS 操作。当出现竞争就会膨胀为重量级锁，注意偏向锁是出现第二个线程就会膨胀，即使占有锁的线程此时空闲。</p>
 <p>轻量级锁适用于有多个线程共享一个同步变量，但基本都是错开操作，没有竞争。</p>
+<p><img src="/img/locktype.png" alt="锁的差异"></p>
 
       
       
@@ -473,11 +475,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">java netty</a>
+                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -489,7 +495,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
+                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -497,7 +503,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -505,7 +511,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
+                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -513,15 +519,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">mysql</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">分布式 springcloud</a>
+                <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
             
             <div class="clearfix"></div>
