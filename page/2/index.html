@@ -152,6 +152,262 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-mysql索引与引擎" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/06/mysql索引与引擎/">mysql 索引与引擎</a>
+    </h1>
+  
+
+        
+        <a href="/2019/12/06/mysql索引与引擎/" class="archive-article-date">
+  	<time datetime="2019-12-06T02:00:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-06</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="引擎"><a href="#引擎" class="headerlink" title="引擎"></a>引擎</h1><p>  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。<br>  主要分析使用 MyIsam 和 InnoDB</p>
+<h2 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h2><p>  InnoDB 是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属性 auto_increment，可以从灾难中恢复（通过 bin-log 日志等）。它没有保存表的行数，当 SELECT COUNT (*) FROM TABLE 时需要扫描全表。由于锁的粒度更小，写操作不会锁定全表，所以在并发较高时，使用 Innodb 引擎会提升效率。但是使用行级锁也不是绝对的，如果在执行一个 SQL 语句时 MySQL 不能确定要扫描的范围，InnoDB 表同样会锁全表。</p>
+<h2 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h2><p>  它没有提供对数据库事务的支持，不能从灾难中恢复，也不支持行级锁和外键。修改时需要锁住整个表所以效率低，但查询速度很快。索引文件较小</p>
+<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>  索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行 INSERT、UPDATE 和 DELETE。因为更新表时，MySQL 不仅要保存数据，还要保存索引文件。<br>
+        
+          <a class="article-more-a" href="/2019/12/06/mysql索引与引擎/#more">more >></a>
+        
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/12/06/mysql索引与引擎/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-HashMap、ConcurrentHashMap的原理与区别" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/">HashMap、ConcurrentHashMap 的原理与区别</a>
+    </h1>
+  
+
+        
+        <a href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/" class="archive-article-date">
+  	<time datetime="2019-11-21T02:10:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-21</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h1><ul>
+<li>JDK1.7 之前 使用哈希表，拉链法解决冲突。</li>
+<li>JDK1.8 及之后 使用哈希表，拉链法解决冲突，但是在链过长后会转化为红黑树。<h2 id="hash-冲突"><a href="#hash-冲突" class="headerlink" title="hash 冲突"></a>hash 冲突</h2> 哈希值相同或者散列值相同导致争夺同一块内存。解决方法：<ol>
+<li>开放定址法 ：继续寻找下一块未被占用的存储地址</li>
+<li>再散列法 ：再次调用 hash 函数</li>
+<li>链地址法（拉链法）：一个下标处对应一个链表，连接 hash 值相同的 Node</li>
+</ol>
+</li>
+</ul>
+<h3 id="put-部分的源代码"><a href="#put-部分的源代码" class="headerlink" title="put 部分的源代码"></a>put 部分的源代码</h3><p>   使用拉链法解决 hash 冲突<br>
+        
+          <a class="article-more-a" href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/#more">more >></a>
+        
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java 数据结构</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-shiro认证授权流程原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/19/shiro认证授权流程原理/">shiro 认证流程原理</a>
+    </h1>
+  
+
+        
+        <a href="/2019/11/19/shiro认证授权流程原理/" class="archive-article-date">
+  	<time datetime="2019-11-19T07:51:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-19</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="shiro"><a href="#shiro" class="headerlink" title="shiro"></a>shiro</h1><p>  shiro 本质上是一个过滤器 filter。<br>  securityManager 是 shiro 的核心。大事小事都交由它。他是一个接口，有若干类层层 <strong> 继承 </strong>。<br>  securityManager 内部有验证器 authenticator，授权器 authenorizer，会话管理器 SessionManager 进行具体的行为（策略模式）<br>  不同的 securityManager 实现了不同的功能，比如 AuthenticatingSecurityManager 负责登录认证功能。其有一个 Autheenticator 的验证器，Autheenticator 内有 AuthenticatingRealm，需要实现 doGetAuthenticationInfo（熟悉的朋友）。<br>  realm 是和数据库进行交互的部分，通常需要依赖注入使用 UserService 类的数据库接口。</p>
+<p>  shiro 结构：<br>
+        
+          <a class="article-more-a" href="/2019/11/19/shiro认证授权流程原理/#more">more >></a>
+        
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/11/19/shiro认证授权流程原理/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-ThreadLoacl" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -239,19 +495,19 @@
 
 
   
-    <article id="post-springIOC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-spring简单分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/03/springIOC/">springIOC</a>
+      <a class="article-title" href="/2019/10/03/spring简单分析/">spring 简单介绍</a>
     </h1>
   
 
         
-        <a href="/2019/10/03/springIOC/" class="archive-article-date">
+        <a href="/2019/10/03/spring简单分析/" class="archive-article-date">
   	<time datetime="2019-10-03T02:17:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-03</time>
 </a>
         
@@ -267,7 +523,7 @@
         <p>  SpringIOC 的容器主要有两种：BeanFactory 和 ApplicationContext。BeanFactory 是 spring 提供的基础 IOC 容器，AA 构建与 BB 之上，提供了额外的功能。</p>
 <h2 id="BeanFactory"><a href="#BeanFactory" class="headerlink" title="BeanFactory"></a>BeanFactory</h2><p>   因为本篇涉及基础的 IOC 部分，所以以 BeanFactory 为例<br>
         
-          <a class="article-more-a" href="/2019/10/03/springIOC/#more">more >></a>
+          <a class="article-more-a" href="/2019/10/03/spring简单分析/#more">more >></a>
         
       
       
@@ -291,7 +547,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/10/03/springIOC/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/10/03/spring简单分析/">展开全文 >></a>
         </p>
       
 
@@ -738,171 +994,9 @@
 
 
   
-    <article id="post-决策树" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/14/决策树/">决策树</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/14/决策树/" class="archive-article-date">
-  	<time datetime="2018-04-14T02:37:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-14</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="信息增益"><a href="#信息增益" class="headerlink" title="信息增益"></a>信息增益</h1><p>信息增益是用来表示某一种特征的不确定性的，熵越大，代表权重越大，作为树顶。公式为：$H = - \sum_{i=1}^n {p (x_i)・log_2 (p (x_i))}$   。p (x_i) 是特征 x 中，值为 $x_i$ 的值占所有 x 的百分比。<br>如果特征 A 是连续的，在计算信息增益时，一般是将连续的特征进行离散化，然后在计算信息增益。<br>先假设特征都是离散值，按熵最大的特征分为若干类。得到的子类中再分别求熵最大的特征，一路迭代下去，直到某次分割后，某块的标签值都相同，或者已经使用过所有特征来进行分类了，则该分支停止。<br>
-        
-          <a class="article-more-a" href="/2018/04/14/决策树/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ml</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/14/决策树/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-支持向量机" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/10/支持向量机/">支持向量机</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/10/支持向量机/" class="archive-article-date">
-  	<time datetime="2018-04-10T14:50:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-10</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="SVM-简介"><a href="#SVM-简介" class="headerlink" title="SVM 简介"></a>SVM 简介</h1><p>线性回归和逻辑递归不细说了，SVM 是如何使样本点距离超平面最大的。根据高中点到直线的距离公式，|ax+by+c|/ 根号（a^2+b^）, 得到 $\frac {|\omega^Tx+x0|}{|\omega|}$<br>下一步先要找到各个点到超平面的距离之和最短（min）, 再最大化虚线间的距离。所谓支持向量，指虚线上的两点<br><img src="/img/svm1.jpg" alt="示例"><br>
-        
-          <a class="article-more-a" href="/2018/04/10/支持向量机/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ml</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/04/10/支持向量机/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 
@@ -915,7 +1009,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 惜玦
+    		&copy; 2021 惜玦
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -1027,6 +1121,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
@@ -1035,11 +1133,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">java  并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">java netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">java  并发</a>
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1051,15 +1157,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1068,14 +1170,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">ml</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
             
             <div class="clearfix"></div>

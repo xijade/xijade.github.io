@@ -6,15 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: java  并发 | xijue&#39;s blog</title>
+  <title>spring ioc 源码分析 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="xijue&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/tags/java-并发/index.html">
+  <meta name="description" content="在之前提到过，spring ioc 主要分为两步：容器的启动、bean 的加载。 spring 相关类的继承如下图所示，DefaultListableBeanFactory 是最底层的实现，肯定也是最终使用的类。ApplicationContent 虽然在这个类继承关系下，但可以看出来它是独立的。可以想成用了组合的方式，ApplicationContent 内部有一个 DefaultListabl">
+<meta name="keywords" content="java spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring ioc 源码分析">
+<meta property="og:url" content="http://yoursite.com/2020/11/10/springioc源码分析/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
+<meta property="og:description" content="在之前提到过，spring ioc 主要分为两步：容器的启动、bean 的加载。 spring 相关类的继承如下图所示，DefaultListableBeanFactory 是最底层的实现，肯定也是最终使用的类。ApplicationContent 虽然在这个类继承关系下，但可以看出来它是独立的。可以想成用了组合的方式，ApplicationContent 内部有一个 DefaultListabl">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/beanfactory.png">
+<meta property="og:updated_time" content="2020-11-10T16:57:33.943Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="xijue&#39;s blog">
+<meta name="twitter:title" content="spring ioc 源码分析">
+<meta name="twitter:description" content="在之前提到过，spring ioc 主要分为两步：容器的启动、bean 的加载。 spring 相关类的继承如下图所示，DefaultListableBeanFactory 是最底层的实现，肯定也是最终使用的类。ApplicationContent 虽然在这个类继承关系下，但可以看出来它是独立的。可以想成用了组合的方式，ApplicationContent 内部有一个 DefaultListabl">
+<meta name="twitter:image" content="http://yoursite.com/img/beanfactory.png">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -150,60 +157,203 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="spring-springioc源码分析" class="article article-type-spring " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/11/18/java并发进阶/" class="archive-article-date">
-  	<time datetime="2020-11-18T15:47:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-18</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/11/18/java并发进阶/">java 并发进阶</a>
+    <h1 class="article-title" itemprop="name">
+      spring ioc 源码分析
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2020/11/10/springioc源码分析/" class="archive-article-date">
+  	<time datetime="2020-11-10T14:49:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-10</time>
+</a>
+        
+		
+      
+	  
+        <span class="archive-article-date">
+            本文阅读量 <span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在之前提到过，spring ioc 主要分为两步：容器的启动、bean 的加载。</p>
+<p>spring 相关类的继承如下图所示，DefaultListableBeanFactory 是最底层的实现，肯定也是最终使用的类。ApplicationContent 虽然在这个类继承关系下，但可以看出来它是独立的。可以想成用了组合的方式，ApplicationContent 内部有一个 DefaultListableBeanFactory。</p>
+<p><img src="/img/beanfactory.png" alt="beanFactory 类图"></p>
+<p>ApplicationContent 是使用者直接会去使用的类，这里找一个具体的实现类 ClassPathXmlApplicationContext 作为入口。它的构造方法中会调用 refresh ()，开启这篇文章的内容。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">refresh</span><span class="params">()</span> <span class="keyword">throws</span> BeansException, IllegalStateException </span>&#123;</span><br><span class="line">      <span class="comment">// 准备工作，记录下容器的启动时间、标记 “已启动” 状态、处理配置文件中的占位符 </span></span><br><span class="line">      prepareRefresh ();</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">      <span class="comment">// 将 Bean 的注册信息注册到 BeanFactory 中 (核心是一个 beanName-&gt; beanDefinition 的 map)</span></span><br><span class="line">      ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory ();</span><br><span class="line"> </span><br><span class="line">      <span class="comment">// 设置 BeanFactory 的类加载器，添加几个 BeanPostProcessor，手动注册几个特殊的 bean</span></span><br><span class="line">      <span class="comment">// 这块待会会展开说 </span></span><br><span class="line">      prepareBeanFactory (beanFactory);</span><br><span class="line"> </span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">         <span class="comment">// 【这里需要知道 BeanFactoryPostProcessor 这个知识点，Bean 如果实现了此接口，</span></span><br><span class="line">         <span class="comment">// 那么在容器初始化以后，Spring 会负责调用里面的 postProcessBeanFactory 方法。】</span></span><br><span class="line"> </span><br><span class="line">         <span class="comment">// 这里是提供给子类的扩展点，到这里的时候，所有的 Bean 都加载、注册完成了，但是都还没有初始化 </span></span><br><span class="line">         <span class="comment">// 具体的子类可以在这步的时候添加一些特殊的 BeanFactoryPostProcessor 的实现类或做点什么事 </span></span><br><span class="line">         postProcessBeanFactory (beanFactory);</span><br><span class="line">          </span><br><span class="line">         <span class="comment">// 调用 BeanFactoryPostProcessor 各个实现类的 postProcessBeanFactory (factory) 方法 </span></span><br><span class="line">         <span class="comment">// 就像项目的 Efk4j 需要在 bean 加载前做一些静态属性初始化 </span></span><br><span class="line">         invokeBeanFactoryPostProcessors (beanFactory);</span><br><span class="line"> </span><br><span class="line">         <span class="comment">// 注册 BeanPostProcessor 的实现类，注意看和 BeanFactoryPostProcessor 的区别 </span></span><br><span class="line">         <span class="comment">// 此接口两个方法: postProcessBeforeInitialization 和 postProcessAfterInitialization</span></span><br><span class="line">         <span class="comment">// 两个方法分别在 Bean 初始化之前和初始化之后得到执行。注意，到这里 Bean 还没初始化 </span></span><br><span class="line">         registerBeanPostProcessors (beanFactory);</span><br><span class="line"> </span><br><span class="line">       </span><br><span class="line"> </span><br><span class="line">         <span class="comment">// 从方法名就可以知道，典型的模板方法 (钩子方法)，</span></span><br><span class="line">         <span class="comment">// 具体的子类可以在这里初始化一些特殊的 Bean（在初始化 singleton beans 之前）</span></span><br><span class="line">         onRefresh ();</span><br><span class="line"> </span><br><span class="line">         <span class="comment">// 初始化所有的 singleton beans （lazy-init 的除外）</span></span><br><span class="line">         finishBeanFactoryInitialization (beanFactory);</span><br><span class="line"> </span><br><span class="line">         <span class="comment">// 最后，广播事件，ApplicationContext 初始化完成 </span></span><br><span class="line">         finishRefresh ();</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="容器启动"><a href="#容器启动" class="headerlink" title="容器启动"></a>容器启动</h2><h3 id="注册-BeanDefinition"><a href="#注册-BeanDefinition" class="headerlink" title="注册 BeanDefinition"></a>注册 BeanDefinition</h3><p>obtainFreshBeanFactory () 的核心是它调用的 refreshBeanFactory 方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">refreshBeanFactory</span><span class="params">()</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">   </span><br><span class="line"> </span><br><span class="line">      <span class="comment">// 初始化一个 DefaultListableBeanFactory，呼应开头。</span></span><br><span class="line">      DefaultListableBeanFactory beanFactory = createBeanFactory ();</span><br><span class="line">     </span><br><span class="line"></span><br><span class="line">      <span class="comment">// 设置 BeanFactory 的两个配置属性：是否允许 Bean 覆盖、是否允许循环引用 </span></span><br><span class="line">      customizeBeanFactory (beanFactory);</span><br><span class="line">      <span class="comment">// 加载 BeanDefinition 到 BeanFactory 中，具体怎么解析 DOM 树不了解了 </span></span><br><span class="line">      loadBeanDefinitions (beanFactory);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 将 beanFactory 指向新创建的 DefaultListableBeanFactory</span></span><br><span class="line">      <span class="keyword">synchronized</span> (<span class="keyword">this</span>.beanFactoryMonitor) &#123;</span><br><span class="line">         <span class="keyword">this</span>.beanFactory = beanFactory;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>虽然 ApplicationContext 继承自 BeanFactory，当我们不应该把它当成 BeanFactory 的子类去理解。正如开头所说的，DefaultListableBeanFactory 是实际使用的顶层实现类，ApplicationContext 内有一个叫 beanFactory 的成员变量指向这个刚创建的 DefaultListableBeanFactory。</p>
+<h3 id="准备-Bean-容器"><a href="#准备-Bean-容器" class="headerlink" title="准备 Bean 容器"></a>准备 Bean 容器</h3><p>给 spring 容器设置类加载器等必要的东西，以及一些内置的 bean (ApplicationContextAwareProcessor, 用来回调 aware 接口) 和一些默认的 bean (systemEnvironment)</p>
+<h2 id="Bean-加载"><a href="#Bean-加载" class="headerlink" title="Bean 加载"></a>Bean 加载</h2><p>当 refresh 执行到 finishBeanFactoryInitialization (beanFactory) 时，意味着容器初始化完成，要开始加载所有的单例 bean 了。</p>
+<p>获取所有 bean 的 name：</p>
+<p><code>List&lt;String&gt; beanNames = new ArrayList&lt;String&gt;(this.beanDefinitionNames);</code></p>
+<p>对 bean 的进行一些判断（是否抽象、是否懒加载等），若通过则最终进入到 AbstractAutowireCapableBeanFactory 的 doCreateBean 函数中。这里提一嘴，会优先尝试去一级缓存 singletonObjects 获取 bean。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">doCreateBean</span><span class="params">(String beanName, RootBeanDefinition mbd, @Nullable Object [] args)</span> <span class="keyword">throws</span> BeanCreationException </span>&#123;</span><br><span class="line">        BeanWrapper instanceWrapper = <span class="keyword">null</span>;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        instanceWrapper = <span class="keyword">this</span>.createBeanInstance (beanName, mbd, args);</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">        Object bean = instanceWrapper.getWrappedInstance ();</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">        <span class="keyword">boolean</span> earlySingletonExposure = mbd.isSingleton () &amp;&amp; <span class="keyword">this</span>.allowCircularReferences &amp;&amp; <span class="keyword">this</span>.isSingletonCurrentlyInCreation (beanName);</span><br><span class="line">        <span class="keyword">if</span> (earlySingletonExposure) &#123;</span><br><span class="line">            <span class="keyword">this</span>.addSingletonFactory (beanName, () -&gt; &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">this</span>.getEarlyBeanReference (beanName, mbd, bean);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Object exposedObject = bean;</span><br><span class="line"></span><br><span class="line">       </span><br><span class="line">        <span class="keyword">this</span>.populateBean (beanName, mbd, instanceWrapper);</span><br><span class="line">        exposedObject = <span class="keyword">this</span>.initializeBean (beanName, exposedObject, mbd);</span><br><span class="line">       </span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (earlySingletonExposure) &#123;</span><br><span class="line">            Object earlySingletonReference = <span class="keyword">this</span>.getSingleton (beanName, <span class="keyword">false</span>);</span><br><span class="line">            <span class="keyword">if</span> (earlySingletonReference != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (exposedObject == bean) &#123;</span><br><span class="line">                    exposedObject = earlySingletonReference;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="keyword">this</span>.allowRawInjectionDespiteWrapping &amp;&amp; <span class="keyword">this</span>.hasDependentBean (beanName)) &#123;</span><br><span class="line">                    String [] dependentBeans = <span class="keyword">this</span>.getDependentBeans (beanName);</span><br><span class="line">                    Set&lt;String&gt; actualDependentBeans = <span class="keyword">new</span> LinkedHashSet (dependentBeans.length);</span><br><span class="line">                    String [] var12 = dependentBeans;</span><br><span class="line">                    <span class="keyword">int</span> var13 = dependentBeans.length;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">for</span>(<span class="keyword">int</span> var14 = <span class="number">0</span>; var14 &lt; var13; ++var14) &#123;</span><br><span class="line">                        String dependentBean = var12 [var14];</span><br><span class="line">                        <span class="keyword">if</span> (!<span class="keyword">this</span>.removeSingletonIfCreatedForTypeCheckOnly (dependentBean)) &#123;</span><br><span class="line">                            actualDependentBeans.add (dependentBean);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                   </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">       </span><br><span class="line">            <span class="keyword">this</span>.registerDisposableBeanIfNecessary (beanName, bean, mbd);</span><br><span class="line">            <span class="keyword">return</span> exposedObject;</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>doCreateBean 的主要步骤有三个：</p>
+<ol>
+<li>createBeanInstance   实例化 bean，通常调用无参构造方法，并返回一个 bean 的包装类</li>
+<li>populateBean    bean 属性填充</li>
+<li>initializeBean  回调 BeanPostProcessor、InitializeBean 和 init-method 相关的回调方法</li>
+</ol>
+<h3 id="循环依赖"><a href="#循环依赖" class="headerlink" title="循环依赖"></a>循环依赖</h3><p>围绕第二步 populateBean ，拓展一下 spring 如何解决循环依赖的问题。这个类叫 AbstractAutowireCapableBeanFactory，看名字也可以猜到它用来解决自动注入的问题，那么循环依赖肯定也是由他解决的。</p>
+<h3 id="三级缓存"><a href="#三级缓存" class="headerlink" title="三级缓存"></a>三级缓存</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Cache of singleton objects: bean name --&gt; bean instance */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; singletonObjects = <span class="keyword">new</span> ConcurrentHashMap&lt;String, Object&gt;(<span class="number">256</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache of singleton factories: bean name --&gt; ObjectFactory */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories = <span class="keyword">new</span> HashMap&lt;String, ObjectFactory&lt;?&gt;&gt;(<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache of early singleton objects: bean name --&gt; bean instance */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; earlySingletonObjects = <span class="keyword">new</span> HashMap&lt;String, Object&gt;(<span class="number">16</span>);</span><br></pre></td></tr></table></figure>
+<ol>
+<li>singletonFactories ： 单例对象工厂的 cache </li>
+<li>earlySingletonObjects ：提前暴光的单例对象的 Cache </li>
+<li>singletonObjects：单例对象的 cache</li>
+</ol>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">java  并发</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">java spring</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/11/10/springioc源码分析/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2020/11/18/java并发进阶/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          java 并发进阶
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2020/11/08/Netty系列三之Pipeline/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Netty 系列三之 Pipeline</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#容器启动"><span class="toc-number">1.</span> <span class="toc-text">容器启动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#注册-BeanDefinition"><span class="toc-number">1.1.</span> <span class="toc-text">注册 BeanDefinition</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#准备-Bean-容器"><span class="toc-number">1.2.</span> <span class="toc-text">准备 Bean 容器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bean-加载"><span class="toc-number">2.</span> <span class="toc-text">Bean 加载</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#循环依赖"><span class="toc-number">2.1.</span> <span class="toc-text">循环依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三级缓存"><span class="toc-number">2.2.</span> <span class="toc-text">三级缓存</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -235,9 +385,9 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,

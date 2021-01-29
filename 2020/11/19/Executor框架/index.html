@@ -6,15 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: java  并发 | xijue&#39;s blog</title>
+  <title>Executor 框架 | xijue&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="xijue&#39;s blog">
-<meta property="og:url" content="http://yoursite.com/tags/java-并发/index.html">
+  <meta name="description" content="Executor 框架Executor 使用流程主要流程由三部分构成：  任务 Callable 和 Runnable 任务执行器 ExecutorService 接口的实现类 任务结果  Future 接口以及其实现类 FutureTask  ExecutorService 有两个方法  void execute (Runnable command) ：由其父类 Executor 声明，参数只能">
+<meta name="keywords" content="java 并发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Executor 框架">
+<meta property="og:url" content="http://yoursite.com/2020/11/19/Executor框架/index.html">
 <meta property="og:site_name" content="xijue&#39;s blog">
+<meta property="og:description" content="Executor 框架Executor 使用流程主要流程由三部分构成：  任务 Callable 和 Runnable 任务执行器 ExecutorService 接口的实现类 任务结果  Future 接口以及其实现类 FutureTask  ExecutorService 有两个方法  void execute (Runnable command) ：由其父类 Executor 声明，参数只能">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-11-19T16:23:21.757Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="xijue&#39;s blog">
+<meta name="twitter:title" content="Executor 框架">
+<meta name="twitter:description" content="Executor 框架Executor 使用流程主要流程由三部分构成：  任务 Callable 和 Runnable 任务执行器 ExecutorService 接口的实现类 任务结果  Future 接口以及其实现类 FutureTask  ExecutorService 有两个方法  void execute (Runnable command) ：由其父类 Executor 声明，参数只能">
   
     <link rel="alternative" href="/atom.xml" title="xijue&#39;s blog" type="application/atom+xml">
   
@@ -150,60 +155,196 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Executor框架" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/11/18/java并发进阶/" class="archive-article-date">
-  	<time datetime="2020-11-18T15:47:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-18</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/11/18/java并发进阶/">java 并发进阶</a>
+    <h1 class="article-title" itemprop="name">
+      Executor 框架
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2020/11/19/Executor框架/" class="archive-article-date">
+  	<time datetime="2020-11-19T15:00:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-19</time>
+</a>
+        
+		
+      
+	  
+        <span class="archive-article-date">
+            本文阅读量 <span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Executor-框架"><a href="#Executor-框架" class="headerlink" title="Executor 框架"></a>Executor 框架</h1><p>Executor 使用流程主要流程由三部分构成：</p>
+<ol>
+<li>任务 Callable 和 Runnable</li>
+<li>任务执行器 ExecutorService 接口的实现类</li>
+<li>任务结果  Future 接口以及其实现类 FutureTask</li>
+</ol>
+<p>ExecutorService 有两个方法</p>
+<ol>
+<li>void execute (Runnable command) ：由其父类 Executor 声明，参数只能是 Runnable 并且返回 void</li>
+<li><t> Future<t> submit ();  由 ExecutorService 声明，参数可以是 Runnable 或者 Callable。返回 Future (实际是 FutureTask)</t></t></li>
+</ol>
+<h2 id="ExecutorService-的主要类介绍"><a href="#ExecutorService-的主要类介绍" class="headerlink" title="ExecutorService 的主要类介绍"></a>ExecutorService 的主要类介绍</h2><h3 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h3><p>快速创建线程池，阿里不推荐这种方式，原因是无界线程池可能溢出，参数尽量掌握在自己手里。详细参数介绍可见”java 并发进阶 “</p>
+<ol>
+<li>FixedThreadPool   固定线程池</li>
+<li>SingleThreadExecutor 单线程执行器 。核心线程数和最大线程数都为 1</li>
+<li>CacheThreadPool   根据需求来创建新线程，核心线程数为 0，最大线程数为 int 最大值</li>
+</ol>
+<h3 id="ScheduledThreadPoolExecutor"><a href="#ScheduledThreadPoolExecutor" class="headerlink" title="ScheduledThreadPoolExecutor"></a>ScheduledThreadPoolExecutor</h3><p>周期任务线程池，有固定线程和单线程两种。后续原理待完善</p>
+<h3 id="Future-接口"><a href="#Future-接口" class="headerlink" title="Future 接口"></a>Future 接口</h3><p>当使用 <strong>executorService.submit ()</strong> 后就会返回 Future，jdk8 中的实际返回类型是 FutureTask，它同时实现了 Runnable 和 Future 接口。因此它既是任务可以当 ExecutorService 的参数，又是结果从 ExecutorService.submit () 返回</p>
+<h2 id="FutureTask"><a href="#FutureTask" class="headerlink" title="FutureTask"></a>FutureTask</h2><p>待完善</p>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">java  并发</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">java 并发</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/11/19/Executor框架/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2020/11/29/java异步编程/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          java 异步编程
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2020/11/18/java并发进阶/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">java 并发进阶</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+        <div class="toc-container tooltip-left">
+            <i class="icon-font icon-category"></i>
+            <div class="tooltip tooltip-east">
+                <span class="tooltip-item">
+                </span>
+                <span class="tooltip-content">
+                    <div class="toc-article">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Executor-框架"><span class="toc-number">1.</span> <span class="toc-text">Executor 框架</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ExecutorService-的主要类介绍"><span class="toc-number">1.1.</span> <span class="toc-text">ExecutorService 的主要类介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ThreadPoolExecutor"><span class="toc-number">1.1.1.</span> <span class="toc-text">ThreadPoolExecutor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ScheduledThreadPoolExecutor"><span class="toc-number">1.1.2.</span> <span class="toc-text">ScheduledThreadPoolExecutor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Future-接口"><span class="toc-number">1.1.3.</span> <span class="toc-text">Future 接口</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FutureTask"><span class="toc-number">1.2.</span> <span class="toc-text">FutureTask</span></a></li></ol></li></ol>
+                    </div>
+                </span>
+            </div>
+        </div>
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -235,9 +376,9 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,

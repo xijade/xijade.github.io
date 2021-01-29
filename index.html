@@ -152,6 +152,191 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-java异步编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/11/29/java异步编程/">java 异步编程</a>
+    </h1>
+  
+
+        
+        <a href="/2020/11/29/java异步编程/" class="archive-article-date">
+  	<time datetime="2020-11-29T11:42:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-29</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Future"><a href="#Future" class="headerlink" title="Future"></a>Future</h1><p>提到 Future 先说一下 Callable，通常把它理解为带返回值的 Runable。Runnable 需要新建一个线程去 start ()，然后主线程干自己的事情去了。Callable 的返回值如何去接受呢？ Callable 是 juc 包的，Thread 没有 Callable 的构造方法，可不能 new Thread (Callable)。因此先介绍一下 FutureTask。</p>
+<h2 id="FutureTask"><a href="#FutureTask" class="headerlink" title="FutureTask"></a>FutureTask</h2><p>​     FutureTask 同时实现了 Runnable, Future 两个接口，所以它既可以作为 Runnable 当做 Thread 类的构造参数，又可以作为 Future 在需要的时候 get () 获取返回结果。</p>
+<p>​     所有 Callable 并非直接使用的，都是通过转为 FutureTask 对象后再使用的。（包括线程池的 submit 也是再进一步调用的 execute，毕竟 Thread 不接受 Callable）。</p>
+<p>下面看贴一个 Callable 使用的简单 Demo：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CallableAndFuture</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span> </span>&#123;</span><br><span class="line">        Callable&lt;Integer&gt; callable = <span class="keyword">new</span> Callable&lt;Integer&gt;() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> Integer <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                Thread.sleep (<span class="number">5000</span>);<span class="comment">// 可能做一些事情 </span></span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> Random ().nextInt (<span class="number">100</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        FutureTask&lt;Integer&gt; future = <span class="keyword">new</span> FutureTask&lt;Integer&gt;(callable);</span><br><span class="line">        <span class="keyword">new</span> Thread (future).start ();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">long</span> a = System.currentTimeMillis ();</span><br><span class="line">            Thread.sleep (<span class="number">5000</span>);<span class="comment">// 可能做一些事情 </span></span><br><span class="line">            System.out.println (future.get ());</span><br><span class="line">            System.out.println (System.currentTimeMillis () - a); <span class="comment">// 输出 5000 左右 </span></span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace ();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace ();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，一般 Future 都是配合线程池使用。<br> <code>Future&lt;Integer&gt; future = threadPool.submit ()</code></p>
+<p>可以看到，Future 配合 Callable 主要解决的是获取非阻塞任务的返回结果问题。但也看到了，这并不算是异步的，需要后面主动去 get 获取结果，这个是难以预知的，可能还是会一直在 get 阻塞。像之前 Netty 那样，可以对任务设置一个 Listener，当任务完成时会调用设定好的回调函数，这样才算真正的异步。</p>
+<h2 id="CompletableFuture"><a href="#CompletableFuture" class="headerlink" title="CompletableFuture"></a>CompletableFuture</h2><p>JDK1.8 后新增的 CompletableFuture 为 java 带来了真正的异步编程，但也只是勉强解决（之前有 Google 的 guava 中的 listenableFuture 进行回调，但代码可读性较差，原本只是先后关系的两个任务变为包含关系）。</p>
+<p>CompletableFuture 处理简单的任务可以使用，但并不是一个完整的反应式编程解决方案，在服务调用复杂的情况下，存在服务编排、上下文传递、柔性限流 (背压) 方面的不足。</p>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">java 并发</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/11/29/java异步编程/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Executor框架" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/11/19/Executor框架/">Executor 框架</a>
+    </h1>
+  
+
+        
+        <a href="/2020/11/19/Executor框架/" class="archive-article-date">
+  	<time datetime="2020-11-19T15:00:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-19</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Executor-框架"><a href="#Executor-框架" class="headerlink" title="Executor 框架"></a>Executor 框架</h1><p>Executor 使用流程主要流程由三部分构成：</p>
+<ol>
+<li>任务 Callable 和 Runnable</li>
+<li>任务执行器 ExecutorService 接口的实现类</li>
+<li>任务结果  Future 接口以及其实现类 FutureTask</li>
+</ol>
+<p>ExecutorService 有两个方法</p>
+<ol>
+<li>void execute (Runnable command) ：由其父类 Executor 声明，参数只能是 Runnable 并且返回 void</li>
+<li><t> Future<t> submit ();  由 ExecutorService 声明，参数可以是 Runnable 或者 Callable。返回 Future (实际是 FutureTask)</t></t></li>
+</ol>
+<h2 id="ExecutorService-的主要类介绍"><a href="#ExecutorService-的主要类介绍" class="headerlink" title="ExecutorService 的主要类介绍"></a>ExecutorService 的主要类介绍</h2><h3 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h3><p>快速创建线程池，阿里不推荐这种方式，原因是无界线程池可能溢出，参数尽量掌握在自己手里。详细参数介绍可见”java 并发进阶 “</p>
+<ol>
+<li>FixedThreadPool   固定线程池</li>
+<li>SingleThreadExecutor 单线程执行器 。核心线程数和最大线程数都为 1</li>
+<li>CacheThreadPool   根据需求来创建新线程，核心线程数为 0，最大线程数为 int 最大值</li>
+</ol>
+<h3 id="ScheduledThreadPoolExecutor"><a href="#ScheduledThreadPoolExecutor" class="headerlink" title="ScheduledThreadPoolExecutor"></a>ScheduledThreadPoolExecutor</h3><p>周期任务线程池，有固定线程和单线程两种。后续原理待完善</p>
+<h3 id="Future-接口"><a href="#Future-接口" class="headerlink" title="Future 接口"></a>Future 接口</h3><p>当使用 <strong>executorService.submit ()</strong> 后就会返回 Future，jdk8 中的实际返回类型是 FutureTask，它同时实现了 Runnable 和 Future 接口。因此它既是任务可以当 ExecutorService 的参数，又是结果从 ExecutorService.submit () 返回</p>
+<h2 id="FutureTask"><a href="#FutureTask" class="headerlink" title="FutureTask"></a>FutureTask</h2><p>待完善</p>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">java 并发</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/11/19/Executor框架/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-java并发进阶" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -209,6 +394,111 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/11/18/java并发进阶/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="spring-springioc源码分析" class="article article-type-spring  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/11/10/springioc源码分析/">spring ioc 源码分析</a>
+    </h1>
+  
+
+        
+        <a href="/2020/11/10/springioc源码分析/" class="archive-article-date">
+  	<time datetime="2020-11-10T14:49:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-10</time>
+</a>
+        
+		
+      
+	  
+
+      
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在之前提到过，spring ioc 主要分为两步：容器的启动、bean 的加载。</p>
+<p>spring 相关类的继承如下图所示，DefaultListableBeanFactory 是最底层的实现，肯定也是最终使用的类。ApplicationContent 虽然在这个类继承关系下，但可以看出来它是独立的。可以想成用了组合的方式，ApplicationContent 内部有一个 DefaultListableBeanFactory。</p>
+<p><img src="/img/beanfactory.png" alt="beanFactory 类图"></p>
+<p>ApplicationContent 是使用者直接会去使用的类，这里找一个具体的实现类 ClassPathXmlApplicationContext 作为入口。它的构造方法中会调用 refresh ()，开启这篇文章的内容。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">refresh</span><span class="params">()</span> <span class="keyword">throws</span> BeansException, IllegalStateException </span>&#123;</span><br><span class="line">      <span class="comment">// 准备工作，记录下容器的启动时间、标记 “已启动” 状态、处理配置文件中的占位符 </span></span><br><span class="line">      prepareRefresh ();</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">      <span class="comment">// 将 Bean 的注册信息注册到 BeanFactory 中 (核心是一个 beanName-&gt; beanDefinition 的 map)</span></span><br><span class="line">      ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory ();</span><br><span class="line"> </span><br><span class="line">      <span class="comment">// 设置 BeanFactory 的类加载器，添加几个 BeanPostProcessor，手动注册几个特殊的 bean</span></span><br><span class="line">      <span class="comment">// 这块待会会展开说 </span></span><br><span class="line">      prepareBeanFactory (beanFactory);</span><br><span class="line"> </span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">         <span class="comment">// 【这里需要知道 BeanFactoryPostProcessor 这个知识点，Bean 如果实现了此接口，</span></span><br><span class="line">         <span class="comment">// 那么在容器初始化以后，Spring 会负责调用里面的 postProcessBeanFactory 方法。】</span></span><br><span class="line"> </span><br><span class="line">         <span class="comment">// 这里是提供给子类的扩展点，到这里的时候，所有的 Bean 都加载、注册完成了，但是都还没有初始化 </span></span><br><span class="line">         <span class="comment">// 具体的子类可以在这步的时候添加一些特殊的 BeanFactoryPostProcessor 的实现类或做点什么事 </span></span><br><span class="line">         postProcessBeanFactory (beanFactory);</span><br><span class="line">          </span><br><span class="line">         <span class="comment">// 调用 BeanFactoryPostProcessor 各个实现类的 postProcessBeanFactory (factory) 方法 </span></span><br><span class="line">         <span class="comment">// 就像项目的 Efk4j 需要在 bean 加载前做一些静态属性初始化 </span></span><br><span class="line">         invokeBeanFactoryPostProcessors (beanFactory);</span><br><span class="line"> </span><br><span class="line">         <span class="comment">// 注册 BeanPostProcessor 的实现类，注意看和 BeanFactoryPostProcessor 的区别 </span></span><br><span class="line">         <span class="comment">// 此接口两个方法: postProcessBeforeInitialization 和 postProcessAfterInitialization</span></span><br><span class="line">         <span class="comment">// 两个方法分别在 Bean 初始化之前和初始化之后得到执行。注意，到这里 Bean 还没初始化 </span></span><br><span class="line">         registerBeanPostProcessors (beanFactory);</span><br><span class="line"> </span><br><span class="line">       </span><br><span class="line"> </span><br><span class="line">         <span class="comment">// 从方法名就可以知道，典型的模板方法 (钩子方法)，</span></span><br><span class="line">         <span class="comment">// 具体的子类可以在这里初始化一些特殊的 Bean（在初始化 singleton beans 之前）</span></span><br><span class="line">         onRefresh ();</span><br><span class="line"> </span><br><span class="line">         <span class="comment">// 初始化所有的 singleton beans （lazy-init 的除外）</span></span><br><span class="line">         finishBeanFactoryInitialization (beanFactory);</span><br><span class="line"> </span><br><span class="line">         <span class="comment">// 最后，广播事件，ApplicationContext 初始化完成 </span></span><br><span class="line">         finishRefresh ();</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="容器启动"><a href="#容器启动" class="headerlink" title="容器启动"></a>容器启动</h2><h3 id="注册-BeanDefinition"><a href="#注册-BeanDefinition" class="headerlink" title="注册 BeanDefinition"></a>注册 BeanDefinition</h3><p>obtainFreshBeanFactory () 的核心是它调用的 refreshBeanFactory 方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">refreshBeanFactory</span><span class="params">()</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">   </span><br><span class="line"> </span><br><span class="line">      <span class="comment">// 初始化一个 DefaultListableBeanFactory，呼应开头。</span></span><br><span class="line">      DefaultListableBeanFactory beanFactory = createBeanFactory ();</span><br><span class="line">     </span><br><span class="line"></span><br><span class="line">      <span class="comment">// 设置 BeanFactory 的两个配置属性：是否允许 Bean 覆盖、是否允许循环引用 </span></span><br><span class="line">      customizeBeanFactory (beanFactory);</span><br><span class="line">      <span class="comment">// 加载 BeanDefinition 到 BeanFactory 中，具体怎么解析 DOM 树不了解了 </span></span><br><span class="line">      loadBeanDefinitions (beanFactory);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 将 beanFactory 指向新创建的 DefaultListableBeanFactory</span></span><br><span class="line">      <span class="keyword">synchronized</span> (<span class="keyword">this</span>.beanFactoryMonitor) &#123;</span><br><span class="line">         <span class="keyword">this</span>.beanFactory = beanFactory;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>虽然 ApplicationContext 继承自 BeanFactory，当我们不应该把它当成 BeanFactory 的子类去理解。正如开头所说的，DefaultListableBeanFactory 是实际使用的顶层实现类，ApplicationContext 内有一个叫 beanFactory 的成员变量指向这个刚创建的 DefaultListableBeanFactory。</p>
+<h3 id="准备-Bean-容器"><a href="#准备-Bean-容器" class="headerlink" title="准备 Bean 容器"></a>准备 Bean 容器</h3><p>给 spring 容器设置类加载器等必要的东西，以及一些内置的 bean (ApplicationContextAwareProcessor, 用来回调 aware 接口) 和一些默认的 bean (systemEnvironment)</p>
+<h2 id="Bean-加载"><a href="#Bean-加载" class="headerlink" title="Bean 加载"></a>Bean 加载</h2><p>当 refresh 执行到 finishBeanFactoryInitialization (beanFactory) 时，意味着容器初始化完成，要开始加载所有的单例 bean 了。</p>
+<p>获取所有 bean 的 name：</p>
+<p><code>List&lt;String&gt; beanNames = new ArrayList&lt;String&gt;(this.beanDefinitionNames);</code></p>
+<p>对 bean 的进行一些判断（是否抽象、是否懒加载等），若通过则最终进入到 AbstractAutowireCapableBeanFactory 的 doCreateBean 函数中。这里提一嘴，会优先尝试去一级缓存 singletonObjects 获取 bean。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">doCreateBean</span><span class="params">(String beanName, RootBeanDefinition mbd, @Nullable Object [] args)</span> <span class="keyword">throws</span> BeanCreationException </span>&#123;</span><br><span class="line">        BeanWrapper instanceWrapper = <span class="keyword">null</span>;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        instanceWrapper = <span class="keyword">this</span>.createBeanInstance (beanName, mbd, args);</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">        Object bean = instanceWrapper.getWrappedInstance ();</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">        <span class="keyword">boolean</span> earlySingletonExposure = mbd.isSingleton () &amp;&amp; <span class="keyword">this</span>.allowCircularReferences &amp;&amp; <span class="keyword">this</span>.isSingletonCurrentlyInCreation (beanName);</span><br><span class="line">        <span class="keyword">if</span> (earlySingletonExposure) &#123;</span><br><span class="line">            <span class="keyword">this</span>.addSingletonFactory (beanName, () -&gt; &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">this</span>.getEarlyBeanReference (beanName, mbd, bean);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Object exposedObject = bean;</span><br><span class="line"></span><br><span class="line">       </span><br><span class="line">        <span class="keyword">this</span>.populateBean (beanName, mbd, instanceWrapper);</span><br><span class="line">        exposedObject = <span class="keyword">this</span>.initializeBean (beanName, exposedObject, mbd);</span><br><span class="line">       </span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (earlySingletonExposure) &#123;</span><br><span class="line">            Object earlySingletonReference = <span class="keyword">this</span>.getSingleton (beanName, <span class="keyword">false</span>);</span><br><span class="line">            <span class="keyword">if</span> (earlySingletonReference != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (exposedObject == bean) &#123;</span><br><span class="line">                    exposedObject = earlySingletonReference;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="keyword">this</span>.allowRawInjectionDespiteWrapping &amp;&amp; <span class="keyword">this</span>.hasDependentBean (beanName)) &#123;</span><br><span class="line">                    String [] dependentBeans = <span class="keyword">this</span>.getDependentBeans (beanName);</span><br><span class="line">                    Set&lt;String&gt; actualDependentBeans = <span class="keyword">new</span> LinkedHashSet (dependentBeans.length);</span><br><span class="line">                    String [] var12 = dependentBeans;</span><br><span class="line">                    <span class="keyword">int</span> var13 = dependentBeans.length;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">for</span>(<span class="keyword">int</span> var14 = <span class="number">0</span>; var14 &lt; var13; ++var14) &#123;</span><br><span class="line">                        String dependentBean = var12 [var14];</span><br><span class="line">                        <span class="keyword">if</span> (!<span class="keyword">this</span>.removeSingletonIfCreatedForTypeCheckOnly (dependentBean)) &#123;</span><br><span class="line">                            actualDependentBeans.add (dependentBean);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                   </span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">       </span><br><span class="line">            <span class="keyword">this</span>.registerDisposableBeanIfNecessary (beanName, bean, mbd);</span><br><span class="line">            <span class="keyword">return</span> exposedObject;</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>doCreateBean 的主要步骤有三个：</p>
+<ol>
+<li>createBeanInstance   实例化 bean，通常调用无参构造方法，并返回一个 bean 的包装类</li>
+<li>populateBean    bean 属性填充</li>
+<li>initializeBean  回调 BeanPostProcessor、InitializeBean 和 init-method 相关的回调方法</li>
+</ol>
+<h3 id="循环依赖"><a href="#循环依赖" class="headerlink" title="循环依赖"></a>循环依赖</h3><p>围绕第二步 populateBean ，拓展一下 spring 如何解决循环依赖的问题。这个类叫 AbstractAutowireCapableBeanFactory，看名字也可以猜到它用来解决自动注入的问题，那么循环依赖肯定也是由他解决的。</p>
+<h3 id="三级缓存"><a href="#三级缓存" class="headerlink" title="三级缓存"></a>三级缓存</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Cache of singleton objects: bean name --&gt; bean instance */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; singletonObjects = <span class="keyword">new</span> ConcurrentHashMap&lt;String, Object&gt;(<span class="number">256</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache of singleton factories: bean name --&gt; ObjectFactory */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories = <span class="keyword">new</span> HashMap&lt;String, ObjectFactory&lt;?&gt;&gt;(<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache of early singleton objects: bean name --&gt; bean instance */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; earlySingletonObjects = <span class="keyword">new</span> HashMap&lt;String, Object&gt;(<span class="number">16</span>);</span><br></pre></td></tr></table></figure>
+<ol>
+<li>singletonFactories ： 单例对象工厂的 cache </li>
+<li>earlySingletonObjects ：提前暴光的单例对象的 Cache </li>
+<li>singletonObjects：单例对象的 cache</li>
+</ol>
+
+      
+      
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">java spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/11/10/springioc源码分析/">展开全文 >></a>
         </p>
       
 
@@ -323,19 +613,19 @@
 
 
   
-    <article id="post-Netty系列二之NioEventLoop的run方法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Netty系列二之NioEventLoop线程模型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/11/08/Netty系列二之NioEventLoop的run方法/">Netty 系列二之 NioEventLoop 的 run 方法</a>
+      <a class="article-title" href="/2020/11/08/Netty系列二之NioEventLoop线程模型/">Netty 系列二之 NioEventLoop 线程模型</a>
     </h1>
   
 
         
-        <a href="/2020/11/08/Netty系列二之NioEventLoop的run方法/" class="archive-article-date">
+        <a href="/2020/11/08/Netty系列二之NioEventLoop线程模型/" class="archive-article-date">
   	<time datetime="2020-11-08T02:10:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-11-08</time>
 </a>
         
@@ -348,14 +638,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="NioEventLoop-的-run-方法"><a href="#NioEventLoop-的-run-方法" class="headerlink" title="NioEventLoop 的 run 方法"></a>NioEventLoop 的 run 方法</h1><p>run () 方法可以分为三个功能</p>
+        <h1 id="NioEventLoop"><a href="#NioEventLoop" class="headerlink" title="NioEventLoop"></a>NioEventLoop</h1><p>NioEventLoop 事件循环，可以简单理解为一直 where (true) 接受 IO 事件的线程。但它额外又多做了一件事，它除了作为 IO 线程，同时还要处理框架或者用户分配给他的任务。</p>
+<h1 id="NioEventLoop-的-run-方法"><a href="#NioEventLoop-的-run-方法" class="headerlink" title="NioEventLoop 的 run 方法"></a>NioEventLoop 的 run 方法</h1><p>run () 方法可以分为三个功能</p>
 <ol>
 <li>select 选择任务</li>
 <li>processSelectedKeys 处理 Channel 感兴趣的就绪 IO 事件</li>
 <li>runAllTasks 运行所有普通任务和定时任务</li>
 </ol>
         
-          <a class="article-more-a" href="/2020/11/08/Netty系列二之NioEventLoop的run方法/#more">more >></a>
+          <a class="article-more-a" href="/2020/11/08/Netty系列二之NioEventLoop线程模型/#more">more >></a>
         
       
       
@@ -379,7 +670,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/11/08/Netty系列二之NioEventLoop的run方法/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/11/08/Netty系列二之NioEventLoop线程模型/">展开全文 >></a>
         </p>
       
 
@@ -760,265 +1051,9 @@
 
 
   
-    <article id="post-mysql索引与引擎" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/06/mysql索引与引擎/">mysql 索引与引擎</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/06/mysql索引与引擎/" class="archive-article-date">
-  	<time datetime="2019-12-06T02:00:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-06</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="引擎"><a href="#引擎" class="headerlink" title="引擎"></a>引擎</h1><p>  存储引擎主要有： 1. MyIsam , 2. InnoDB, 3. Memory, 4. Blackhole, 5. CSV, 6. Performance_Schema, 7. Archive, 8. Federated , 9 Mrg_Myisam。<br>  主要分析使用 MyIsam 和 InnoDB</p>
-<h2 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h2><p>  InnoDB 是一个事务型的存储引擎，有行级锁定和外键约束，支持自动增加列属性 auto_increment，可以从灾难中恢复（通过 bin-log 日志等）。它没有保存表的行数，当 SELECT COUNT (*) FROM TABLE 时需要扫描全表。由于锁的粒度更小，写操作不会锁定全表，所以在并发较高时，使用 Innodb 引擎会提升效率。但是使用行级锁也不是绝对的，如果在执行一个 SQL 语句时 MySQL 不能确定要扫描的范围，InnoDB 表同样会锁全表。</p>
-<h2 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h2><p>  它没有提供对数据库事务的支持，不能从灾难中恢复，也不支持行级锁和外键。修改时需要锁住整个表所以效率低，但查询速度很快。索引文件较小</p>
-<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><p>  索引大大提高了查询速度，同时却会降低更新表的速度，如对表进行 INSERT、UPDATE 和 DELETE。因为更新表时，MySQL 不仅要保存数据，还要保存索引文件。<br>
-        
-          <a class="article-more-a" href="/2019/12/06/mysql索引与引擎/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/06/mysql索引与引擎/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-HashMap、ConcurrentHashMap的原理与区别" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/">HashMap、ConcurrentHashMap 的原理与区别</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/" class="archive-article-date">
-  	<time datetime="2019-11-21T02:10:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-21</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h1><ul>
-<li>JDK1.7 之前 使用哈希表，拉链法解决冲突。</li>
-<li>JDK1.8 及之后 使用哈希表，拉链法解决冲突，但是在链过长后会转化为红黑树。<h2 id="hash-冲突"><a href="#hash-冲突" class="headerlink" title="hash 冲突"></a>hash 冲突</h2> 哈希值相同或者散列值相同导致争夺同一块内存。解决方法：<ol>
-<li>开放定址法 ：继续寻找下一块未被占用的存储地址</li>
-<li>再散列法 ：再次调用 hash 函数</li>
-<li>链地址法（拉链法）：一个下标处对应一个链表，连接 hash 值相同的 Node</li>
-</ol>
-</li>
-</ul>
-<h3 id="put-部分的源代码"><a href="#put-部分的源代码" class="headerlink" title="put 部分的源代码"></a>put 部分的源代码</h3><p>   使用拉链法解决 hash 冲突<br>
-        
-          <a class="article-more-a" href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java 数据结构</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/21/HashMap、ConcurrentHashMap的原理与区别/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-shiro认证授权流程原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/19/shiro认证授权流程原理/">shiro 认证流程原理</a>
-    </h1>
-  
-
-        
-        <a href="/2019/11/19/shiro认证授权流程原理/" class="archive-article-date">
-  	<time datetime="2019-11-19T07:51:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-19</time>
-</a>
-        
-		
-      
-	  
-
-      
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="shiro"><a href="#shiro" class="headerlink" title="shiro"></a>shiro</h1><p>  shiro 本质上是一个过滤器 filter。<br>  securityManager 是 shiro 的核心。大事小事都交由它。他是一个接口，有若干类层层 <strong> 继承 </strong>。<br>  securityManager 内部有验证器 authenticator，授权器 authenorizer，会话管理器 SessionManager 进行具体的行为（策略模式）<br>  不同的 securityManager 实现了不同的功能，比如 AuthenticatingSecurityManager 负责登录认证功能。其有一个 Autheenticator 的验证器，Autheenticator 内有 AuthenticatingRealm，需要实现 doGetAuthenticationInfo（熟悉的朋友）。<br>  realm 是和数据库进行交互的部分，通常需要依赖注入使用 UserService 类的数据库接口。</p>
-<p>  shiro 结构：<br>
-        
-          <a class="article-more-a" href="/2019/11/19/shiro认证授权流程原理/#more">more >></a>
-        
-      
-      
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/19/shiro认证授权流程原理/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -1031,7 +1066,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2020 惜玦
+    		&copy; 2021 惜玦
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -1143,6 +1178,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">java 数据结构</a>
               </li>
              
@@ -1151,11 +1190,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">java  并发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">java netty</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">数据库 mybaits</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">java  并发</a>
+                <a href="javascript:void(0)" class="js-tag color2">python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1167,15 +1214,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">python</a>
+                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">消息队列</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">java spring</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1184,14 +1227,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">ml</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">java 并发</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">java netty</a>
               </li>
             
             <div class="clearfix"></div>
